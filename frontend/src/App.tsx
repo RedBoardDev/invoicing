@@ -1,23 +1,27 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./contexts/AuthContext";
+import { BrowserRouter as Router } from "react-router-dom";
+import { ConfigProvider, Spin } from "antd";
+import enEN from "antd/locale/en_US";
+import { Suspense } from "react";
+import theme from "@config/antdTheme";
+
+import { AuthProvider } from "@contexts/AuthContext";
+import { ErrorBoundary } from "@components/errors";
+import AppRoutes from "./routes";
 
 const App = () => (
-  <AuthProvider>
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        {/* Toutes les routes protégées seront rendues via le ProtectedRoute */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />} />
-          {/* Autres routes protégées */}
-        </Route>
-      </Routes>
-    </Router>
-  </AuthProvider>
+  <ConfigProvider locale={enEN} theme={theme}>
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <Suspense
+            fallback={<Spin size="large" style={{ marginTop: "20%" }} />}
+          >
+            <AppRoutes />
+          </Suspense>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
+  </ConfigProvider>
 );
 
 export default App;

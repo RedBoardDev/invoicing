@@ -1,0 +1,97 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // ou "mysql" selon votre choix d'hébergement AWS
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id         String    @id @default(uuid())
+  name       String
+  email      String?   // optionnel, pour contact
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  contrats   Contrat[]
+}
+
+model Contrat {
+  id                String            @id @default(uuid())
+  clientId          String
+  client            Client            @relation(fields: [clientId], references: [id])
+  montantHT         Decimal           @db.Decimal(10, 2)
+  montantTTC        Decimal           @db.Decimal(10, 2)
+  conditionsPaiement Int               // délai en jours
+  dateDebut         DateTime
+  dateFin           DateTime
+  prestation        String
+  extras            String?           // informations complémentaires
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  histories         ContratHistory[]
+  factures          Facture[]
+}
+
+model ContratHistory {
+  id         String    @id @default(uuid())
+  contratId  String
+  contrat    Contrat   @relation(fields: [contratId], references: [id])
+  // Stockage complet de la modification (snapshot ou changements détaillés)
+  changes    Json
+  createdAt  DateTime  @default(now())
+}
+
+enum FactureStatus {
+  DRAFT
+  VALIDATED
+  SENT
+}
+
+model Facture {
+  id           String         @id @default(uuid())
+  contratId    String
+  contrat      Contrat        @relation(fields: [contratId], references: [id])
+  // Format : AAAA-xxxxx, généré automatiquement par l'API (le préfixe est l'année courante)
+  numero       String
+  // Montant de base repris depuis le contrat au moment de la génération
+  montantBase  Decimal        @db.Decimal(10, 2)
+  status       FactureStatus  @default(DRAFT)
+  // Date d'envoi de l'email (historisation)
+  sendDate     DateTime?
+  // URL du PDF généré et stocké sur AWS S3 (valide uniquement si la facture est validée)
+  pdfUrl       String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  items        FactureItem[]
+}
+
+model FactureItem {
+  id          String    @id @default(uuid())
+  factureId   String
+  facture     Facture   @relation(fields: [factureId], references: [id])
+  description String
+  montant     Decimal   @db.Decimal(10, 2)
+  createdAt   DateTime  @default(now())
+}
+
+model User {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  password   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+// model EmailTemplate {
+//   id         String    @id @default(uuid())
+
+//   name       String
+//   subject    String
+
+//   content    String
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+// }
