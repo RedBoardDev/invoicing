@@ -1,6 +1,6 @@
 import React from "react";
-import NotFoundImage from "@images/error_404.png";
-import Logo from "@images/logo_complet.svg";
+import NotFoundImage from "@images/errors/error_404.png";
+// import Logo from "@images/logo_complet.svg";
 import { useLocation } from "react-router-dom";
 import styles from "./NotFound.module.css";
 
@@ -11,9 +11,9 @@ const NotFound: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.textSection}>
-          <a href="/">
+          {/* <a href="/">
             <img src={Logo} alt="Logo" className={styles.logo} />
-          </a>
+          </a> */}
           <p className={styles.errorCode}>
             <strong>404.</strong> <ins>That&apos;s an error.</ins>
           </p>

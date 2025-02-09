@@ -1,7 +1,7 @@
 import type React from "react";
 import { Button } from "antd";
-import ErrorBoundaryImage from "@images/illustrations/error_boundary.png";
-import Logo from "@images/logo_complet.svg";
+import ErrorBoundaryImage from "@images/errors/boundary.png";
+// import Logo from "@images/logo_complet.svg";
 import styles from "./ErrorBoundary.module.css";
 
 interface ErrorPageProps {
@@ -14,9 +14,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ onReload, onGoHome }) => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.textSection}>
-          <a href="/">
+          {/* <a href="/">
             <img src={Logo} alt="Logo" className={styles.logo} />
-          </a>
+          </a> */}
           <p className={styles.errorCode}>
             <strong>Oops!</strong>
             <br />

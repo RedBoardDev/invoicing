@@ -32,14 +32,12 @@
 .errorCode {
   font-size: 28px;
   font-weight: bold;
-  color: var(--text-color);
   margin-bottom: 12px;
 }
 
 .errorMessage {
   font-size: 15px;
   margin: 0;
-  color: var(--text-color);
   line-height: 1.5;
 }
 
@@ -48,7 +46,7 @@
 }
 
 .primaryButton {
-  background-color: var(--primary-color);
+  background-color: var(--color-gray);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -60,8 +58,7 @@
 
 .secondaryButton {
   background-color: transparent;
-  color: var(--text-color);
-  border: 1px solid var(--secondary-color);
+  border: 1px solid var(--color-gray);
   padding: 10px 20px;
   font-size: 14px;
   cursor: pointer;
