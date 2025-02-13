@@ -31,6 +31,11 @@ export default defineConfig({
       '@routes': path.resolve(__dirname, 'src/routes'),
     },
   },
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly'
+    }
+  },
   build: {
     rollupOptions: {
       output: {

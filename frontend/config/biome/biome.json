@@ -27,8 +27,11 @@
       "a11y": {
         "useSemanticElements": "info"
       },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
+      },
       "correctness": {
-        "useExhaustiveDependencies": "info",
+        "useExhaustiveDependencies": "warn",
         "noUnusedImports": "error"
       },
       "suspicious": {
