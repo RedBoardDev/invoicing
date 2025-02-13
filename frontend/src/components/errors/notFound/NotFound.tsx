@@ -1,8 +1,8 @@
-import React from "react";
-import NotFoundImage from "@images/errors/error_404.png";
+import type React from 'react';
+import NotFoundImage from '@images/errors/error_404.png';
 // import Logo from "@images/logo_complet.svg";
-import { useLocation } from "react-router-dom";
-import styles from "./NotFound.module.css";
+import { useLocation } from 'react-router-dom';
+import styles from './NotFound.module.css';
 
 const NotFound: React.FC = () => {
   const location = useLocation();
@@ -18,19 +18,14 @@ const NotFound: React.FC = () => {
             <strong>404.</strong> <ins>That&apos;s an error.</ins>
           </p>
           <p className={styles.errorMessage}>
-            The requested URL <code>{location.pathname}</code> was not found on
-            this server.
+            The requested URL <code>{location.pathname}</code> was not found on this server.
           </p>
           <p className={styles.errorInfo}>
             <ins>That’s all we know.</ins>
           </p>
         </div>
         <div className={styles.imageSection}>
-          <img
-            src={NotFoundImage}
-            alt="Page not found"
-            className={styles.image}
-          />
+          <img src={NotFoundImage} alt="Page not found" className={styles.image} />
         </div>
       </div>
     </div>

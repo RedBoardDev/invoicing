@@ -1,4 +1,4 @@
-import style from "./PulseLoader.module.css";
+import style from './PulseLoader.module.css';
 
 const PulseLoader = () => (
   <div className={style.pulseLoader}>

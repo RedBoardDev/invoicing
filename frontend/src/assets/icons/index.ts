@@ -1,4 +1,4 @@
-import PlusIcon from "./plus.svg?react";
+import PlusIcon from './plus.svg?react';
 
 export const icons = {
   plus: PlusIcon,

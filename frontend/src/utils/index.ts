@@ -1,2 +1,2 @@
 export { default as convertToLocaleString } from './convertDate';
-export * from "./storage";
+export * from './storage';

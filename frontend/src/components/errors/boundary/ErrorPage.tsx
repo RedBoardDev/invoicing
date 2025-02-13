@@ -1,8 +1,8 @@
-import type React from "react";
-import { Button } from "antd";
-import ErrorBoundaryImage from "@images/errors/boundary.png";
+import type React from 'react';
+import { Button } from 'antd';
+import ErrorBoundaryImage from '@images/errors/boundary.png';
 // import Logo from "@images/logo_complet.svg";
-import styles from "./ErrorBoundary.module.css";
+import styles from './ErrorBoundary.module.css';
 
 interface ErrorPageProps {
   onReload: () => void;
@@ -23,8 +23,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ onReload, onGoHome }) => {
             <ins>Something went wrong.</ins>
           </p>
           <p className={styles.errorMessage}>
-            An unexpected error occurred in the application. Please try
-            refreshing the page or return to the home page.
+            An unexpected error occurred in the application. Please try refreshing the page or return to the home page.
           </p>
           <div className={styles.buttons}>
             <Button className={styles.primaryButton} onClick={onReload}>
@@ -36,11 +35,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ onReload, onGoHome }) => {
           </div>
         </div>
         <div className={styles.imageSection}>
-          <img
-            src={ErrorBoundaryImage}
-            alt="Error Illustration"
-            className={styles.image}
-          />
+          <img src={ErrorBoundaryImage} alt="Error Illustration" className={styles.image} />
         </div>
       </div>
     </div>

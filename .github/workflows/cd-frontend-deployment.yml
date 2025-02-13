@@ -1,0 +1,50 @@
+# name: CD / Frontend Deployment
+
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+#       - demo
+#       - prod
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+
+#       - name: Cache npm dependencies
+#         uses: actions/cache@v4
+#         with:
+#           path: ~/.npm
+#           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-node-
+
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Create .env file from secrets
+#         run: |
+#           echo 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' >> .env
+#           echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' >> .env
+#           echo 'AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}' >> .env
+#           echo 'STAGE=${{ github.ref_name }}' >> .env
+#         shell: bash
+
+#       - name: Set API URL
+#         run: npm run update-api-url STAGE=${{ github.ref_name }}
+
+#       - name: Build the project
+#         run: npm run build
+
+#       - name: Deploy the project
+#         run: npm run deploy

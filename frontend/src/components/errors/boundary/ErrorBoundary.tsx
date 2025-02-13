@@ -1,7 +1,7 @@
-import type React from "react";
-import { Component, type ReactNode } from "react";
-import { ROUTE_PATHS } from "@config/routePaths";
-import ErrorPage from "./ErrorPage";
+import type React from 'react';
+import { Component, type ReactNode } from 'react';
+import { ROUTE_PATHS } from '@config/routePaths';
+import ErrorPage from './ErrorPage';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -13,7 +13,7 @@ interface ErrorBoundaryState {
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   static logErrorToService(error: Error, errorInfo: React.ErrorInfo): void {
-    console.error("Logged Error:", { error, errorInfo });
+    console.error('Logged Error:', { error, errorInfo });
   }
 
   static handleReload(): void {
@@ -42,12 +42,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     const { children } = this.props;
 
     if (hasError) {
-      return (
-        <ErrorPage
-          onReload={ErrorBoundary.handleReload}
-          onGoHome={ErrorBoundary.handleGoHome}
-        />
-      );
+      return <ErrorPage onReload={ErrorBoundary.handleReload} onGoHome={ErrorBoundary.handleGoHome} />;
     }
     return children;
   }

@@ -1,8 +1,8 @@
-import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { ROUTE_PATHS } from "@config/routePaths";
-import { PulseLoader } from "@components/common";
-import { useAuth } from "@hooks/useAuth";
+import type React from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { ROUTE_PATHS } from '@config/routePaths';
+import { PulseLoader } from '@components/common';
+import { useAuth } from '@hooks/useAuth';
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -13,11 +13,7 @@ const ProtectedRoute: React.FC = () => {
   return isAuthenticated ? (
     <Outlet />
   ) : (
-    <Navigate
-      to={ROUTE_PATHS.error.unauthorized}
-      state={{ from: location }}
-      replace
-    />
+    <Navigate to={ROUTE_PATHS.error.unauthorized} state={{ from: location }} replace />
   );
 };
 

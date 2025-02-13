@@ -1,22 +1,22 @@
-import { JSX } from "react";
+import type { JSX } from 'react';
 
 export const ROUTE_PATHS = {
   public: {
-    home: "/",
-    login: "/login",
-    register: "/register",
+    home: '/',
+    login: '/login',
+    register: '/register',
   },
   private: {
-    dashboard: "/dashboard",
+    dashboard: '/dashboard',
     user: {
-      root: "/user",
+      root: '/user',
       detail: (id: string) => `/user/${id}`,
     },
-    settings: "/settings",
+    settings: '/settings',
   },
   error: {
-    notFound: "/errors/404",
-    unauthorized: "/errors/401",
+    notFound: '/errors/404',
+    unauthorized: '/errors/401',
   },
 } as const;
 
