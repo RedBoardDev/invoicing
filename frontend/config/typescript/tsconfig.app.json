@@ -1,8 +1,14 @@
 {
-  "extends": "../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "tsBuildInfoFile": "./.cache/tsbuildinfo/app.tsbuildinfo"
-  },
-  "include": ["src/**/*"]
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"composite": true,
+		"tsBuildInfoFile": "./.cache/tsbuildinfo/app.tsbuildinfo",
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"sourceMap": true,
+		"declaration": true,
+		"declarationMap": true
+	},
+	"include": ["src/**/*"],
+	"exclude": ["**/__tests__", "**/__mocks__"]
 }
