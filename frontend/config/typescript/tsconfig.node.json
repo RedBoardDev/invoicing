@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "moduleResolution": "node",
+    "tsBuildInfoFile": "./.cache/tsbuildinfo/node.tsbuildinfo"
+  },
+  "include": ["vite.config.ts"]
+}
