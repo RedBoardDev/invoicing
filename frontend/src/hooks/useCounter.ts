@@ -2,44 +2,60 @@ import { useCallback, useState } from "react";
 
 export interface UseCounterReturn {
 	count: number;
-	increment: () => void;
-	decrement: () => void;
+	increment: (amount?: number) => void;
+	decrement: (amount?: number) => void;
 	reset: () => void;
 	setCount: (value: number) => void;
 }
 
-/**
- * A custom hook for managing a numeric counter
- *
- * @param initialValue - Initial count value (default: 0)
- * @param min - Minimum allowed value
- * @param max - Maximum allowed value
- *
- * @returns {Object} Counter utilities
- */
-export function useCounter(
-	initialValue = 0,
-	min = Number.NEGATIVE_INFINITY,
-	max: number = Number.POSITIVE_INFINITY,
-): UseCounterReturn {
-	const [count, setCount] = useState(initialValue);
+interface UseCounterOptions {
+	min?: number;
+	max?: number;
+	initial?: number;
+}
 
-	const boundedSet = useCallback(
-		(value: number) => setCount(Math.min(Math.max(value, min), max)),
+/**
+ * Custom hook for managing numeric counter state
+ *
+ * @param options - Configuration options
+ * @param options.initial - Initial value (default: 0)
+ * @param options.min - Minimum allowed value
+ * @param options.max - Maximum allowed value
+ *
+ * @example
+ * const { count, increment } = useCounter({ initial: 5, min: 0 });
+ * <button onClick={() => increment(2)}>Count: {count}</button>
+ */
+export function useCounter({
+	initial = 0,
+	min,
+	max,
+}: UseCounterOptions = {}): UseCounterReturn {
+	const [count, setCount] = useState(initial);
+
+	const clamp = useCallback(
+		(value: number) =>
+			Math.min(
+				Math.max(value, min ?? Number.NEGATIVE_INFINITY),
+				max ?? Number.POSITIVE_INFINITY,
+			),
 		[min, max],
 	);
 
 	const increment = useCallback(
-		() => boundedSet(count + 1),
-		[count, boundedSet],
+		(amount = 1) => setCount((c) => clamp(c + amount)),
+		[clamp],
 	);
+
 	const decrement = useCallback(
-		() => boundedSet(count - 1),
-		[count, boundedSet],
+		(amount = 1) => setCount((c) => clamp(c - amount)),
+		[clamp],
 	);
-	const reset = useCallback(
-		() => boundedSet(initialValue),
-		[initialValue, boundedSet],
+
+	const reset = useCallback(() => setCount(initial), [initial]);
+	const setCountClamped = useCallback(
+		(value: number) => setCount(clamp(value)),
+		[clamp],
 	);
 
 	return {
@@ -47,6 +63,6 @@ export function useCounter(
 		increment,
 		decrement,
 		reset,
-		setCount: boundedSet,
+		setCount: setCountClamped,
 	};
 }

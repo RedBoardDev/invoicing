@@ -3,30 +3,27 @@ import { useCallback, useState } from "react";
 export interface UseToggleReturn {
 	value: boolean;
 	toggle: () => void;
-	setTrue: () => void;
-	setFalse: () => void;
+	setToggle: (value: boolean) => void;
 }
 
 /**
- * A custom hook for handling boolean state with toggle functionality
+ * Custom hook for managing boolean state with toggle functionality
  *
- * @param initialValue - Initial boolean value (default: false)
+ * @param initial - Initial boolean value (default: false)
  *
- * @returns {Object} Toggle utilities
+ * @returns {Object} Control utilities
  * @returns {boolean} value - Current state
- * @returns {() => void} toggle - Toggle the state
- * @returns {() => void} setTrue - Set state to true
- * @returns {() => void} setFalse - Set state to false
+ * @returns {() => void} toggle - Toggles the state
+ * @returns {(value: boolean) => void} setValue - Direct state setter
  *
  * @example
  * const { value, toggle } = useToggle();
+ * <button onClick={toggle}>{value ? 'On' : 'Off'}</button>
  */
-export function useToggle(initialValue = false): UseToggleReturn {
-	const [value, setValue] = useState(initialValue);
+export function useToggle(initial = false): UseToggleReturn {
+	const [value, setToggle] = useState(initial);
 
-	const toggle = useCallback(() => setValue((v) => !v), []);
-	const setTrue = useCallback(() => setValue(true), []);
-	const setFalse = useCallback(() => setValue(false), []);
+	const toggle = useCallback(() => setToggle((v) => !v), []);
 
-	return { value, toggle, setTrue, setFalse };
+	return { value, toggle, setToggle };
 }
