@@ -1,3 +1,3 @@
-import { RouteConfig } from "@config/routePaths";
+import type { RouteConfig } from "@config/routePaths";
 
 export const privateRoutes: RouteConfig[] = [];

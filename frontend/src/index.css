@@ -1,22 +1,22 @@
 :root {
-  --color-offwhite: #faf8f4; /* Background, containers, general background */
-  --color-gray: #4a4a4a; /* Main text */
-  --color-blue: #5a91c0; /* Primary color, accents */
-  --color-blue-hover: #7ba5d0; /* Hover for primary elements */
-  --color-pale-yellow: #fff9e6; /* Very pale accent, secondary areas */
-  --color-border: #e0e0e0; /* Border color */
+	--color-offwhite: #faf8f4; /* Background, containers, general background */
+	--color-gray: #4a4a4a; /* Main text */
+	--color-blue: #5a91c0; /* Primary color, accents */
+	--color-blue-hover: #7ba5d0; /* Hover for primary elements */
+	--color-pale-yellow: #fff9e6; /* Very pale accent, secondary areas */
+	--color-border: #e0e0e0; /* Border color */
 
-  --border-radius: 4px;
-  --font-family: "Helvetica Neue", Arial, sans-serif;
+	--border-radius: 4px;
+	--font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  font-size: 16px;
-  font-optical-sizing: auto;
-  line-height: 1.5;
-  font-family: var(--font-family);
-  background-color: var(--color-offwhite);
-  color: var(--color-gray);
+	margin: 0;
+	padding: 0;
+	font-size: 16px;
+	font-optical-sizing: auto;
+	line-height: 1.5;
+	font-family: var(--font-family);
+	background-color: var(--color-offwhite);
+	color: var(--color-gray);
 }
