@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from "node:http";
 import { defineConfig } from "vite";
 import type { ViteDevServer } from "vite";
 
@@ -28,26 +29,35 @@ function securityHeaders() {
 	return {
 		name: "security-headers",
 		configureServer(server: ViteDevServer) {
-			server.middlewares.use((_req: any, res: any, next: any): void => {
-				res.setHeader("Content-Security-Policy", cspHeader);
-				res.setHeader("X-Content-Type-Options", "nosniff");
-				res.setHeader("X-Frame-Options", "DENY");
-				res.setHeader("X-XSS-Protection", "1; mode=block");
-				res.setHeader(
-					"Strict-Transport-Security",
-					"max-age=31536000; includeSubDomains",
-				);
-				res.setHeader(
-					"Permissions-Policy",
-					"geolocation=(), midi=(), sync-xhr=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), fullscreen=(self), payment=()",
-				);
+			server.middlewares.use(
+				(
+					_req: IncomingMessage,
+					res: ServerResponse,
+					next: (err?: unknown) => void,
+				): void => {
+					res.setHeader("Content-Security-Policy", cspHeader);
+					res.setHeader("X-Content-Type-Options", "nosniff");
+					res.setHeader("X-Frame-Options", "DENY");
+					res.setHeader("X-XSS-Protection", "1; mode=block");
+					res.setHeader(
+						"Strict-Transport-Security",
+						"max-age=31536000; includeSubDomains",
+					);
+					res.setHeader(
+						"Permissions-Policy",
+						"geolocation=(), midi=(), sync-xhr=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), fullscreen=(self), payment=()",
+					);
 
-				if (process.env.NODE_ENV === "production") {
-					res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-				}
+					if (process.env.NODE_ENV === "production") {
+						res.setHeader(
+							"Cache-Control",
+							"public, max-age=31536000, immutable",
+						);
+					}
 
-				next();
-			});
+					next();
+				},
+			);
 		},
 	};
 }

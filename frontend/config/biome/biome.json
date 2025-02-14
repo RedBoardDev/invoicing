@@ -7,7 +7,13 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["node_modules", "build/**", ".serverless", ".vscode"]
+		"ignore": [
+			"node_modules",
+			"build/**",
+			".serverless",
+			".vscode",
+			"config/**"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -18,7 +24,7 @@
 	},
 	"organizeImports": {
 		"enabled": true,
-		"ignore": ["**/generated/*", "**/__mocks__/*"],
+		"ignore": ["**/generated/*", "**/__mocks__/*", "**/config/**"],
 		"include": ["src/**/*.{ts,tsx}"]
 	},
 	"linter": {
