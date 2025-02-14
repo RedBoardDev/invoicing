@@ -68,7 +68,7 @@ export default function baseConfig(command: string) {
 			react(),
 			svgr(),
 			tsconfigPaths(),
-			checker(command === "build" ? { typescript: true, vueTsc: true } : {}),
+			checker(command === "build" ? { typescript: true } : {}),
 			securityHeaders(),
 		],
 		build: {
