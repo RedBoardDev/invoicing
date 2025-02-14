@@ -1,20 +1,16 @@
 {
 	"compilerOptions": {
-		// Basic Settings
 		"target": "ES2022",
 		"lib": ["ES2022", "DOM", "DOM.Iterable"],
 
-		// Module Resolution
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 
-		// JSX and Import Interoperability
 		"jsx": "react-jsx",
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
 		"verbatimModuleSyntax": true,
 
-		// Strictness Options
 		"strict": true,
 		"strictBindCallApply": true,
 		"noImplicitAny": true,
@@ -28,13 +24,11 @@
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitReturns": true,
 		"noImplicitOverride": true,
-		"noPropertyAccessFromIndexSignature": true,
 
-		// Build Options
 		"skipLibCheck": false,
 		"noEmit": true,
 		"incremental": true,
 		"isolatedModules": true,
-		"resolveJsonModule": true,
+		"resolveJsonModule": true
 	}
 }

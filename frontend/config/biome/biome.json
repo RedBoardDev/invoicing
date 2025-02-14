@@ -7,14 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": [
-			"node_modules",
-			"build",
-      "dist",
-			".serverless",
-			".vscode",
-			"tsconfig.*.json"
-		]
+		"ignore": ["node_modules", "build", "dist", ".serverless", ".vscode"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -40,7 +33,7 @@
 				"noDangerouslySetInnerHtml": "warn"
 			},
 			"correctness": {
-        "noUndeclaredVariables": "error",
+				"noUndeclaredVariables": "error",
 				"useExhaustiveDependencies": "warn",
 				"noUnusedImports": "error"
 			},
