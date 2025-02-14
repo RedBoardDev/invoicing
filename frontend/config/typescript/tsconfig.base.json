@@ -1,33 +1,40 @@
 {
 	"compilerOptions": {
+		// Basic Settings
 		"target": "ES2022",
 		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+
+		// Module Resolution
 		"module": "ESNext",
 		"moduleResolution": "bundler",
+
+		// JSX and Import Interoperability
+		"jsx": "react-jsx",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"verbatimModuleSyntax": true,
+
+		// Strictness Options
 		"strict": true,
 		"strictBindCallApply": true,
 		"noImplicitAny": true,
 		"strictNullChecks": true,
 		"strictFunctionTypes": true,
 		"noUncheckedIndexedAccess": true,
-		"skipLibCheck": false,
 		"noImplicitThis": true,
 		"forceConsistentCasingInFileNames": true,
-		"jsx": "react-jsx",
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true,
-		"verbatimModuleSyntax": true,
-		"noEmit": true,
-		"incremental": true,
-		"isolatedModules": true,
-		"resolveJsonModule": true,
-		"types": ["vite/client", "node"],
-		"typeRoots": ["node_modules/@types", "src/*"],
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitReturns": true,
 		"noImplicitOverride": true,
-		"noPropertyAccessFromIndexSignature": true
+		"noPropertyAccessFromIndexSignature": true,
+
+		// Build Options
+		"skipLibCheck": false,
+		"noEmit": true,
+		"incremental": true,
+		"isolatedModules": true,
+		"resolveJsonModule": true,
 	}
 }

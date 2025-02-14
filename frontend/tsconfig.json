@@ -20,7 +20,7 @@
 		}
 	},
 	"include": ["src"],
-  "exclude": ["node_modules", "dist", "build", "**/*.test.ts", "**/*.spec.ts"],
+	"exclude": ["node_modules", "dist", "build", "**/*.test.ts", "**/*.spec.ts"],
 	"references": [
 		{ "path": "./config/typescript/tsconfig.app.json" },
 		{ "path": "./config/typescript/tsconfig.node.json" }
