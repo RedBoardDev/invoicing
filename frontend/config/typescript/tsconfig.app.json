@@ -6,9 +6,8 @@
 		"rootDir": "./src",
 		"outDir": "./dist",
 		"sourceMap": true,
-		"declaration": true,
-		"declarationMap": true
+		"declaration": false,
 	},
 	"include": ["src/**/*"],
-	"exclude": ["**/__tests__", "**/__mocks__"]
+	"allowJs": ["**/__tests__", "**/__mocks__"]
 }
