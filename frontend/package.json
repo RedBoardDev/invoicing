@@ -33,7 +33,9 @@
 		"husky": "^9.1.7",
 		"typescript": "~5.7.2",
 		"vite": "^6.1.0",
-		"vite-plugin-svgr": "^4.3.0"
+		"vite-plugin-checker": "0.8.0",
+		"vite-plugin-svgr": "^4.3.0",
+		"vite-tsconfig-paths": "5.1.4"
 	},
 	"engines": {
 		"node": ">=22.13.0",
