@@ -9,5 +9,4 @@
 		"declaration": false,
 	},
 	"include": ["src/**/*"],
-	"allowJs": ["**/__tests__", "**/__mocks__"]
 }
