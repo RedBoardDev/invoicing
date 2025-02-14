@@ -23,6 +23,13 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
       - name: Cache npm dependencies
         uses: actions/cache@v4
         with:
@@ -33,7 +40,11 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm install
+        run: npm ci
+
+      - name: Security audit
+        working-directory: frontend
+        run: npm audit --omit=dev
 
       - name: Build the application
         working-directory: frontend
