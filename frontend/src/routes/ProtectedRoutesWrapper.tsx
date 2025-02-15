@@ -10,15 +10,15 @@ const ProtectedRoutesWrapper: React.FC = () => {
 
 	if (loading) return <PulseLoader />;
 
-	if (!isAuthenticated) {
-		return (
-			<Navigate
-				to={ROUTE_PATHS.error.unauthorized}
-				state={{ from: location }}
-				replace
-			/>
-		);
-	}
+	// if (!isAuthenticated) {
+	// 	return (
+	// 		<Navigate
+	// 			to={ROUTE_PATHS.error.unauthorized}
+	// 			state={{ from: location }}
+	// 			replace
+	// 		/>
+	// 	);
+	// }
 
 	return <Outlet />;
 };

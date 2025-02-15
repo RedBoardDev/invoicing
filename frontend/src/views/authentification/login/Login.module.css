@@ -1,0 +1,32 @@
+.container {
+	height: 100vh;
+	background-color: var(--color-background);
+}
+
+.loginCard {
+	width: 100%;
+	max-width: 400px;
+	padding: var(--spacing-base);
+	border-radius: var(--border-radius);
+	box-shadow: var(--box-shadow);
+	background-color: var(--color-container);
+}
+
+.title {
+	text-align: center;
+	color: var(--color-primary);
+	margin-bottom: var(--spacing-base);
+}
+
+.icon {
+	color: var(--color-icon);
+}
+
+.loginButton {
+	background-color: var(--color-primary);
+	border: none;
+}
+
+.loginButton:hover {
+	background-color: var(--color-primary-hover);
+}
