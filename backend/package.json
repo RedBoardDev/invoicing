@@ -8,13 +8,13 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:seed": "ts-node prisma/seed.ts",
-		"prepare": "cd .. && husky backend/.husky",
-		"check:all": "npm run lint:check && npm run format:check && npm run typescript:check",
-		"format:check": "biome format .",
-		"format:fix": "biome check --write .",
-		"lint:check": "biome check .",
-		"lint:fix": "biome lint --write .",
-		"typescript:check": "tsc --noEmit"
+    "prepare": "husky",
+    "check:all": "npm run lint:check && npm run format:check && npm run typescript:check",
+    "format:check": "biome format .",
+    "format:fix": "biome check --write .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome lint --write .",
+    "typescript:check": "tsc --noEmit"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.738.0",
@@ -39,11 +39,13 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.5.5",
     "@types/uuid": "^10.0.0",
+    "husky": "^9.1.7",
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
