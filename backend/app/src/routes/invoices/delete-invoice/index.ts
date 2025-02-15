@@ -8,7 +8,7 @@ const deleteInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
     url: '/:id',
     schema: {
       tags: ['Invoices'],
-      description: 'Delete n invoice',
+      description: 'Delete an invoice',
       body,
       response,
     },

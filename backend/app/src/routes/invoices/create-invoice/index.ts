@@ -5,7 +5,7 @@ import { body, response } from './schemas';
 const createInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
     method: 'POST',
-    url: '/',
+    url: '',
     schema: {
       tags: ['Invoices'],
       description: 'Create an new invoice',

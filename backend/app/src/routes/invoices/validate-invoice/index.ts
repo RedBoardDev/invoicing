@@ -5,7 +5,7 @@ import { body, response } from './schemas';
 const validateInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
     method: 'PUT',
-    url: '/:id',
+    url: '/:id/validate',
     schema: {
       tags: ['Invoices'],
       description: 'Validate an invoice',

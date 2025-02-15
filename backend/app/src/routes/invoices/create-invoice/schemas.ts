@@ -1,12 +1,7 @@
+import { CreateInvoiceSchema } from '@entities/invoice-entity';
 import type { FromSchema } from 'json-schema-to-ts';
 
-export const body = {
-  type: 'object',
-  properties: {},
-  required: [],
-  additionalProperties: false,
-} as const;
-
+export const body = CreateInvoiceSchema;
 export type TBody = FromSchema<typeof body>;
 
 export const params = {} as const;
@@ -19,5 +14,4 @@ export const querystring = {} as const;
 export type TQuerystring = FromSchema<typeof querystring>;
 
 export const response = {} as const;
-
 export type TResponse = FromSchema<typeof response>;
