@@ -44,10 +44,12 @@ export const createClient = handleError(createClientFn);
  */
 const listClientsQuery = async (
   paginationQuery: { skip?: number; take: number } | undefined,
+  include?: Prisma.ClientInclude,
   where?: Prisma.ClientWhereInput,
 ): Promise<Client[]> =>
   prismaInstance.client.findMany({
     ...(paginationQuery || {}),
+    include: { ...include },
     where,
     orderBy: { createdAt: 'desc' },
   });
@@ -56,13 +58,14 @@ export type ListClientsQueryType = Prisma.PromiseReturnType<typeof listClientsQu
 
 const listClientsFn = async (
   pagination?: Pagination,
+  include?: Prisma.ClientInclude,
   where?: Prisma.ClientWhereInput,
 ): Promise<ListClientsQueryType> => {
   let paginationQuery: CursorPaginationQuery | undefined = undefined;
   if (pagination) {
     paginationQuery = cursorPaginationForQuery(pagination);
   }
-  const result = await listClientsQuery(paginationQuery, where);
+  const result = await listClientsQuery(paginationQuery, include, where);
   return result;
 };
 
@@ -71,14 +74,14 @@ export const listClients = handleError(listClientsFn);
 /**
  * Get Client by ID
  */
-const getClientQueryById = async (clientId: string): Promise<Client> => {
-  return prismaInstance.client.findUniqueOrThrow({ where: { id: clientId } });
+const getClientQueryById = async (clientId: string, include?: Prisma.ClientInclude): Promise<Client> => {
+  return prismaInstance.client.findUniqueOrThrow({ where: { id: clientId }, include });
 };
 
 export type GetClientQueryByIdType = Prisma.PromiseReturnType<typeof getClientQueryById>;
 
-const getClientByIdFn = async (clientId: string): Promise<GetClientQueryByIdType> => {
-  return await getClientQueryById(clientId);
+const getClientByIdFn = async (clientId: string, include?: Prisma.ClientInclude): Promise<GetClientQueryByIdType> => {
+  return await getClientQueryById(clientId, include);
 };
 
 export const getClientById = handleError(getClientByIdFn);
