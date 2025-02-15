@@ -1,5 +1,5 @@
-import { FromSchema } from 'json-schema-to-ts';
 import { createChatSchema } from '@entities/chat-entity';
+import type { FromSchema } from 'json-schema-to-ts';
 
 export const body = createChatSchema;
 

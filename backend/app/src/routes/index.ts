@@ -1,9 +1,9 @@
-import { FastifyInstance } from 'fastify';
+import type { FastifyInstance } from 'fastify';
 
-import Health from './health';
-import Chat from './chat';
+import authRoutes from '@routes/auth';
+import healthRoute from '@routes/health';
 
 export async function router(app: FastifyInstance): Promise<void> {
-  app.register(Health, { prefix: '/health' });
-  app.register(Chat, { prefix: '/chat' });
+  app.register(healthRoute, { prefix: '/health' });
+  app.register(authRoutes, { prefix: '/auth' });
 }

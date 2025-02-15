@@ -1,8 +1,8 @@
-import { FastifyInstance } from 'fastify';
+import type { FastifyInstance } from 'fastify';
 
 import handler from './handler';
 
-const Health = async (app: FastifyInstance): Promise<void> => {
+const healthRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
     method: 'GET',
     url: '',
@@ -14,4 +14,4 @@ const Health = async (app: FastifyInstance): Promise<void> => {
   });
 };
 
-export default Health;
+export default healthRoute;

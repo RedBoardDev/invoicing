@@ -1,7 +1,7 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
 import { checkDatabaseConnection } from '@repositories/health-repository';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
-const Handler = async (_req: FastifyRequest, res: FastifyReply): Promise<void> => {
+const handler = async (_req: FastifyRequest, res: FastifyReply): Promise<void> => {
   const isDatabaseConnected = await checkDatabaseConnection();
 
   const status = isDatabaseConnected ? 'healthy' : 'degraded';
@@ -12,4 +12,4 @@ const Handler = async (_req: FastifyRequest, res: FastifyReply): Promise<void> =
   });
 };
 
-export default Handler;
+export default handler;
