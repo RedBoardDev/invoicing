@@ -1,0 +1,86 @@
+# Node.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Serverless directories
+.serverless
+
+# esbuild directories
+.esbuild
+
+# Logs
+logs
+*.log
+logs/**/*.log
+pids
+*.pid
+*.seed
+*.pid.lock
+*.pid.md
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+lib-cov/
+*.seed
+*.pid.md
+coverage/
+.cache/
+.cache-loader/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+.yarn-integrity
+.eslintcache
+.parcel-cache
+coverage/
+.lintFiles/
+
+# Testing
+test/
+coverage/
+.nyc_output/
+
+# dotenv environment variables
+.env
+.env.local
+.env.prod
+.env.dev
+.env.infos
+.env.test
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE-specific settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+
+# TODO: voir quoi push de prisma
+
+prisma/migrations/*

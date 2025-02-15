@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      backend:
+        ipv4_address: ${POSTGRES_IP}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+
+  api:
+    build:
+      context: .
+      dockerfile: app/docker/Dockerfile
+    env_file: app/env/.env
+    ports:
+      - "${API_PORT}:3000"
+    environment:
+      DATABASE_URL: ${DOCKER_DATABASE_URL}
+      API_PORT: ${API_PORT}
+    depends_on:
+      - postgres
+    networks:
+      backend:
+        ipv4_address: ${API_IP}
+    volumes:
+      - ./prisma:/prisma
+      - ./app:/app/app
+
+volumes:
+  pgdata:
+
+networks:
+  backend:
+    ipam:
+      config:
+        - subnet: ${SUBNET}

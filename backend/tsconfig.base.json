@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "target": "ES2020",
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./app/src/entities"],
+    "baseUrl": "./app/src",
+    "paths": {
+      "@fonts": ["assets/fonts/*"],
+      "@icons": ["assets/icons/*"],
+      "@images": ["assets/images/*"],
+      "@config/*": ["config/*"],
+      "@entities/*": ["entities/*"],
+      "@enums/*": ["enums/*"],
+      "@libs/*": ["libs/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@repositories/*": ["repositories/*"],
+      "@routes/*": ["routes/*"],
+      "@services/*": ["services/*"],
+      "@templates": ["templates/*"],
+      "@utils": ["libs/utils/index.ts"]
+    },
+    "strictNullChecks": true
+  }
+}
