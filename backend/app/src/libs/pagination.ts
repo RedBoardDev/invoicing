@@ -1,7 +1,6 @@
-/* eslint-disable no-param-reassign */
-import { FastifyRequest } from 'fastify';
-import { PaginationQueryString } from 'entities/pagination-query';
 import { ErrorsEnum } from '@enums/errors-enums';
+import type { PaginationQueryString } from 'entities/pagination-query';
+import type { FastifyRequest } from 'fastify';
 
 import ApiError from './error-management/api-error';
 
@@ -26,6 +25,26 @@ export const paginationForQuery = (pagination: Pagination): PaginationQuery => (
   skip: (pagination.page - 1) * pagination.pageSize,
   take: pagination.pageSize,
 });
+
+export interface CursorPaginationQuery {
+  cursor?: { id: string };
+  skip?: number;
+  take: number;
+}
+
+export const cursorPaginationForQuery = (pagination: Pagination): CursorPaginationQuery => {
+  if (pagination.findId) {
+    return {
+      cursor: { id: pagination.findId },
+      skip: 1,
+      take: pagination.pageSize,
+    };
+  }
+  return {
+    skip: (pagination.page - 1) * pagination.pageSize,
+    take: pagination.pageSize,
+  };
+};
 
 export const paginationForComplexQuery = async (
   pagination: Pagination | undefined,
@@ -57,14 +76,12 @@ export const paginationForComplexQuery = async (
   };
 };
 
-export const parsePaginationParams = (
-  req: FastifyRequest
-): PaginationParams => {
+export const parsePaginationParams = (req: FastifyRequest): PaginationParams => {
   const query = req.query as PaginationQueryString;
 
   const includeTotalCount = query.includeCount === 'true';
-  const page = parseInt(query.page || '1', 10);
-  const pageSize = parseInt(query.pageSize || '1000', 10); // on va mettre 1000 dans le cadre du projet, et éviter le besoin d'utiliser la pagination
+  const page = Number.parseInt(query.page || '1', 10);
+  const pageSize = Number.parseInt(query.pageSize || '1000', 10); // on va mettre 1000 dans le cadre du projet, et éviter le besoin d'utiliser la pagination
   const findId = query.findId ? query.findId : undefined;
 
   if (pageSize < 1 || page < 1) {

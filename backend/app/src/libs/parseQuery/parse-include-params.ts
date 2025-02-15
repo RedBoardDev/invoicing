@@ -1,5 +1,5 @@
+import { type IncludeConfigs, IncludeType } from '@libs/parseQuery/types/include';
 import { mergeDeep } from '@libs/utils';
-import { IncludeConfigs, IncludeType } from '@libs/parseQuery/types/include';
 
 export const parseIncludeParams = (
   queryParams: Record<string, unknown> | null,
@@ -9,6 +9,7 @@ export const parseIncludeParams = (
 
   if (!queryParams) return include;
 
+  // biome-ignore lint/complexity/noForEach: <explanation>
   Object.entries(includeConfigs).forEach(([key, config]) => {
     const queryParamKey = `include${key.charAt(0).toUpperCase()}${key.slice(1)}`;
 
@@ -32,4 +33,3 @@ export const parseIncludeParams = (
 
   return include;
 };
-

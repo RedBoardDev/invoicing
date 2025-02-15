@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { body, response } from './schemas';
+import { params, response } from './schemas';
 
 const getClientRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -9,7 +9,7 @@ const getClientRoute = async (app: FastifyInstance): Promise<void> => {
     schema: {
       tags: ['Clients'],
       description: 'Get a client by id',
-      body,
+      params,
       response,
     },
     handler,

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { body, response } from './schemas';
+import { body, params, response } from './schemas';
 
 const updateClientRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -9,6 +9,7 @@ const updateClientRoute = async (app: FastifyInstance): Promise<void> => {
     schema: {
       tags: ['Clients'],
       description: 'Update a client',
+      params,
       body,
       response,
     },
