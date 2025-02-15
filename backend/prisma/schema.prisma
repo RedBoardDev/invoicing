@@ -1,8 +1,115 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model User {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  hashedPassword   String
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Client {
+  id         String    @id @default(uuid())
+  name       String
+
+  contracts   Contract[]
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([name])
+}
+
+model Contract {
+  id                String            @id @default(uuid())
+  clientId          String
+  client            Client            @relation(fields: [clientId], references: [id])
+  amountHT         Decimal           @db.Decimal(10, 2)
+  amountTTC        Decimal           @db.Decimal(10, 2)
+  paymentDelayDays Int
+  description String?
+  startDate         DateTime
+  endDate           DateTime
+  // extras            String?
+
+  invoices           Invoice[]
+  history            ContractHistory[]
+
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([clientId])
+  @@index([startDate])
+  @@index([endDate])
+}
+
+model ContractHistory {
+  id         Int       @id @default(autoincrement())
+  contractId  String
+  contract   Contract @relation(fields: [contractId], references: [id])
+  changeType String
+  data    Json
+  createdAt  DateTime  @default(now())
+
+  @@index([contractId])
+}
+
+enum InvoiceStatus {
+  DRAFT
+  VALIDATED
+  SENT
+}
+
+model Invoice {
+  id           String         @id @default(uuid())
+  contractId    String
+  contract      Contract       @relation(fields: [contractId], references: [id])
+  invoiceNumber String         @unique
+  totalAmount  Decimal        @db.Decimal(10, 2)
+  status        InvoiceStatus  @default(DRAFT)
+  dueDate       DateTime
+  sendDate      DateTime?
+  pdfUrl        String?
+
+  items        InvoiceItem[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([contractId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model InvoiceItem {
+  id         Int       @id @default(autoincrement())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  description String
+  amount     Decimal   @db.Decimal(10, 2)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([invoiceId])
+}
+
+model EmailTemplate {
+  id        String   @id @default(uuid())
+  name      String
+  subject   String
+  content   String
+
+  createdAt   DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
 }

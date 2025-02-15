@@ -4,22 +4,13 @@ export const body = {
   type: 'object',
   properties: {
     email: { type: 'string', format: 'email' },
-    password: { type: 'string', minLength: 1 },
+    password: { type: 'string', minLength: 6 },
   },
   required: ['email', 'password'],
   additionalProperties: false,
 } as const;
 
 export type TBody = FromSchema<typeof body>;
-
-export const params = {} as const;
-export type TParams = FromSchema<typeof params>;
-
-export const headers = {} as const;
-export type THeaders = FromSchema<typeof headers>;
-
-export const querystring = {} as const;
-export type TQuerystring = FromSchema<typeof querystring>;
 
 export const response = {} as const;
 

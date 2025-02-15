@@ -1,17 +1,17 @@
 import path from 'node:path';
 
-import fastify from 'fastify';
-import dotenv from 'dotenv';
-import ajvFormats from 'ajv-formats';
-import Ajv from 'ajv';
-import { router as apiRoutes } from '@routes/index';
-import catchFinallyHandler from '@middlewares/catch-finally-handler';
-import ApiError from '@libs/error-management/api-error';
-import { ErrorsEnum } from '@enums/errors-enums';
-import { setupRateLimit } from '@config/rate-limit';
-import { setupHelmet } from '@config/helmet';
-import { setupDecorators } from '@config/decorators/setupDecorators';
 import { setupCors } from '@config/cors';
+import { setupDecorators } from '@config/decorators/setupDecorators';
+import { setupHelmet } from '@config/helmet';
+import { setupRateLimit } from '@config/rate-limit';
+import { ErrorsEnum } from '@enums/errors-enums';
+import ApiError from '@libs/error-management/api-error';
+import catchFinallyHandler from '@middlewares/catch-finally-handler';
+import { router as apiRoutes } from '@routes/index';
+import Ajv from 'ajv';
+import ajvFormats from 'ajv-formats';
+import dotenv from 'dotenv';
+import fastify from 'fastify';
 
 dotenv.config({ path: path.resolve(__dirname, '../env/.env') });
 

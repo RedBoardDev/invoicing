@@ -1,4 +1,3 @@
-import { authTokenResponseSchema } from '@entities/token-entities';
 import type { FromSchema } from 'json-schema-to-ts';
 
 export const body = {
@@ -24,12 +23,6 @@ export const querystring = {} as const;
 
 export type TQuerystring = FromSchema<typeof querystring>;
 
-export const response = {
-  type: 'object',
-  properties: {
-    200: authTokenResponseSchema,
-    additionalProperties: false,
-  },
-} as const;
+export const response = {} as const;
 
 export type TResponse = FromSchema<typeof response>;

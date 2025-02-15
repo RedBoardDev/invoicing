@@ -1,3 +1,5 @@
+import type { CreateUserData } from '@entities/user-entity';
+import { encryptPassword } from '@libs/password';
 import { prismaInstance } from '@libs/prisma-client';
 import type { Prisma, User } from '@prisma/client';
 import { handleError } from './error-handling-repository';
@@ -31,3 +33,25 @@ const getUserByIdFn = async (id: string): Promise<GetUserByIdQueryType> => {
 };
 
 export const getUserById = handleError(getUserByIdFn);
+
+/**
+ * Create a new user
+ */
+
+const createUserQuery = async (data: CreateUserData): Promise<User> => {
+  const hashedPassword = await encryptPassword(data.password);
+  return prismaInstance.user.create({
+    data: {
+      email: data.email,
+      hashedPassword: hashedPassword,
+    },
+  });
+};
+
+export type CreateUserQueryType = Prisma.PromiseReturnType<typeof createUserQuery>;
+
+const createUserFn = async (data: CreateUserData): Promise<CreateUserQueryType> => {
+  return await createUserQuery(data);
+};
+
+export const createUser = handleError(createUserFn);

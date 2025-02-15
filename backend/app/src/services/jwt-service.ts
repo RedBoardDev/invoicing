@@ -1,12 +1,14 @@
+import path from 'node:path';
 import type { AccessTokenPayload, RefreshTokenPayload } from '@entities/token-entities';
 import { ErrorsEnum } from '@enums/errors-enums';
 import ApiError from '@libs/error-management/api-error';
+import dotenv from 'dotenv';
 import jwt, { type JwtPayload, TokenExpiredError, type SignOptions } from 'jsonwebtoken';
-
 export default class JWTService {
   private secretKey: string;
 
   constructor() {
+    dotenv.config({ path: path.resolve(__dirname, '../../env/.env') }); // TODO: voir pk il marche pas dans index.ts
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       throw new ApiError('JWT_SECRET is not defined in the environment variables', 500, ErrorsEnum.internalServerError);
