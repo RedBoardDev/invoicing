@@ -6,9 +6,9 @@ export const ROUTE_PATHS = {
 	},
 	private: {
 		dashboard: "/",
-		user: {
-			root: "/user",
-			detail: (id: string) => `/user/${id}`,
+		clients: {
+			root: "/clients",
+			detail: (id: string) => `/clients/${id}`,
 		},
 		settings: "/settings",
 	},
