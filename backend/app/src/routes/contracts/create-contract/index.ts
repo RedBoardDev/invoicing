@@ -5,7 +5,7 @@ import { body, response } from './schemas';
 const createContractRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
     method: 'POST',
-    url: '/',
+    url: '',
     schema: {
       tags: ['Contracts'],
       description: 'Create a new contract',

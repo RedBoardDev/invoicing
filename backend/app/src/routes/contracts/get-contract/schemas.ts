@@ -1,21 +1,31 @@
+import { type IncludeConfigs, IncludeType } from '@libs/parseQuery/types/include';
+import { buildIncludeQuerySchema } from '@libs/utils/build-include-query-schema';
 import type { FromSchema } from 'json-schema-to-ts';
 
-export const body = {
-  type: 'object',
-  properties: {},
-  required: [],
-  additionalProperties: false,
-} as const;
+export const body = {} as const;
 
 export type TBody = FromSchema<typeof body>;
 
-export const params = {} as const;
+export const params = {
+  type: 'object',
+  properties: {
+    id: { type: 'string' },
+  },
+  required: ['id'],
+  additionalProperties: false,
+} as const;
 export type TParams = FromSchema<typeof params>;
 
 export const headers = {} as const;
 export type THeaders = FromSchema<typeof headers>;
 
-export const querystring = {} as const;
+export const includeConfigs: IncludeConfigs = {
+  invoices: { type: IncludeType.DEFINE, include: { invoices: true } },
+  history: { type: IncludeType.DEFINE, include: { history: true } },
+};
+
+export const includeQuerySchema = buildIncludeQuerySchema(includeConfigs);
+export const querystring = includeQuerySchema;
 export type TQuerystring = FromSchema<typeof querystring>;
 
 export const response = {} as const;

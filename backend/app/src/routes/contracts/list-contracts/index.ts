@@ -1,14 +1,15 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { response } from './schemas';
+import { querystring, response } from './schemas';
 
 const listContractsRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
     method: 'GET',
-    url: '/',
+    url: '',
     schema: {
       tags: ['Contracts'],
       description: 'List contracts',
+      querystring,
       response,
     },
     handler,

@@ -1,12 +1,7 @@
+import { CreateContractSchema } from '@entities/contract-entity';
 import type { FromSchema } from 'json-schema-to-ts';
 
-export const body = {
-  type: 'object',
-  properties: {},
-  required: [],
-  additionalProperties: false,
-} as const;
-
+export const body = CreateContractSchema;
 export type TBody = FromSchema<typeof body>;
 
 export const params = {} as const;
