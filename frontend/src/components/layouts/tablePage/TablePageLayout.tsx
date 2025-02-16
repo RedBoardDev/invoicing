@@ -9,6 +9,7 @@ interface TablePageLayoutProps<T extends object>
 	extends Omit<TableProps<T>, "title" | "dataSource"> {
 	title: string;
 	listEndpoint: string;
+	additionalQueryParams?: Record<string, string | number | boolean>;
 	deleteEndpoint?: string;
 	onAdd?: () => void;
 	rowKey?: string;
@@ -18,6 +19,7 @@ interface TablePageLayoutProps<T extends object>
 export const TablePageLayout = <T extends object>({
 	title,
 	listEndpoint,
+	additionalQueryParams = {},
 	deleteEndpoint,
 	onAdd,
 	rowKey = "id",
@@ -30,6 +32,7 @@ export const TablePageLayout = <T extends object>({
 	const { data, loading, total, pagination, setPagination, refresh } =
 		useApiData<T>({
 			endpoint: listEndpoint,
+			additionalQueryParams,
 		});
 
 	const handleDelete = async () => {
@@ -45,6 +48,8 @@ export const TablePageLayout = <T extends object>({
 			setSelectedKeys([]);
 		} catch (error) {
 			console.error("Delete failed:", error);
+		} finally {
+			setDeleteConfirmVisible(false);
 		}
 	};
 

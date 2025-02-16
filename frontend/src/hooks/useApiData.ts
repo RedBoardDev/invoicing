@@ -9,12 +9,14 @@ interface ApiDataState<T> {
 
 interface ApiDataConfig {
 	endpoint: string;
+	additionalQueryParams?: Record<string, string | number | boolean>;
 	initialPage?: number;
 	initialPageSize?: number;
 }
 
 export const useApiData = <T extends object>({
 	endpoint,
+	additionalQueryParams = {},
 	initialPage = 1,
 	initialPageSize = 30,
 }: ApiDataConfig) => {
@@ -37,6 +39,7 @@ export const useApiData = <T extends object>({
 				page: pagination.page.toString(),
 				pageSize: pagination.pageSize.toString(),
 				includeCount: "true",
+				...additionalQueryParams,
 			});
 
 			const response = await fetch(
@@ -48,9 +51,6 @@ export const useApiData = <T extends object>({
 			}
 
 			const responseData = await response.json();
-			console.log(responseData); // Garder pour le débogage
-
-			// Extraction des données selon la structure de la réponse
 			const { data, meta } = responseData;
 
 			setState({
@@ -67,7 +67,7 @@ export const useApiData = <T extends object>({
 				error: error as Error,
 			});
 		}
-	}, [endpoint, pagination.page, pagination.pageSize]);
+	}, [endpoint, pagination.page, pagination.pageSize, additionalQueryParams]);
 
 	useEffect(() => {
 		fetchData();
