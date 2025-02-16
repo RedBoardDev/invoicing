@@ -9,7 +9,6 @@ const { Title } = Typography;
 const DashboardLayout: React.FC = () => {
 	const location = useLocation();
 
-	// Définir les éléments du menu
 	const menuItems = [
 		{ key: "dashboard", label: "Tableau de bord", path: "/" },
 		{ key: "clients", label: "Clients", path: "/clients" },
@@ -20,7 +19,6 @@ const DashboardLayout: React.FC = () => {
 
 	return (
 		<Layout className={styles.layout}>
-			{/* Sidebar */}
 			<Sider width={250} className={styles.sider}>
 				<Title level={4} className={styles.title}>
 					Gestion de facturation
@@ -38,10 +36,9 @@ const DashboardLayout: React.FC = () => {
 				</Menu>
 			</Sider>
 
-			{/* Contenu principal */}
 			<Layout className={styles.contentLayout}>
 				<Content className={styles.content}>
-					<Outlet /> {/* Ici s'affiche le contenu des routes */}
+					<Outlet />
 				</Content>
 			</Layout>
 		</Layout>

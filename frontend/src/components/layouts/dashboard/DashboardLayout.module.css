@@ -1,64 +1,67 @@
 .layout {
-  min-height: 100vh;
-  background-color: var(--color-background);
+	min-height: 100vh;
+	background-color: var(--color-background);
 }
 
 .sider {
-  background-color: var(--color-container);
-  box-shadow: var(--box-shadow);
-  position: fixed;
-  left: 0;
-  height: 100vh;
-  z-index: 1;
+	background-color: var(--color-container);
+	box-shadow: var(--box-shadow);
+	position: fixed;
+	left: 0;
+	height: 100vh;
+	z-index: 1;
 }
 
 .title {
-  padding: var(--spacing-base);
-  margin: 0;
-  text-align: center;
-  border-bottom: 1px solid var(--color-border);
+	height: 72px;
+	padding: 0 var(--spacing-base);
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-bottom: 1px solid var(--color-border);
 }
 
 .menu {
-  border-right: none;
-  background-color: var(--color-container);
+	border-right: none;
+	background-color: var(--color-container);
 }
 
 .menu .ant-menu-item {
-  margin: 0;
-  padding: 0 var(--spacing-base);
-  height: 48px;
-  line-height: 48px;
+	margin: 0;
+	padding: 0 var(--spacing-base);
+	height: 48px;
+	line-height: 48px;
 }
 
 .menu .ant-menu-item a {
-  color: var(--color-secondary);
+	color: var(--color-secondary);
 }
 
 .menu .ant-menu-item-selected {
-  background-color: rgba(38, 64, 174, 0.1);
+	background-color: rgba(38, 64, 174, 0.1);
 }
 
 .menu .ant-menu-item-selected a {
-  color: var(--color-primary);
+	color: var(--color-primary);
 }
 
 .contentLayout {
-  margin-left: 250px;
+	margin-left: 250px;
 }
 
 .content {
-  background-color: var(--color-background) ;
+	background-color: var(--color-background);
 }
 
 @media (max-width: 768px) {
-  .sider {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
+	.sider {
+		width: 100%;
+		height: auto;
+		position: relative;
+	}
 
-  .contentLayout {
-    margin-left: 0;
-  }
+	.contentLayout {
+		margin-left: 0;
+	}
 }

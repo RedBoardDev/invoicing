@@ -9,6 +9,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 const cspHeader = `
   default-src 'self';
+	connect-src 'self' http://localhost:3000;
   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   frame-src 'none';
