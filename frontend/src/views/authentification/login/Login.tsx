@@ -1,18 +1,21 @@
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Button, Card, Flex, Form, Input, Typography } from "antd";
+import { Button, Card, Checkbox, Form, Input, Typography } from "antd";
 import type React from "react";
 import styles from "./Login.module.css";
 
 const { Title } = Typography;
 
 const Login: React.FC = () => {
-	const onFinish = (values: { email: string; password: string }) => {
+	const onFinish = (values: {
+		email: string;
+		password: string;
+		remember?: boolean;
+	}) => {
 		console.log("Received values:", values);
-		// Ici, vous pouvez ajouter la logique de connexion (appel API, etc.)
 	};
 
 	return (
-		<Flex justify="center" align="center" className={styles.container}>
+		<div className={styles.container}>
 			<Card className={styles.loginCard}>
 				<Title level={2} className={styles.title}>
 					Connexion
@@ -22,8 +25,10 @@ const Login: React.FC = () => {
 					initialValues={{ remember: true }}
 					onFinish={onFinish}
 					layout="vertical"
+					className={styles.form}
 				>
 					<Form.Item
+						label="Adresse email"
 						name="email"
 						rules={[
 							{ required: true, message: "Veuillez saisir votre email" },
@@ -32,11 +37,12 @@ const Login: React.FC = () => {
 					>
 						<Input
 							prefix={<MailOutlined className={styles.icon} />}
-							placeholder="Email"
+							placeholder="Adresse email"
 							size="large"
 						/>
 					</Form.Item>
 					<Form.Item
+						label="Mot de passe"
 						name="password"
 						rules={[
 							{ required: true, message: "Veuillez saisir votre mot de passe" },
@@ -48,6 +54,14 @@ const Login: React.FC = () => {
 							size="large"
 						/>
 					</Form.Item>
+					<div className={styles.formActions}>
+						<Form.Item name="remember" valuePropName="checked" noStyle>
+							<Checkbox>Se souvenir de moi</Checkbox>
+						</Form.Item>
+						<a href="#" className={styles.forgotPassword}>
+							Mot de passe oublié ?
+						</a>
+					</div>
 					<Form.Item>
 						<Button
 							type="primary"
@@ -61,7 +75,7 @@ const Login: React.FC = () => {
 					</Form.Item>
 				</Form>
 			</Card>
-		</Flex>
+		</div>
 	);
 };
 

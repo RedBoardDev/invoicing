@@ -2,6 +2,7 @@
 	/* Couleurs */
 	--color-primary: #2640aeff; /* Persian Blue */
 	--color-primary-hover: #1a2f8cff; /* Persian Blue plus sombre */
+	--color-primary-active: #0f1f6bff; /* Persian Blue plus sombre */
 	--color-secondary: #4a4a4a; /* Gris foncé */
 	--color-background: #f8f9fa; /* Gris très clair */
 	--color-container: #ffffff; /* Blanc */
