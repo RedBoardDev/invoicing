@@ -5,6 +5,7 @@ interface ConfirmationModalProps {
 	visible: boolean;
 	title: string;
 	content: string;
+	loading?: boolean;
 	onConfirm: () => void;
 	onCancel: () => void;
 }
@@ -13,6 +14,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	visible,
 	title,
 	content,
+	loading,
 	onConfirm,
 	onCancel,
 }) => (
@@ -23,7 +25,10 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 		onCancel={onCancel}
 		okText="Confirmer"
 		cancelText="Annuler"
-		okButtonProps={{ danger: true }}
+		okButtonProps={{
+			danger: true,
+			loading: loading,
+		}}
 	>
 		<p>{content}</p>
 	</Modal>

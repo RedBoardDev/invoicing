@@ -1,5 +1,6 @@
+import { useMessage } from "@contexts/MessageContext";
 import { useApiData } from "@hooks/useApiData";
-import { Spin, Table, type TableProps } from "antd";
+import { Spin, Table, type TableProps, message } from "antd";
 import { ConfirmationModal } from "components/common/modal/ConfirmationModal";
 import React, { useMemo, useState } from "react";
 import { TablePageHeader } from "./TablePageHeader";
@@ -28,6 +29,8 @@ export const TablePageLayout = <T extends object>({
 }: TablePageLayoutProps<T>) => {
 	const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
 	const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+	const [deleteLoading, setDeleteLoading] = useState(false);
+	const messageApi = useMessage();
 
 	const { data, loading, total, pagination, setPagination, refresh } =
 		useApiData<T>({
@@ -38,17 +41,32 @@ export const TablePageLayout = <T extends object>({
 	const handleDelete = async () => {
 		if (!deleteEndpoint) return;
 
+		setDeleteLoading(true);
+
 		try {
-			await fetch(deleteEndpoint, {
+			const response = await fetch(`http://localhost:3000${deleteEndpoint}`, {
 				method: "DELETE",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ ids: selectedKeys }),
 			});
+
+			const data = await response.json();
+
+			if (data.failedIds?.length > 0) {
+				messageApi?.error(
+					`Échec de la suppression de ${data.failedIds.length} élément(s) sur ${selectedKeys.length}.`,
+				);
+			} else {
+				messageApi?.success("Tous les éléments ont été supprimés avec succès.");
+			}
+
 			await refresh();
 			setSelectedKeys([]);
 		} catch (error) {
 			console.error("Delete failed:", error);
+			messageApi?.error("Erreur lors de la suppression");
 		} finally {
+			setDeleteLoading(false);
 			setDeleteConfirmVisible(false);
 		}
 	};
@@ -70,6 +88,7 @@ export const TablePageLayout = <T extends object>({
 				visible={deleteConfirmVisible}
 				title={`Supprimer ${selectedKeys.length} éléments`}
 				content="Êtes-vous sûr de vouloir supprimer ces éléments ? Cette action est irréversible."
+				loading={deleteLoading}
 				onConfirm={handleDelete}
 				onCancel={() => setDeleteConfirmVisible(false)}
 			/>
