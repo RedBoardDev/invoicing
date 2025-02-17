@@ -2,6 +2,7 @@ import type { CreateInvoiceData, UpdateInvoiceData } from '@entities/invoice-ent
 import { type CursorPaginationQuery, type Pagination, cursorPaginationForQuery } from '@libs/pagination';
 import { prismaInstance } from '@libs/prisma-client';
 import type { Invoice, Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { handleError } from './error-handling-repository';
 
 export interface CreateInvoiceItemData {
@@ -129,17 +130,42 @@ export const updateInvoice = handleError(updateInvoiceFn);
 /**
  * Delete Invoice
  */
-const deleteInvoiceQuery = async (invoiceId: string): Promise<Invoice> => {
-  return prismaInstance.invoice.delete({
-    where: { id: invoiceId },
-    include: { items: true },
+const deleteInvoicesQuery = async (
+  ids: string[],
+): Promise<{
+  deletedIds: string[];
+  failedIds: Array<{ id: string; reason: string }>;
+}> => {
+  return prismaInstance.$transaction(async (prisma) => {
+    const results = {
+      deletedIds: [] as string[],
+      failedIds: [] as Array<{ id: string; reason: string }>,
+    };
+
+    for (const id of ids) {
+      try {
+        await prisma.invoice.delete({
+          where: { id },
+          select: { id: true },
+        });
+        results.deletedIds.push(id);
+      } catch (error) {
+        results.failedIds.push({
+          id,
+          reason:
+            error instanceof PrismaClientKnownRequestError && error.code === 'P2025' ? 'Not found' : 'Unknown error',
+        });
+      }
+    }
+
+    return results;
   });
 };
 
-export type DeleteInvoiceQueryType = Prisma.PromiseReturnType<typeof deleteInvoiceQuery>;
+export type DeleteInvoicesQueryType = Prisma.PromiseReturnType<typeof deleteInvoicesQuery>;
 
-const deleteInvoiceFn = async (invoiceId: string): Promise<DeleteInvoiceQueryType> => {
-  return await deleteInvoiceQuery(invoiceId);
+const deleteInvoicesFn = async (ids: string[]): Promise<DeleteInvoicesQueryType> => {
+  return await deleteInvoicesQuery(ids);
 };
 
-export const deleteInvoice = handleError(deleteInvoiceFn);
+export const deleteInvoices = handleError(deleteInvoicesFn);

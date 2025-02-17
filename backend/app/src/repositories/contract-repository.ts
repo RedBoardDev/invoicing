@@ -2,6 +2,7 @@ import type { CreateContractData, UpdateContractData } from '@entities/contract-
 import { type CursorPaginationQuery, type Pagination, cursorPaginationForQuery } from '@libs/pagination';
 import { prismaInstance } from '@libs/prisma-client';
 import type { Contract, Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { handleError } from './error-handling-repository';
 
 /**
@@ -109,14 +110,42 @@ export const updateContract = handleError(updateContractFn);
 /**
  * Delete Contract
  */
-const deleteContractQuery = async (contractId: string): Promise<Contract> => {
-  return prismaInstance.contract.delete({ where: { id: contractId } });
+const deleteContractsQuery = async (
+  ids: string[],
+): Promise<{
+  deletedIds: string[];
+  failedIds: Array<{ id: string; reason: string }>;
+}> => {
+  return prismaInstance.$transaction(async (prisma) => {
+    const results = {
+      deletedIds: [] as string[],
+      failedIds: [] as Array<{ id: string; reason: string }>,
+    };
+
+    for (const id of ids) {
+      try {
+        await prisma.contract.delete({
+          where: { id },
+          select: { id: true },
+        });
+        results.deletedIds.push(id);
+      } catch (error) {
+        results.failedIds.push({
+          id,
+          reason:
+            error instanceof PrismaClientKnownRequestError && error.code === 'P2025' ? 'Not found' : 'Unknown error',
+        });
+      }
+    }
+
+    return results;
+  });
 };
 
-export type DeleteContractQueryType = Prisma.PromiseReturnType<typeof deleteContractQuery>;
+export type DeleteContractsQueryType = Prisma.PromiseReturnType<typeof deleteContractsQuery>;
 
-const deleteContractFn = async (contractId: string): Promise<DeleteContractQueryType> => {
-  return await deleteContractQuery(contractId);
+const deleteContractsFn = async (ids: string[]): Promise<DeleteContractsQueryType> => {
+  return await deleteContractsQuery(ids);
 };
 
-export const deleteContract = handleError(deleteContractFn);
+export const deleteContracts = handleError(deleteContractsFn);

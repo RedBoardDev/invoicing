@@ -1,16 +1,17 @@
 import { HttpStatusCode } from '@enums/http-status-enums';
-import { deleteInvoice } from '@repositories/invoice-repository';
+import { deleteInvoices } from '@repositories/invoice-repository';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import type { TParams } from './schemas';
+import type { TBody } from './schemas';
 
 const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> => {
-  const { id } = req.params as TParams;
+  const { ids } = req.body as TBody;
 
-  const invoice = await deleteInvoice(id);
+  const result = await deleteInvoices(ids);
 
   res.status(HttpStatusCode.ok).send({
-    id: invoice.id,
-    invoiceNumber: invoice.invoiceNumber,
+    successCount: result.deletedIds.length,
+    deletedIds: result.deletedIds,
+    failedIds: result.failedIds,
   });
 };
 

@@ -1,6 +1,7 @@
 import { type CursorPaginationQuery, type Pagination, cursorPaginationForQuery } from '@libs/pagination';
 import { prismaInstance } from '@libs/prisma-client';
 import type { Client, Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { handleError } from './error-handling-repository';
 
 export interface CreateClientData {
@@ -107,14 +108,42 @@ export const updateClient = handleError(updateClientFn);
 /**
  * Delete Client
  */
-const deleteClientQuery = async (clientId: string): Promise<Client> => {
-  return prismaInstance.client.delete({ where: { id: clientId } });
+const deleteClientsQuery = async (
+  ids: string[],
+): Promise<{
+  deletedIds: string[];
+  failedIds: Array<{ id: string; reason: string }>;
+}> => {
+  return prismaInstance.$transaction(async (prisma) => {
+    const results = {
+      deletedIds: [] as string[],
+      failedIds: [] as Array<{ id: string; reason: string }>,
+    };
+
+    for (const id of ids) {
+      try {
+        await prisma.client.delete({
+          where: { id },
+          select: { id: true },
+        });
+        results.deletedIds.push(id);
+      } catch (error) {
+        results.failedIds.push({
+          id,
+          reason:
+            error instanceof PrismaClientKnownRequestError && error.code === 'P2025' ? 'Not found' : 'Unknown error',
+        });
+      }
+    }
+
+    return results;
+  });
 };
 
-export type DeleteClientQueryType = Prisma.PromiseReturnType<typeof deleteClientQuery>;
+export type DeleteClientsQueryType = Prisma.PromiseReturnType<typeof deleteClientsQuery>;
 
-const deleteClientFn = async (clientId: string): Promise<DeleteClientQueryType> => {
-  return await deleteClientQuery(clientId);
+const deleteClientsFn = async (ids: string[]): Promise<DeleteClientsQueryType> => {
+  return await deleteClientsQuery(ids);
 };
 
-export const deleteClient = handleError(deleteClientFn);
+export const deleteClients = handleError(deleteClientsFn);

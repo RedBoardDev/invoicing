@@ -5,10 +5,10 @@ import { body, response } from './schemas';
 const deleteInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
     method: 'DELETE',
-    url: '/:id',
+    url: '',
     schema: {
       tags: ['Invoices'],
-      description: 'Delete an invoice',
+      description: 'Delete one or multiple invoices by IDs',
       body,
       response,
     },

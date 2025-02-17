@@ -1,16 +1,21 @@
 import type { FromSchema } from 'json-schema-to-ts';
 
-export const body = {} as const;
-export type TBody = FromSchema<typeof body>;
-
-export const params = {
+export const body = {
   type: 'object',
   properties: {
-    id: { type: 'string' },
+    ids: {
+      type: 'array',
+      items: { type: 'string', format: 'uuid' },
+      minItems: 1,
+      maxItems: 100,
+    },
   },
-  required: ['id'],
+  required: ['ids'],
   additionalProperties: false,
 } as const;
+export type TBody = FromSchema<typeof body>;
+
+export const params = {} as const;
 export type TParams = FromSchema<typeof params>;
 
 export const headers = {} as const;
