@@ -45,6 +45,7 @@ const Login: React.FC = () => {
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Se souvenir de moi</Checkbox>
             </Form.Item>
+            {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
             <a href="#" className={styles.forgotPassword}>
               Mot de passe oublié ?
             </a>

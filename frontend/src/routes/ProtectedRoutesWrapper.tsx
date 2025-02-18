@@ -1,8 +1,7 @@
 import { PulseLoader } from '@components/common';
-import { ROUTE_PATHS } from '@config/routePaths';
 import { useAuth } from '@hooks/useAuth';
 import type React from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 const ProtectedRoutesWrapper: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();

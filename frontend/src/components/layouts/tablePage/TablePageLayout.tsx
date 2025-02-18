@@ -1,6 +1,6 @@
 import { useMessage } from '@contexts/MessageContext';
 import { useApiData } from '@hooks/useApiData';
-import { Spin, Table, type TableProps, message } from 'antd';
+import { Spin, Table, type TableProps } from 'antd';
 import { ConfirmationModal } from 'components/common/modal/ConfirmationModal';
 import React, { useMemo, useState } from 'react';
 import { TablePageHeader } from './TablePageHeader';

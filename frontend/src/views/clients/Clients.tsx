@@ -1,3 +1,5 @@
+import type React from 'react';
+import { useMemo, useState } from 'react';
 import type Client from '@interfaces/clients';
 import type Contract from '@interfaces/contract';
 import { formatDate } from '@utils';
@@ -5,7 +7,6 @@ import { Form, Input } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { AddModal } from 'components/common/modal/AddModal';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
-import { useMemo, useState } from 'react';
 
 const Clients: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);

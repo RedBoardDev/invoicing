@@ -1,3 +1,5 @@
+import type React from 'react';
+
 /// <reference types="node" />
 /// <reference types="react" />
 /// <reference types="react-dom" />
@@ -40,8 +42,6 @@ declare module '*.webp' {
 }
 
 declare module '*.svg' {
-  import type * as React from 'react';
-
   const ReactComponent: React.SFC<React.SVGProps<SVGSVGElement>>;
 
   export default ReactComponent;

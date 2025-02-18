@@ -1,5 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
 import type { ReactNode } from 'react';
+import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext';
 

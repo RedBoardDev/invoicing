@@ -1,5 +1,6 @@
 import { ROUTE_PATHS } from '@config/routePaths';
 import { Button, Result } from 'antd';
+import type React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Forbidden: React.FC = () => {
