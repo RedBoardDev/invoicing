@@ -1,16 +1,9 @@
+import type { CreateClientData, UpdateClientData } from '@entities/client-entity';
 import { type CursorPaginationQuery, type Pagination, cursorPaginationForQuery } from '@libs/pagination';
 import { prismaInstance } from '@libs/prisma-client';
 import type { Client, Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { handleError } from './error-handling-repository';
-
-export interface CreateClientData {
-  name: string;
-}
-
-export interface UpdateClientData {
-  name?: string;
-}
 
 /**
  * Count Clients
@@ -24,13 +17,10 @@ export const countClients = handleError(countClientsFn);
 /**
  * Create Client
  */
-const createClientQuery = async (data: CreateClientData): Promise<Client> => {
-  return prismaInstance.client.create({
-    data: {
-      name: data.name,
-    },
+const createClientQuery = async (data: CreateClientData): Promise<Client> =>
+  prismaInstance.client.create({
+    data,
   });
-};
 
 export type CreateClientQueryType = Prisma.PromiseReturnType<typeof createClientQuery>;
 

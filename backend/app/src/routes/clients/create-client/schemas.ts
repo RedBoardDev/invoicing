@@ -4,8 +4,9 @@ export const body = {
   type: 'object',
   properties: {
     name: { type: 'string', minLength: 1 },
+    email: { type: 'string', format: 'email' },
   },
-  required: ['name'],
+  required: ['name', 'email'],
   additionalProperties: false,
 } as const;
 export type TBody = FromSchema<typeof body>;

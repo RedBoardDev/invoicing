@@ -4,9 +4,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { TBody } from './schemas';
 
 const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> => {
-  const { name } = req.body as TBody;
+  const body = req.body as TBody;
 
-  const client = await createClient({ name });
+  const client = await createClient(body);
 
   res.status(HttpStatusCode.created).send(client);
 };

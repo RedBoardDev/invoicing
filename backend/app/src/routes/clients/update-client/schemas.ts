@@ -4,6 +4,7 @@ export const body = {
   type: 'object',
   properties: {
     name: { type: 'string' },
+    email: { type: 'string', format: 'email' },
   },
   required: [],
   additionalProperties: false,

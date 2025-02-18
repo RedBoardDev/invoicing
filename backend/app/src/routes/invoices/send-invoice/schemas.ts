@@ -1,6 +1,15 @@
 import type { FromSchema } from 'json-schema-to-ts';
 
-export const body = {} as const;
+export const body = {
+  type: 'object',
+  properties: {
+    // emailTemplateId: { type: 'string' },
+    email: { type: 'string' },
+  },
+  // required: ['emailTemplateId'],
+  required: [],
+  additionalProperties: false,
+} as const;
 
 export type TBody = FromSchema<typeof body>;
 
