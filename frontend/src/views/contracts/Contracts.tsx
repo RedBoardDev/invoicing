@@ -1,51 +1,14 @@
 import type Client from "@interfaces/clients";
 import type Contract from "@interfaces/contract";
 import { formatDate } from "@utils";
-import { Col, DatePicker, Form, Input, InputNumber, Row, Select } from "antd";
+import { Col, DatePicker, Form, Input, InputNumber, Row } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { AddModal } from "components/common/modal/AddModal";
+import ClientSelect from "components/dataEntry/ClientSelect";
 import TablePageLayout from "components/layouts/tablePage/TablePageLayout";
 import dayjs, { type Dayjs } from "dayjs";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-interface ClientSelectProps {
-	value?: string;
-	onChange?: (value: string) => void;
-	loading?: boolean;
-	clients: Client[];
-}
-
-const ClientSelect: React.FC<ClientSelectProps> = ({
-	value,
-	onChange,
-	loading,
-	clients,
-}) => {
-	const options = useMemo(
-		() =>
-			clients.map((c) => ({
-				value: c.id,
-				label: c.name,
-			})),
-		[clients],
-	);
-
-	return (
-		<Select
-			showSearch
-			placeholder="Sélectionnez un client"
-			optionFilterProp="label"
-			loading={loading}
-			options={options}
-			filterOption={(input, option) =>
-				(option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-			}
-			value={value}
-			onChange={onChange}
-		/>
-	);
-};
 
 const AmountInput: React.FC = () => (
 	<Input.Group compact>

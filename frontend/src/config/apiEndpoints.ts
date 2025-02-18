@@ -16,7 +16,7 @@ export type ApiRoute = {
 
 export const API_ENDPOINTS = {
 	auth: {
-		login: { method: "POST", url: "/auth/login" } as ApiRoute,
+	  login: { method: "POST", url: "/auth/login" } as ApiRoute,
 		register: { method: "POST", url: "/auth/register" } as ApiRoute,
 		refresh: { method: "POST", url: "/auth/refresh" } as ApiRoute,
 		logout: { method: "POST", url: "/auth/logout" } as ApiRoute,
