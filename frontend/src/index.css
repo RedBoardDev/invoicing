@@ -98,3 +98,9 @@ textarea {
 	justify-content: center;
 	align-items: center;
 }
+
+.square-input-number .ant-input-number-input,
+.square-input-number .ant-input-number,
+.square-input-number .ant-input-number-group-addon {
+	border-radius: 0 !important;
+}

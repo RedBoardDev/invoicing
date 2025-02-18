@@ -1,65 +1,264 @@
+import type Client from "@enums/clients";
 import type Contract from "@enums/contract";
 import { formatDate } from "@utils";
-import { Form, Input } from "antd";
-import type { ColumnsType } from "antd/lib/table";
+import { Col, DatePicker, Form, Input, InputNumber, Row, Select } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import { AddModal } from "components/common/modal/AddModal";
 import TablePageLayout from "components/layouts/tablePage/TablePageLayout";
-import { useState } from "react";
+import dayjs, { type Dayjs } from "dayjs";
+import type React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+interface ClientSelectProps {
+	value?: string;
+	onChange?: (value: string) => void;
+	loading?: boolean;
+	clients: Client[];
+}
+
+const ClientSelect: React.FC<ClientSelectProps> = ({
+	value,
+	onChange,
+	loading,
+	clients,
+}) => {
+	const options = useMemo(
+		() =>
+			clients.map((c) => ({
+				value: c.id,
+				label: c.name,
+			})),
+		[clients],
+	);
+
+	return (
+		<Select
+			showSearch
+			placeholder="Sélectionnez un client"
+			optionFilterProp="label"
+			loading={loading}
+			options={options}
+			filterOption={(input, option) =>
+				(option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+			}
+			value={value}
+			onChange={onChange}
+		/>
+	);
+};
+
+const AmountInput: React.FC = () => (
+	<Input.Group compact>
+		<Form.Item
+			name="amountHT"
+			noStyle
+			rules={[{ required: true, message: "Montant HT requis" }]}
+		>
+			<InputNumber min={0} style={{ width: "40%" }} placeholder="HT" />
+		</Form.Item>
+		<span style={{ padding: "0 8px", lineHeight: "32px" }}> + </span>
+		<Form.Item name="taxRate" noStyle initialValue={20}>
+			<InputNumber
+				min={0}
+				style={{ width: "25%" }}
+				placeholder="TVA"
+				addonAfter="%"
+				className="square-input-number"
+			/>
+		</Form.Item>
+		<span style={{ padding: "0 8px", lineHeight: "32px" }}> = </span>
+		<Form.Item shouldUpdate noStyle>
+			{({ getFieldValue }) => {
+				const amountHT = getFieldValue("amountHT") || 0;
+				const taxRate = getFieldValue("taxRate") || 0;
+				const amountTTC = amountHT * (1 + taxRate / 100);
+				return (
+					<InputNumber
+						style={{ width: "25%" }}
+						value={amountTTC}
+						disabled
+						formatter={(value) => `€ ${value}`}
+					/>
+				);
+			}}
+		</Form.Item>
+	</Input.Group>
+);
 
 const Contracts: React.FC = () => {
 	const [addModalVisible, setAddModalVisible] = useState(false);
+	const [clients, setClients] = useState<Client[]>([]);
+	const [clientsLoading, setClientsLoading] = useState(false);
 
-	const columns: ColumnsType<Contract> = [
-		{
-			title: "Nom",
-			dataIndex: "name",
-			sorter: (a, b) => a.name.localeCompare(b.name),
-		},
-		{
-			title: "Contrats",
-			dataIndex: "contracts",
-			render: (contracts: Contract[]) => contracts.length,
-			sorter: (a, b) => a.contracts.length - b.contracts.length,
-		},
-		{
-			title: "Créé le",
-			dataIndex: "createdAt",
-			render: (date: string) => formatDate(date, "DD/MM/YYYY"),
-			sorter: (a, b) =>
-				new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-		},
-		{
-			title: "Modifié le",
-			dataIndex: "updatedAt",
-			render: (date: string) => formatDate(date, "DD/MM/YYYY"),
-			sorter: (a, b) =>
-				new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
-		},
-	];
+	useEffect(() => {
+		const fetchClients = async () => {
+			setClientsLoading(true);
+			try {
+				const response = await fetch("http://localhost:3000/clients");
+				const data = await response.json();
+				setClients(data.data);
+			} catch (error) {
+				console.error("Error fetching clients:", error);
+			} finally {
+				setClientsLoading(false);
+			}
+		};
+
+		fetchClients();
+	}, []);
+
+	const clientsMap = useMemo(
+		() => new Map(clients.map((c) => [c.id, c.name])),
+		[clients],
+	);
+
+	const columns: ColumnsType<Contract> = useMemo(
+		() => [
+			{
+				title: "Client",
+				dataIndex: "clientId",
+				render: (clientId: string) => clientsMap.get(clientId) || "N/A",
+				sorter: (a, b) => {
+					const nameA = clientsMap.get(a.clientId) || "";
+					const nameB = clientsMap.get(b.clientId) || "";
+					return nameA.localeCompare(nameB);
+				},
+			},
+			{
+				title: "Début",
+				dataIndex: "startDate",
+				render: (date: string) => formatDate(date, "DD/MM/YYYY"),
+				sorter: (a, b) =>
+					new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+			},
+			{
+				title: "Fin",
+				dataIndex: "endDate",
+				render: (date: string) => formatDate(date, "DD/MM/YYYY"),
+				sorter: (a, b) =>
+					new Date(a.endDate).getTime() - new Date(b.endDate).getTime(),
+			},
+			{
+				title: "Montant HT",
+				dataIndex: "amountHT",
+				render: (value: string) => `€${Number.parseFloat(value).toFixed(2)}`,
+				sorter: (a, b) =>
+					Number.parseFloat(a.amountHT) - Number.parseFloat(b.amountHT),
+			},
+			{
+				title: "Montant TTC",
+				dataIndex: "amountTTC",
+				render: (value: string) => `€${Number.parseFloat(value).toFixed(2)}`,
+				sorter: (a, b) =>
+					Number.parseFloat(a.amountTTC) - Number.parseFloat(b.amountTTC),
+			},
+			{
+				title: "Délai paiement",
+				dataIndex: "paymentDelay",
+				render: (days: number) => `${days} jours`,
+				sorter: (a, b) => a.paymentDelayDays - b.paymentDelayDays,
+			},
+			{
+				title: "Créé le",
+				dataIndex: "createdAt",
+				render: (date: string) => formatDate(date, "DD/MM/YYYY"),
+				sorter: (a, b) =>
+					new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+			},
+		],
+		[clientsMap],
+	);
+
+	const handleAddSuccess = useCallback(() => {
+		setAddModalVisible(false);
+	}, []);
+
 	return (
 		<>
 			<TablePageLayout<Contract>
-				title="Contracts"
+				title="Contrats"
 				listEndpoint="/contracts"
-				additionalQueryParams={{ includeContracts: true }}
 				deleteEndpoint="/contracts"
 				onAdd={() => setAddModalVisible(true)}
 				columns={columns}
+				additionalQueryParams={{}}
 			/>
+
 			<AddModal<Contract>
 				visible={addModalVisible}
 				onCancel={() => setAddModalVisible(false)}
-				onSuccess={() => setAddModalVisible(false)}
+				onSuccess={handleAddSuccess}
 				endpoint="/contracts"
-				title="Nouveau contract"
+				title="Nouveau contrat"
 			>
-				<Form.Item
-					name="name"
-					label="Nom du contract"
-					rules={[{ required: true, message: "Ce champ est obligatoire" }]}
-				>
-					<Input placeholder="Nom de l'entreprise" />
-				</Form.Item>
+				{(form) => (
+					<>
+						<Form.Item
+							name="clientId"
+							label="Client"
+							rules={[{ required: true, message: "Sélectionnez un client" }]}
+						>
+							<ClientSelect clients={clients} loading={clientsLoading} />
+						</Form.Item>
+
+						<Row gutter={16}>
+							<Col span={12}>
+								<Form.Item
+									name="startDate"
+									label="Date de début"
+									rules={[{ required: true, message: "Date de début requise" }]}
+									initialValue={dayjs()}
+								>
+									<DatePicker
+										style={{ width: "100%" }}
+										disabledDate={(current) => {
+											const endDate = form.getFieldValue("endDate") as Dayjs;
+											return endDate ? current > endDate : false;
+										}}
+									/>
+								</Form.Item>
+							</Col>
+							<Col span={12}>
+								<Form.Item
+									name="endDate"
+									label="Date de fin"
+									rules={[{ required: true, message: "Date de fin requise" }]}
+								>
+									<DatePicker
+										style={{ width: "100%" }}
+										disabledDate={(current) => {
+											const startDate = form.getFieldValue(
+												"startDate",
+											) as Dayjs;
+											return startDate ? current < startDate : false;
+										}}
+									/>
+								</Form.Item>
+							</Col>
+						</Row>
+
+						<Form.Item label="Montant">
+							<AmountInput />
+						</Form.Item>
+
+						<Form.Item
+							name="paymentDelay"
+							label="Délai paiement"
+							rules={[{ required: true, message: "Délai paiement requis" }]}
+							initialValue={120}
+						>
+							<Input type="number" addonAfter="jours" />
+						</Form.Item>
+
+						<Form.Item
+							name="description"
+							label="Description"
+							rules={[{ required: true, message: "Description requise" }]}
+						>
+							<Input.TextArea rows={4} placeholder="Description du contrat" />
+						</Form.Item>
+					</>
+				)}
 			</AddModal>
 		</>
 	);

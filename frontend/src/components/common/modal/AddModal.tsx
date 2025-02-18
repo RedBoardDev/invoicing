@@ -1,5 +1,6 @@
 import { useMessage } from "@hooks/useMessage";
 import { Form, Modal } from "antd";
+import type { FormInstance } from "antd/lib";
 import type React from "react";
 import { useState } from "react";
 
@@ -10,7 +11,7 @@ interface AddModalProps<T = unknown> {
 	endpoint: string;
 	title: string;
 	initialValues?: Partial<T>;
-	children: React.ReactNode;
+	children: (form: FormInstance<T>) => React.ReactNode;
 }
 
 export const AddModal = <T extends object>({
@@ -68,7 +69,7 @@ export const AddModal = <T extends object>({
 				initialValues={initialValues}
 				onFinish={handleSubmit}
 			>
-				{children}
+				{children(form)}
 			</Form>
 		</Modal>
 	);
