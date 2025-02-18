@@ -10,6 +10,10 @@ export const ROUTE_PATHS = {
 			root: "/clients",
 			detail: (id: string) => `/clients/${id}`,
 		},
+		contracts: {
+			root: "/contracts",
+			detail: (id: string) => `/contracts/${id}`,
+		},
 		settings: "/settings",
 	},
 	error: {

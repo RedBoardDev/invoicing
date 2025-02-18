@@ -1,4 +1,3 @@
-import type Client from "@enums/clients";
 import type Contract from "@enums/contract";
 import { formatDate } from "@utils";
 import { Form, Input } from "antd";
@@ -7,10 +6,10 @@ import { AddModal } from "components/common/modal/AddModal";
 import TablePageLayout from "components/layouts/tablePage/TablePageLayout";
 import { useState } from "react";
 
-const Clients: React.FC = () => {
+const Contracts: React.FC = () => {
 	const [addModalVisible, setAddModalVisible] = useState(false);
 
-	const columns: ColumnsType<Client> = [
+	const columns: ColumnsType<Contract> = [
 		{
 			title: "Nom",
 			dataIndex: "name",
@@ -39,24 +38,24 @@ const Clients: React.FC = () => {
 	];
 	return (
 		<>
-			<TablePageLayout<Client>
-				title="Clients"
-				listEndpoint="/clients"
+			<TablePageLayout<Contract>
+				title="Contracts"
+				listEndpoint="/contracts"
 				additionalQueryParams={{ includeContracts: true }}
-				deleteEndpoint="/clients"
+				deleteEndpoint="/contracts"
 				onAdd={() => setAddModalVisible(true)}
 				columns={columns}
 			/>
-			<AddModal<Client>
+			<AddModal<Contract>
 				visible={addModalVisible}
 				onCancel={() => setAddModalVisible(false)}
 				onSuccess={() => setAddModalVisible(false)}
-				endpoint="/clients"
-				title="Nouveau client"
+				endpoint="/contracts"
+				title="Nouveau contract"
 			>
 				<Form.Item
 					name="name"
-					label="Nom du client"
+					label="Nom du contract"
 					rules={[{ required: true, message: "Ce champ est obligatoire" }]}
 				>
 					<Input placeholder="Nom de l'entreprise" />
@@ -66,4 +65,4 @@ const Clients: React.FC = () => {
 	);
 };
 
-export default Clients;
+export default Contracts;

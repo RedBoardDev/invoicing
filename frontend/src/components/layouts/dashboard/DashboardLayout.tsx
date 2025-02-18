@@ -12,8 +12,8 @@ const DashboardLayout: React.FC = () => {
 	const menuItems = [
 		{ key: "dashboard", label: "Tableau de bord", path: "/" },
 		{ key: "clients", label: "Clients", path: "/clients" },
-		{ key: "invoices", label: "Factures", path: "/invoices" },
 		{ key: "contracts", label: "Contrats", path: "/contracts" },
+		{ key: "invoices", label: "Factures", path: "/invoices" },
 		{ key: "settings", label: "Paramètres", path: "/settings" },
 	];
 

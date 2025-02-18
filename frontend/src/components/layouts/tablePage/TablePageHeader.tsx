@@ -51,9 +51,7 @@ export const TablePageHeader = ({
 						Rafraîchir
 					</Button>
 
-					{extraButtons.length > 0 && hasActions && (
-						<Divider type="vertical" className={styles.buttonDivider} />
-					)}
+					<Divider type="vertical" className={styles.buttonDivider} />
 
 					{onAdd && (
 						<Button
