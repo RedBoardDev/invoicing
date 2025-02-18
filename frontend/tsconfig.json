@@ -1,30 +1,24 @@
 {
-	"extends": "./config/typescript/tsconfig.base.json",
-	"compilerOptions": {
-		"baseUrl": "./src",
-		"paths": {
-			"@icon": ["components/Icon.tsx"],
-			"@icons/*": ["assets/icons/*"],
-			"@images/*": ["assets/images/*"],
-			"@components/*": ["components/*/index.ts"],
-			"@enums/*": ["enums/*"],
-			"@api/*": ["services/api/*"],
-			"@services/*": ["services/*"],
-			"@contexts/*": ["contexts/*"],
-			"@utils": ["utils/index.ts"],
-			"@interfaces/*": ["interfaces/*"],
-			"@views/*": ["views/*"],
-			"@hooks/*": ["hooks/*"],
-			"@config/*": ["config/*"],
-			"@routes/*": ["routes/*"]
-		}
-	},
-	"include": ["src", "vite.config.ts", "src/vite-env.d.ts"],
-	"exclude": [
-		"node_modules",
-		"build",
-		"**/*.spec.ts",
-		"**/*.test.ts",
-		"**/*.stories.tsx"
-	]
+  "extends": "./config/typescript/tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@icon": ["components/Icon.tsx"],
+      "@icons/*": ["assets/icons/*"],
+      "@images/*": ["assets/images/*"],
+      "@components/*": ["components/*/index.ts"],
+      "@enums/*": ["enums/*"],
+      "@api/*": ["services/api/*"],
+      "@services/*": ["services/*"],
+      "@contexts/*": ["contexts/*"],
+      "@utils": ["utils/index.ts"],
+      "@interfaces/*": ["interfaces/*"],
+      "@views/*": ["views/*"],
+      "@hooks/*": ["hooks/*"],
+      "@config/*": ["config/*"],
+      "@routes/*": ["routes/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts", "src/vite-env.d.ts"],
+  "exclude": ["node_modules", "build", "**/*.spec.ts", "**/*.test.ts", "**/*.stories.tsx"]
 }

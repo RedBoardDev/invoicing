@@ -1,30 +1,30 @@
 .container {
-	height: 100%;
-	overflow: hidden;
+  height: 100%;
+  overflow: hidden;
 }
 
 .table {
-	height: 100%;
+  height: 100%;
 }
 
 .ant-table-body {
-	overflow-y: auto !important;
-	max-height: calc(100vh - 200px) !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 200px) !important;
 }
 
 .ant-spin-nested-loading {
-	height: 100%;
+  height: 100%;
 }
 
 .ant-spin-container {
-	height: 100%;
+  height: 100%;
 }
 
 .title {
-	margin-left: var(--spacing-base);
-	margin-bottom: var(--spacing-base);
+  margin-left: var(--spacing-base);
+  margin-bottom: var(--spacing-base);
 }
 
 .taxRateInput {
-	border-radius: 0 !important;
+  border-radius: 0 !important;
 }
