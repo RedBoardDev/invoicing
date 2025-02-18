@@ -54,13 +54,15 @@ const Clients: React.FC = () => {
 				endpoint="/clients"
 				title="Nouveau client"
 			>
-				<Form.Item
-					name="name"
-					label="Nom du client"
-					rules={[{ required: true, message: "Ce champ est obligatoire" }]}
-				>
-					<Input placeholder="Nom de l'entreprise" />
-				</Form.Item>
+				{() => (
+					<Form.Item
+						name="name"
+						label="Nom du client"
+						rules={[{ required: true, message: "Ce champ est obligatoire" }]}
+					>
+						<Input placeholder="Nom de l'entreprise" />
+					</Form.Item>
+				)}
 			</AddModal>
 		</>
 	);
