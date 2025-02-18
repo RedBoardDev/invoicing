@@ -2,11 +2,15 @@ import { ExportOutlined } from "@ant-design/icons";
 import type Client from "@enums/clients";
 import type Contract from "@enums/contract";
 import { formatDate } from "@utils";
-import { Button } from "antd";
+import { Button, Form, Input } from "antd";
 import type { ColumnsType } from "antd/lib/table";
+import { AddModal } from "components/common/modal/AddModal";
 import TablePageLayout from "components/layouts/tablePage/TablePageLayout";
+import { useState } from "react";
 
 const Clients: React.FC = () => {
+	const [addModalVisible, setAddModalVisible] = useState(false);
+
 	const columns: ColumnsType<Client> = [
 		{
 			title: "Nom",
@@ -35,19 +39,36 @@ const Clients: React.FC = () => {
 		},
 	];
 	return (
-		<TablePageLayout<Client>
-			title="Clients"
-			listEndpoint="/clients"
-			additionalQueryParams={{ includeContracts: true }}
-			deleteEndpoint="/clients"
-			onAdd={() => console.log("Add client")}
-			columns={columns}
-			extraButtons={[
-				<Button key="export" icon={<ExportOutlined />}>
-					Exporter
-				</Button>,
-			]}
-		/>
+		<>
+			<TablePageLayout<Client>
+				title="Clients"
+				listEndpoint="/clients"
+				additionalQueryParams={{ includeContracts: true }}
+				deleteEndpoint="/clients"
+				onAdd={() => setAddModalVisible(true)}
+				columns={columns}
+				extraButtons={[
+					<Button key="export" icon={<ExportOutlined />}>
+						Exporter
+					</Button>,
+				]}
+			/>
+			<AddModal<Client>
+				visible={addModalVisible}
+				onCancel={() => setAddModalVisible(false)}
+				onSuccess={() => setAddModalVisible(false)}
+				endpoint="/clients"
+				title="Nouveau client"
+			>
+				<Form.Item
+					name="name"
+					label="Nom du client"
+					rules={[{ required: true, message: "Ce champ est obligatoire" }]}
+				>
+					<Input placeholder="Nom de l'entreprise" />
+				</Form.Item>
+			</AddModal>
+		</>
 	);
 };
 
