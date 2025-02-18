@@ -5,13 +5,13 @@ export const CreateContractSchema = {
   properties: {
     clientId: { type: 'string', format: 'uuid' },
     amountHT: { type: 'number', minimum: 0 },
-    amountTTC: { type: 'number', minimum: 0 },
-    paymentDelayDays: { type: 'integer', minimum: 0 },
+    taxRate: { type: 'number', minimum: 0 },
+    paymentDelay: { type: 'integer', minimum: 0 },
     description: { type: 'string', maxLength: 1000 },
     startDate: { type: 'string', format: 'date-time' },
     endDate: { type: 'string', format: 'date-time' },
   },
-  required: ['clientId', 'amountHT', 'amountTTC', 'paymentDelayDays', 'startDate', 'endDate'],
+  required: ['clientId', 'amountHT', 'taxRate', 'paymentDelay', 'startDate', 'endDate'],
   additionalProperties: false,
 } as const;
 
@@ -22,8 +22,8 @@ export const UpdateContractSchema = {
   properties: {
     clientId: { type: 'string', format: 'uuid' },
     amountHT: { type: 'number', minimum: 0 },
-    amountTTC: { type: 'number', minimum: 0 },
-    paymentDelayDays: { type: 'integer', minimum: 0 },
+    taxRate: { type: 'number', minimum: 0 },
+    paymentDelay: { type: 'integer', minimum: 0 },
     description: { type: 'string', maxLength: 1000 },
     startDate: { type: 'string', format: 'date-time' },
     endDate: { type: 'string', format: 'date-time' },

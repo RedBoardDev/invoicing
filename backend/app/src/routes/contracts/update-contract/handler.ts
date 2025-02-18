@@ -8,11 +8,11 @@ const handleError = (body: UpdateContractData): void => {
   if (body.amountHT !== undefined && body.amountHT < 0) {
     throw new Error('amountHT must be greater than or equal to 0');
   }
-  if (body.amountTTC !== undefined && body.amountTTC < 0) {
-    throw new Error('amountTTC must be greater than or equal to 0');
+  if (body.taxRate !== undefined && body.taxRate < 0) {
+    throw new Error('taxRate must be greater than or equal to 0');
   }
-  if (body.paymentDelayDays !== undefined && body.paymentDelayDays < 0) {
-    throw new Error('paymentDelayDays must be greater than or equal to 0');
+  if (body.paymentDelay !== undefined && body.paymentDelay < 0) {
+    throw new Error('paymentDelay must be greater than or equal to 0');
   }
 
   const startDate = body.startDate ? new Date(body.startDate) : null;

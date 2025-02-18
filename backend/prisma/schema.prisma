@@ -29,15 +29,15 @@ model Client {
 }
 
 model Contract {
-  id               String   @id @default(uuid())
-  clientId         String
-  client           Client   @relation(fields: [clientId], references: [id])
-  amountHT         Decimal  @db.Decimal(10, 2)
-  amountTTC        Decimal  @db.Decimal(10, 2)
-  paymentDelayDays Int
-  description      String?
-  startDate        DateTime
-  endDate          DateTime
+  id           String   @id @default(uuid())
+  clientId     String
+  client       Client   @relation(fields: [clientId], references: [id])
+  amountHT     Decimal  @db.Decimal(10, 2)
+  taxRate      Decimal  @db.Decimal(5, 2)
+  paymentDelay Int
+  description  String?
+  startDate    DateTime
+  endDate      DateTime
   // extras            String?
 
   invoices Invoice[]

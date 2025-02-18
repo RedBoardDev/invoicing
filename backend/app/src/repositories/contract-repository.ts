@@ -22,8 +22,8 @@ const createContractQuery = async (data: CreateContractData): Promise<Contract> 
     data: {
       clientId: data.clientId,
       amountHT: data.amountHT,
-      amountTTC: data.amountTTC,
-      paymentDelayDays: data.paymentDelayDays,
+      taxRate: data.taxRate,
+      paymentDelay: data.paymentDelay,
       description: data.description,
       startDate: data.startDate,
       endDate: data.endDate,

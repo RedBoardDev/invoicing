@@ -8,8 +8,8 @@ const handleError = (body: CreateContractData): void => {
   if (body.amountHT < 0) {
     throw new Error('AmountHT must be greater than or equal to 0');
   }
-  if (body.paymentDelayDays < 0) {
-    throw new Error('PaymentDelayDays must be greater than or equal to 0');
+  if (body.paymentDelay < 0) {
+    throw new Error('paymentDelay must be greater than or equal to 0');
   }
 
   const startDate = new Date(body.startDate);
