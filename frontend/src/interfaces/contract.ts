@@ -2,7 +2,7 @@ interface Contract {
 	id: string;
 	clientId: string;
 	amountHT: string;
-	amountTTC: string;
+	taxRate: string;
 	paymentDelayDays: number;
 	description: string;
 	startDate: string;

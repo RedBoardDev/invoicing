@@ -1,5 +1,5 @@
-import type Client from "@enums/clients";
-import type Contract from "@enums/contract";
+import type Client from "@interfaces/clients";
+import type Contract from "@interfaces/contract";
 import { formatDate } from "@utils";
 import { Form, Input } from "antd";
 import type { ColumnsType } from "antd/lib/table";

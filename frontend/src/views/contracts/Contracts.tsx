@@ -1,5 +1,5 @@
-import type Client from "@enums/clients";
-import type Contract from "@enums/contract";
+import type Client from "@interfaces/clients";
+import type Contract from "@interfaces/contract";
 import { formatDate } from "@utils";
 import { Col, DatePicker, Form, Input, InputNumber, Row, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -146,11 +146,11 @@ const Contracts: React.FC = () => {
 					Number.parseFloat(a.amountHT) - Number.parseFloat(b.amountHT),
 			},
 			{
-				title: "Montant TTC",
-				dataIndex: "amountTTC",
+				title: "Taux de taxe",
+				dataIndex: "taxRate",
 				render: (value: string) => `€${Number.parseFloat(value).toFixed(2)}`,
 				sorter: (a, b) =>
-					Number.parseFloat(a.amountTTC) - Number.parseFloat(b.amountTTC),
+					Number.parseFloat(a.taxRate) - Number.parseFloat(b.taxRate),
 			},
 			{
 				title: "Délai paiement",
@@ -243,7 +243,7 @@ const Contracts: React.FC = () => {
 
 						<Form.Item
 							name="paymentDelay"
-							label="Délai paiement"
+							label="Délai de paiement"
 							rules={[{ required: true, message: "Délai paiement requis" }]}
 							initialValue={120}
 						>

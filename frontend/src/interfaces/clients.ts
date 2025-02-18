@@ -1,4 +1,4 @@
-import type Contract from "@enums/contract";
+import type Contract from "@interfaces/contract";
 
 interface Client {
 	id: string;
