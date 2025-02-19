@@ -17,13 +17,17 @@ const DashboardLayout: React.FC = () => {
     { key: 'settings', label: 'Paramètres', path: '/settings' },
   ];
 
+  const selectedKey =
+    menuItems.find((item) => (item.path === '/' ? location.pathname === '/' : location.pathname.startsWith(item.path)))
+      ?.path || '';
+
   return (
     <Layout className={styles.layout}>
       <Sider width={250} className={styles.sider}>
         <Title level={4} className={styles.title}>
           Gestion de facturation
         </Title>
-        <Menu mode="inline" selectedKeys={[location.pathname]} className={styles.menu}>
+        <Menu mode="inline" selectedKeys={[selectedKey]} className={styles.menu}>
           {menuItems.map((item) => (
             <Menu.Item key={item.path}>
               <Link to={item.path}>{item.label}</Link>
