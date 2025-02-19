@@ -1,8 +1,6 @@
+import type { FastifyInstance } from 'fastify';
 
-import { FastifyInstance } from 'fastify';
-
-import { success, error } from './responseDecorators';
-
+import { error, success } from './responseDecorators';
 
 export function setupDecorators(ffy: FastifyInstance): void {
   ffy.decorateReply('success', success);

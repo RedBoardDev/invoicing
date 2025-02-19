@@ -1,6 +1,6 @@
-import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
-import ApiError from '@libs/error-management/api-error';
 import { Errors, ErrorsEnum } from '@enums/errors-enums';
+import ApiError from '@libs/error-management/api-error';
+import type { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
 const sendErrorResponse = (
   res: FastifyReply,

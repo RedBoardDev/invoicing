@@ -1,7 +1,7 @@
-import { FastifyReply } from 'fastify';
-import ApiError from '@libs/error-management/api-error';
-import { HttpStatusCode } from '@enums/http-status-enums';
 import { ErrorsEnum } from '@enums/errors-enums';
+import { HttpStatusCode } from '@enums/http-status-enums';
+import ApiError from '@libs/error-management/api-error';
+import type { FastifyReply } from 'fastify';
 
 /**
  * Envoie une réponse de succès avec le code HTTP spécifié.

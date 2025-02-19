@@ -1,7 +1,7 @@
+import awsLambdaFastify from '@fastify/aws-lambda';
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 // handler.js
-import { Context } from 'aws-lambda';
-import awsLambdaFastify from '@fastify/aws-lambda';
+import type { Context } from 'aws-lambda';
 
 import { ffy, setupServer } from './app/src/index.js';
 

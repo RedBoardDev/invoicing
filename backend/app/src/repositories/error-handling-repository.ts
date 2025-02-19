@@ -1,6 +1,6 @@
+import { ErrorsEnum } from '@enums/errors-enums';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ApiError from '@libs/error-management/api-error';
-import { ErrorsEnum } from '@enums/errors-enums';
 
 const getErrorWithCode = (errorCode: string): void => {
   const errors: Record<string, { message: string; statusCode: number; errorEnum: ErrorsEnum }> = {

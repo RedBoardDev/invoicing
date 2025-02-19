@@ -1,7 +1,7 @@
 import 'fastify';
-import { JwtPayload } from 'jsonwebtoken';
-import { HttpStatusCode } from '@enums/http-status-enums';
-import { ErrorsEnum } from '@enums/errors-enums';
+import type { ErrorsEnum } from '@enums/errors-enums';
+import type { HttpStatusCode } from '@enums/http-status-enums';
+import type { JwtPayload } from 'jsonwebtoken';
 
 declare module 'fastify' {
   interface FastifyRequest {

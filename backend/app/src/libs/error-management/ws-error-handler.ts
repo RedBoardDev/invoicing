@@ -1,5 +1,5 @@
-import { ErrorObject } from 'entities/errors';
 import ApiError from '@libs/error-management/api-error';
+import type { ErrorObject } from 'entities/errors';
 
 export const wsErrorHandler = (error: ErrorObject): { error: ErrorObject } => {
   if (error instanceof ApiError) {

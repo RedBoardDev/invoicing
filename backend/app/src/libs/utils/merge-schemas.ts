@@ -13,6 +13,6 @@ export const mergeSchemas = (...schemas: SchemaType[]): SchemaType => {
       required: [...(acc.required || []), ...(schema.required || [])],
       additionalProperties: false,
     }),
-    { type: 'object', properties: {}, required: [], additionalProperties: false }
+    { type: 'object', properties: {}, required: [], additionalProperties: false },
   );
 };

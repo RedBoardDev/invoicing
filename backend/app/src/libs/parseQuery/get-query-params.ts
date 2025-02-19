@@ -1,5 +1,5 @@
-import { IncludeConfigs } from './types/include';
-import { FilterConfigs, FilterType } from './types/filter';
+import { type FilterConfigs, FilterType } from './types/filter';
+import type { IncludeConfigs } from './types/include';
 
 interface queryParams {
   [key: string]: unknown;

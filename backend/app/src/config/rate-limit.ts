@@ -1,5 +1,5 @@
-import { FastifyInstance } from 'fastify';
 import fastifyRateLimit from '@fastify/rate-limit';
+import type { FastifyInstance } from 'fastify';
 
 export const setupRateLimit = (ffy: FastifyInstance): void => {
   ffy.register(fastifyRateLimit, {
@@ -13,4 +13,3 @@ export const setupRateLimit = (ffy: FastifyInstance): void => {
     errorResponseBuilder: () => ({ code: 'FST_ERR_RATE_LIMIT' }),
   });
 };
-
