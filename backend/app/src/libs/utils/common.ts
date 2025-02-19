@@ -35,6 +35,7 @@ export const isContainedIn = (subset: unknown[], set: unknown[]): boolean => {
  */
 export const excludeProperties = <T, K extends keyof T>(obj: T, ...props: K[]): Omit<T, K> => {
   const result = { ...obj };
+  // biome-ignore lint/complexity/noForEach: <explanation>
   props.forEach((prop) => delete result[prop]);
   return result;
 };
@@ -83,6 +84,7 @@ export const attrExist = (obj: unknown, attribut: string): boolean => {
  * @param elementsToRemove - The elements to remove.
  */
 export const removeElements = (array: unknown[], elementsToRemove: unknown[]): void => {
+  // biome-ignore lint/complexity/noForEach: <explanation>
   elementsToRemove.forEach((element) => {
     const index = array.indexOf(element);
     if (index !== -1) array.splice(index, 1);

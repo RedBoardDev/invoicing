@@ -12,6 +12,7 @@ export const mergeDeep = <T extends GenericObject, U extends GenericObject>(obj1
   if (!isObject(obj1)) return obj2 as T & U;
   if (!isObject(obj2)) return obj1 as T & U;
 
+  // biome-ignore lint/complexity/noForEach: <explanation>
   Object.keys(obj2).forEach((key) => {
     const val1 = obj1[key];
     const val2 = obj2[key];

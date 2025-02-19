@@ -7,6 +7,7 @@ interface queryParams {
 
 export const getFilterParams = (filterConfigs: FilterConfigs): queryParams => {
   const out: queryParams = {};
+  // biome-ignore lint/complexity/noForEach: <explanation>
   Object.keys(filterConfigs).forEach((key) => {
     switch (filterConfigs[key].type) {
       case FilterType.ENUM:
@@ -69,6 +70,7 @@ export const getFilterParamsDocs = (filterConfigs: FilterConfigs): unknown => {
 
 export const getIncludeParams = (includeConfigs: IncludeConfigs): queryParams => {
   const out: queryParams = {};
+  // biome-ignore lint/complexity/noForEach: <explanation>
   Object.keys(includeConfigs).forEach((key) => {
     out[`include${key.charAt(0).toUpperCase()}${key.slice(1)}`] = false;
   });
