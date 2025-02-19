@@ -4,12 +4,12 @@ import { AddModal } from 'components/common/modal/AddModal';
 import type React from 'react';
 import type Client from '@interfaces/clients';
 
-interface AddContractsProps {
+interface AddClientProps {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddContracts: React.FC<AddContractsProps> = ({ visible, setVisible }) => {
+const AddClient: React.FC<AddClientProps> = ({ visible, setVisible }) => {
   return (
     <AddModal<Client>
       visible={visible}
@@ -40,4 +40,4 @@ const AddContracts: React.FC<AddContractsProps> = ({ visible, setVisible }) => {
   );
 };
 
-export default AddContracts;
+export default AddClient;

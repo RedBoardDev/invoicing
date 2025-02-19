@@ -3,10 +3,9 @@ import { useMemo, useState } from 'react';
 import type Client from '@interfaces/clients';
 import type Contract from '@interfaces/contract';
 import { formatDate } from '@utils';
-import { Form, Input } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
-import { AddModal } from 'components/common/modal/AddModal';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
+import AddClient from 'components/common/modal/create/AddClient';
 
 const Clients: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -50,32 +49,7 @@ const Clients: React.FC = () => {
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
       />
-      <AddModal<Client>
-        visible={addModalVisible}
-        onCancel={() => setAddModalVisible(false)}
-        onSuccess={() => setAddModalVisible(false)}
-        endpoint="/clients"
-        title="Nouveau client">
-        {() => (
-          <>
-            <Form.Item
-              name="name"
-              label="Nom du client"
-              rules={[{ required: true, message: 'Ce champ est obligatoire' }]}>
-              <Input placeholder="Nom de l'entreprise" />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="Email du client"
-              rules={[
-                { required: true, message: 'Ce champ est obligatoire' },
-                { type: 'email', message: 'Veuillez entrer un email valide' },
-              ]}>
-              <Input placeholder="Email de l'entreprise" />
-            </Form.Item>
-          </>
-        )}
-      </AddModal>
+      <AddClient visible={addModalVisible} setVisible={setAddModalVisible} />
     </>
   );
 };

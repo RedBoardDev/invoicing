@@ -2,7 +2,7 @@ import type Client from '@interfaces/clients';
 import type Contract from '@interfaces/contract';
 import { formatDate } from '@utils';
 import type { ColumnsType } from 'antd/es/table';
-import AddContract from 'components/common/modal/addComponents/AddContract';
+import AddContract from 'components/common/modal/create/AddContract';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo, useState } from 'react';
