@@ -7,23 +7,25 @@ import { TablePageHeader } from './TablePageHeader';
 import styles from './TablePageLayout.module.css';
 
 interface TablePageLayoutProps<T extends object> extends Omit<TableProps<T>, 'title' | 'dataSource'> {
-  title: string;
+  title?: string;
   listEndpoint: string;
   additionalQueryParams?: Record<string, string | number | boolean>;
   deleteEndpoint?: string;
   onAdd?: () => void;
   rowKey?: string;
   extraButtons?: React.ReactNode[];
+  showHeader?: boolean;
 }
 
 export const TablePageLayout = <T extends object>({
-  title,
+  title = '',
   listEndpoint,
   additionalQueryParams = {},
   deleteEndpoint,
   onAdd,
   rowKey = 'id',
   extraButtons = [],
+  showHeader = true,
   ...tableProps
 }: TablePageLayoutProps<T>) => {
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -80,25 +82,29 @@ export const TablePageLayout = <T extends object>({
 
   return (
     <div className={styles.container}>
-      <ConfirmationModal
-        visible={deleteConfirmVisible}
-        title={`Supprimer ${selectedKeys.length} éléments`}
-        content="Êtes-vous sûr de vouloir supprimer ces éléments ? Cette action est irréversible."
-        loading={deleteLoading}
-        onConfirm={handleDelete}
-        onCancel={() => setDeleteConfirmVisible(false)}
-      />
+      {showHeader && (
+        <>
+          <ConfirmationModal
+            visible={deleteConfirmVisible}
+            title={`Supprimer ${selectedKeys.length} éléments`}
+            content="Êtes-vous sûr de vouloir supprimer ces éléments ? Cette action est irréversible."
+            loading={deleteLoading}
+            onConfirm={handleDelete}
+            onCancel={() => setDeleteConfirmVisible(false)}
+          />
 
-      <TablePageHeader
-        title={title}
-        onAdd={onAdd}
-        onRefresh={refresh}
-        onDeleteClick={() => setDeleteConfirmVisible(true)}
-        selectedKeysCount={selectedKeys.length}
-        loading={loading}
-        extraButtons={extraButtons}
-        hasDelete={!!deleteEndpoint}
-      />
+          <TablePageHeader
+            title={title}
+            onAdd={onAdd}
+            onRefresh={refresh}
+            onDeleteClick={() => setDeleteConfirmVisible(true)}
+            selectedKeysCount={selectedKeys.length}
+            loading={loading}
+            extraButtons={extraButtons}
+            hasDelete={!!deleteEndpoint}
+          />
+        </>
+      )}
 
       <Spin spinning={loading} tip="Chargement...">
         <Table<T>

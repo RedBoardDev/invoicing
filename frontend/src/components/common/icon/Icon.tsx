@@ -8,7 +8,7 @@ type IconProps = {
   className?: string;
 };
 
-const Icon: React.FC<IconProps> = ({ name, size = 24, color = 'currentColor', className }) => {
+export const Icon: React.FC<IconProps> = ({ name, size = 24, color = 'currentColor', className }) => {
   if (!icons[name]) {
     console.warn(`Icon "${name}" not found, using fallback.`);
     return <span style={{ width: size, height: size, background: '#ccc' }} />;
@@ -30,4 +30,4 @@ const Icon: React.FC<IconProps> = ({ name, size = 24, color = 'currentColor', cl
   );
 };
 
-export default Icon;
+export type IconComponent = React.ComponentType<IconProps>;
