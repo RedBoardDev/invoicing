@@ -1,5 +1,5 @@
-import { HttpStatusCode } from '@enums/http-status-enums';
 import { Errors, ErrorsEnum } from '@enums/errors-enums';
+import { HttpStatusCode } from '@enums/http-status-enums';
 
 class ApiError extends Error {
   public statusCode: number;
