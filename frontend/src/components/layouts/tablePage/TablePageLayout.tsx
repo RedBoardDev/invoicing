@@ -5,12 +5,14 @@ import { ConfirmationModal } from 'components/common/modal/ConfirmationModal';
 import React, { useMemo, useState } from 'react';
 import { TablePageHeader } from './TablePageHeader';
 import styles from './TablePageLayout.module.css';
+import { useNavigate } from 'react-router-dom';
 
 interface TablePageLayoutProps<T extends object> extends Omit<TableProps<T>, 'title' | 'dataSource'> {
   title?: string;
   listEndpoint: string;
   additionalQueryParams?: Record<string, string | number | boolean>;
   deleteEndpoint?: string;
+  detailsRoutePath?: (id: string) => string;
   onAdd?: () => void;
   rowKey?: string;
   extraButtons?: React.ReactNode[];
@@ -22,12 +24,14 @@ export const TablePageLayout = <T extends object>({
   listEndpoint,
   additionalQueryParams = {},
   deleteEndpoint,
+  detailsRoutePath,
   onAdd,
   rowKey = 'id',
   extraButtons = [],
   showHeader = true,
   ...tableProps
 }: TablePageLayoutProps<T>) => {
+  const navigate = useNavigate();
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -123,6 +127,9 @@ export const TablePageLayout = <T extends object>({
           scroll={{ y: 'calc(100vh - 200px)' }}
           size="middle"
           bordered={false}
+          onRow={(record: T) => ({
+            onClick: () => detailsRoutePath && navigate(detailsRoutePath((record as any)[rowKey])),
+          })}
         />
       </Spin>
     </div>

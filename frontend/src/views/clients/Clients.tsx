@@ -6,6 +6,7 @@ import { formatDate } from '@utils';
 import type { ColumnsType } from 'antd/lib/table';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import AddClient from 'components/common/modal/create/AddClient';
+import { ROUTE_PATHS } from '@config/routePaths';
 
 const Clients: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -44,6 +45,7 @@ const Clients: React.FC = () => {
       <TablePageLayout<Client>
         title="Clients"
         listEndpoint="/clients"
+        detailsRoutePath={(id) => ROUTE_PATHS.private.clients.detail(id)}
         additionalQueryParams={{ includeContracts: true }}
         deleteEndpoint="/clients"
         onAdd={() => setAddModalVisible(true)}
