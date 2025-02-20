@@ -14,9 +14,10 @@ const HeaderDetailsLayout = <T extends object>({
   data,
   fields,
   editEndpoint,
-  onSuccess,
+  extraButtons,
   onBack,
   onDelete,
+  onEdit,
 }: HeaderDetailsLayoutProps<T>) => {
   const isLoading = !data;
 
@@ -29,35 +30,40 @@ const HeaderDetailsLayout = <T extends object>({
     })) as EditManagerConfig<T>[];
 
   return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.leftPanel}>
-          <Flex gap={8} align="center">
-            <Flex vertical gap={8} className={styles.buttons}>
-              <Button icon={<DeleteOutlined />} onClick={onDelete} disabled={isLoading} danger />
-              <EditManager<T> data={data} configs={configs} editEndpoint={editEndpoint} onSuccess={onSuccess} />
-              <Button icon={<ArrowLeftOutlined />} onClick={onBack} />
-            </Flex>
-
-            <Flex vertical gap={8} align="center">
-              <Icon name={iconName} className={styles.icon} />
-              <Text strong className={styles.title}>
-                {title}
-              </Text>
-            </Flex>
+    <div className={styles.container}>
+      <div className={styles.leftPanel}>
+        <Flex gap={8} align="center">
+          <Flex vertical gap={8} className={styles.buttons}>
+            <Button icon={<DeleteOutlined />} onClick={onDelete} disabled={isLoading} danger />
+            <EditManager<T> data={data} configs={configs} editEndpoint={editEndpoint} onSuccess={onEdit} />
+            <Button icon={<ArrowLeftOutlined />} onClick={onBack} />
           </Flex>
-        </div>
-        <div className={styles.details}>
-          {fields.map((field, index) => (
-            <div key={index} className={styles.detailItem}>
-              <div className={styles.value}>
-                {isLoading ? <Skeleton.Input active size="small" style={{ width: 220 }} /> : field.render(data as T)}
-              </div>
+
+          <Flex vertical gap={8} align="center">
+            <Icon name={iconName} className={styles.icon} />
+            <Text strong className={styles.title}>
+              {title}
+            </Text>
+          </Flex>
+        </Flex>
+      </div>
+      <div className={styles.details}>
+        {fields.map((field) => (
+          <div key={field.key as string} className={styles.detailItem}>
+            <div className={styles.value}>
+              {isLoading ? <Skeleton.Input active size="small" style={{ width: 220 }} /> : field.render(data as T)}
             </div>
+          </div>
+        ))}
+      </div>
+      {extraButtons && (
+        <div>
+          {extraButtons.map((button) => (
+            <div key={button?.toString()}>{button}</div>
           ))}
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 

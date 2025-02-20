@@ -18,7 +18,8 @@ export type HeaderDetailsLayoutProps<T> = {
   data: T | null;
   fields: FieldConfig<T>[];
   editEndpoint: string;
+  extraButtons: React.ReactNode[];
   onBack: () => void;
-  onDelete: () => void;
-  onSuccess?: (data: T) => void;
+  onDelete?: () => void;
+  onEdit?: (data: T) => void;
 };

@@ -11,6 +11,8 @@ import ContractsTab from '@views/clients/details/ContractsTab';
 const ClientsDetails: React.FC = () => {
   const params = useParams();
   const [client, setClient] = useState<Client | null>(null);
+  const [contractsRefreshKey, setContractsRefreshKey] = useState<number>(0);
+  const refreshContracts = () => setContractsRefreshKey((prev) => prev + 1);
 
   const fetchData = useCallback(async () => {
     const response = await fetch(`http://localhost:3000/clients/${params.id}?includeContracts=true`);
@@ -41,10 +43,10 @@ const ClientsDetails: React.FC = () => {
   ];
 
   const tabContent = {
-    contracts: <ContractsTab contracts={client?.contracts || null} />,
+    contracts: <ContractsTab key={contractsRefreshKey} contracts={client?.contracts || null} />,
   };
 
-  return <FocusItem childrenTop={<Header client={client} />} tabsItems={items} tabContent={tabContent} />;
+  return <FocusItem childrenTop={<Header client={client} refreshContracts={refreshContracts} />} tabsItems={items} tabContent={tabContent} />;
 };
 
 export default ClientsDetails;

@@ -9,11 +9,13 @@ import type Client from '@interfaces/clients';
 import AmountInput from 'components/dataEntry/AmountInput';
 
 interface AddContractProps {
+  clientId?: string | undefined;
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  onSuccess?: () => void;
 }
 
-const AddContract: React.FC<AddContractProps> = ({ visible, setVisible }) => {
+const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible, onSuccess }) => {
   const [clients, setClients] = useState<Client[]>([]);
   const [clientsLoading, setClientsLoading] = useState(false);
 
@@ -36,7 +38,8 @@ const AddContract: React.FC<AddContractProps> = ({ visible, setVisible }) => {
 
   const handleAddSuccess = useCallback(() => {
     setVisible(false);
-  }, [setVisible]);
+    onSuccess?.();
+  }, [setVisible, onSuccess]);
 
   return (
     <AddModal<Contract>
@@ -44,12 +47,19 @@ const AddContract: React.FC<AddContractProps> = ({ visible, setVisible }) => {
       onCancel={() => setVisible(false)}
       onSuccess={handleAddSuccess}
       endpoint="/contracts"
-      title="Nouveau contrat">
+      title="Nouveau contrat"
+      initialValues={clientId ? { clientId } : undefined}>
       {(form) => (
         <>
-          <Form.Item name="clientId" label="Client" rules={[{ required: true, message: 'Sélectionnez un client' }]}>
-            <ClientSelect clients={clients} loading={clientsLoading} />
-          </Form.Item>
+          {clientId ? (
+            <Form.Item name="clientId" hidden>
+              <Input type="hidden" />
+            </Form.Item>
+          ) : (
+            <Form.Item name="clientId" label="Client" rules={[{ required: true, message: 'Sélectionnez un client' }]}>
+              <ClientSelect clients={clients} loading={clientsLoading} />
+            </Form.Item>
+          )}
 
           <Row gutter={16}>
             <Col span={12}>
