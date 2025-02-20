@@ -1,29 +1,30 @@
 import type Client from '@interfaces/client';
+import type Contract from '@interfaces/contract';
 import { Select } from 'antd';
 import type React from 'react';
 import { useMemo } from 'react';
 
-interface ClientSelectProps {
+interface ContractSelectProps {
   value?: string;
   onChange?: (value: string) => void;
   loading?: boolean;
-  clients: Client[];
+  contracts: (Contract & { client: Client })[];
 }
 
-const ClientSelect: React.FC<ClientSelectProps> = ({ value, onChange, loading, clients }) => {
+const ContractSelect: React.FC<ContractSelectProps> = ({ value, onChange, loading, contracts }) => {
   const options = useMemo(
     () =>
-      clients.map((c) => ({
+      contracts.map((c) => ({
         value: c.id,
-        label: c.name,
+        label: `${c.client.name} - ${c.title}`,
       })),
-    [clients],
+    [contracts],
   );
 
   return (
     <Select
       showSearch
-      placeholder="Sélectionnez un client"
+      placeholder="Sélectionnez un contrat"
       optionFilterProp="label"
       loading={loading}
       options={options}
@@ -34,4 +35,4 @@ const ClientSelect: React.FC<ClientSelectProps> = ({ value, onChange, loading, c
   );
 };
 
-export default ClientSelect;
+export default ContractSelect;

@@ -1,6 +1,6 @@
 import { MailOutlined } from '@ant-design/icons';
 import { ROUTE_PATHS } from '@config/routePaths';
-import type Client from '@interfaces/clients';
+import type Client from '@interfaces/client';
 import { Flex, Typography, Input, Button } from 'antd';
 import AddContract from 'components/common/modal/create/AddContract';
 import HeaderDetailsLayout from 'components/layouts/headerDetails/HeaderDetails';
@@ -8,14 +8,14 @@ import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface ClientsDetailsProps {
+interface HeaderProps {
   client: Client | null;
   refreshContracts: () => void;
 }
 
 const { Text } = Typography;
 
-const ClientsDetails: React.FC<ClientsDetailsProps> = ({ client, refreshContracts }) => {
+const Header: React.FC<HeaderProps> = ({ client, refreshContracts }) => {
   const [addModalVisible, setAddModalVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const clientId = client?.id;
@@ -90,4 +90,4 @@ const ClientsDetails: React.FC<ClientsDetailsProps> = ({ client, refreshContract
   );
 };
 
-export default ClientsDetails;
+export default Header;

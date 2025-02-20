@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useMemo, useState } from 'react';
-import type Client from '@interfaces/clients';
+import type Client from '@interfaces/client';
 import type Contract from '@interfaces/contract';
 import { formatDate } from '@utils';
 import type { ColumnsType } from 'antd/lib/table';

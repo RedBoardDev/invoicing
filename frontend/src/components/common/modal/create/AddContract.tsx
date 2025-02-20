@@ -5,7 +5,7 @@ import { AddModal } from 'components/common/modal/AddModal';
 import ClientSelect from 'components/dataEntry/ClientSelect';
 import dayjs, { type Dayjs } from 'dayjs';
 import type React from 'react';
-import type Client from '@interfaces/clients';
+import type Client from '@interfaces/client';
 import AmountInput from 'components/dataEntry/AmountInput';
 
 interface AddContractProps {

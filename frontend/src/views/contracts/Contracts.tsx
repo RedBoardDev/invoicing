@@ -1,4 +1,4 @@
-import type Client from '@interfaces/clients';
+import { ROUTE_PATHS } from '@config/routePaths';
 import type Contract from '@interfaces/contract';
 import { formatDate } from '@utils';
 import type { ColumnsType } from 'antd/es/table';
@@ -13,26 +13,15 @@ const Contracts: React.FC = () => {
   const columns: ColumnsType<Contract> = useMemo(
     () => [
       {
+        title: 'Titre',
+        dataIndex: 'description',
+        render: (description: string) => description || 'N/A',
+      },
+      {
         title: 'Client',
-        dataIndex: 'client',
-        render: (client: Client) => client.name || 'N/A',
-        sorter: (a, b) => {
-          const nameA = a.client.name || '';
-          const nameB = b.client.name || '';
-          return nameA.localeCompare(nameB);
-        },
-      },
-      {
-        title: 'Début',
-        dataIndex: 'startDate',
-        render: (date: string) => formatDate(date, 'DD/MM/YYYY'),
-        sorter: (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
-      },
-      {
-        title: 'Fin',
-        dataIndex: 'endDate',
-        render: (date: string) => formatDate(date, 'DD/MM/YYYY'),
-        sorter: (a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime(),
+        dataIndex: ['client', 'name'],
+        render: (_, record) => record.client.name || 'N/A',
+        sorter: (a, b) => a.client.name.localeCompare(b.client.name),
       },
       {
         title: 'Montant HT',
@@ -41,7 +30,7 @@ const Contracts: React.FC = () => {
         sorter: (a, b) => Number.parseFloat(a.amountHT) - Number.parseFloat(b.amountHT),
       },
       {
-        title: 'Taux de taxe',
+        title: 'Taux TVA',
         dataIndex: 'taxRate',
         render: (value: string) => `${Number.parseFloat(value).toFixed(2)}%`,
         sorter: (a, b) => Number.parseFloat(a.taxRate) - Number.parseFloat(b.taxRate),
@@ -51,6 +40,15 @@ const Contracts: React.FC = () => {
         dataIndex: 'paymentDelay',
         render: (days: number) => `${days} jours`,
         sorter: (a, b) => a.paymentDelay - b.paymentDelay,
+      },
+      {
+        title: 'Période',
+        render: (_, record) => (
+          <span>
+            {formatDate(record.startDate, 'DD/MM/YYYY')} - {formatDate(record.endDate, 'DD/MM/YYYY')}
+          </span>
+        ),
+        sorter: (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
       },
       {
         title: 'Créé le',
@@ -67,6 +65,7 @@ const Contracts: React.FC = () => {
       <TablePageLayout<Contract>
         title="Contrats"
         listEndpoint="/contracts"
+        detailsRoutePath={(id) => ROUTE_PATHS.private.contracts.detail(id)}
         deleteEndpoint="/contracts"
         onAdd={() => setAddModalVisible(true)}
         columns={columns}

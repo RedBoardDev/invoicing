@@ -2,7 +2,7 @@ import {} from 'react';
 import { Form, Input } from 'antd';
 import { AddModal } from 'components/common/modal/AddModal';
 import type React from 'react';
-import type Client from '@interfaces/clients';
+import type Client from '@interfaces/client';
 
 interface AddClientProps {
   visible: boolean;

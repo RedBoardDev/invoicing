@@ -1,4 +1,4 @@
-import type Client from '@interfaces/clients';
+import type Client from '@interfaces/client';
 import Header from './Header';
 import type { TabsProps } from 'antd';
 import FocusItem from 'components/layouts/focusItem/FocusItem';
@@ -46,7 +46,13 @@ const ClientsDetails: React.FC = () => {
     contracts: <ContractsTab key={contractsRefreshKey} contracts={client?.contracts || null} />,
   };
 
-  return <FocusItem childrenTop={<Header client={client} refreshContracts={refreshContracts} />} tabsItems={items} tabContent={tabContent} />;
+  return (
+    <FocusItem
+      childrenTop={<Header client={client} refreshContracts={refreshContracts} />}
+      tabsItems={items}
+      tabContent={tabContent}
+    />
+  );
 };
 
 export default ClientsDetails;
