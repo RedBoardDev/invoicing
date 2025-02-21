@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   contract: Contract | null;
-  refreshContracts: () => void;
+  refreshInvoices: () => void;
 }
 
 const { Text } = Typography;
@@ -89,7 +89,7 @@ const fields: FieldConfig<Contract>[] = [
   },
 ];
 
-const Header: React.FC<HeaderProps> = ({ contract, refreshContracts }) => {
+const Header: React.FC<HeaderProps> = ({ contract, refreshInvoices }) => {
   const [addModalVisible, setAddModalVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const contractId = contract?.id;
@@ -97,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({ contract, refreshContracts }) => {
   return (
     <>
       <HeaderDetailsLayout<Contract>
-        title="Contract"
+        title="Contrat"
         icon="contract"
         data={contract}
         editEndpoint={`/api/contracts/${contractId}`}
@@ -109,10 +109,10 @@ const Header: React.FC<HeaderProps> = ({ contract, refreshContracts }) => {
         ]}
         onBack={() => navigate(ROUTE_PATHS.private.contracts.root)}
         onDelete={() => {
-          refreshContracts();
+          refreshInvoices();
         }}
         onEdit={() => {
-          refreshContracts();
+          refreshInvoices();
         }}
       />
       <AddInvoice
@@ -121,7 +121,7 @@ const Header: React.FC<HeaderProps> = ({ contract, refreshContracts }) => {
         setVisible={setAddModalVisible}
         onSuccess={() => {
           setAddModalVisible(false);
-          refreshContracts();
+          refreshInvoices();
         }}
       />
     </>

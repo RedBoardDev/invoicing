@@ -12,10 +12,9 @@ const ContractsDetails: React.FC = () => {
   const params = useParams();
   const [contract, setContract] = useState<Contract | null>(null);
   const [invoicesRefreshKey, setInvoicesRefreshKey] = useState<number>(0);
-  const refreshContracts = () => setInvoicesRefreshKey((prev) => prev + 1);
+  const refreshInvoices = () => setInvoicesRefreshKey((prev) => prev + 1);
 
   const fetchData = useCallback(async () => {
-    console.log('r');
     const response = await fetch(
       `http://localhost:3000/contracts/${params.id}?includeInvoices=true&includeHistory=true`,
     );
@@ -25,13 +24,10 @@ const ContractsDetails: React.FC = () => {
     }
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
     setContract(responseData);
   }, [params.id]);
 
   useEffect(() => {
-    console.log('r');
-
     fetchData();
   }, [fetchData]);
 
@@ -54,7 +50,7 @@ const ContractsDetails: React.FC = () => {
 
   return (
     <FocusItem
-      childrenTop={<Header contract={contract} refreshContracts={refreshContracts} />}
+      childrenTop={<Header contract={contract} refreshInvoices={refreshInvoices} />}
       tabsItems={items}
       tabContent={tabContent}
     />
