@@ -1,6 +1,6 @@
 import { FilePdfOutlined } from '@ant-design/icons';
 import { STATUS_COLORS, type InvoiceStatus } from '@enums/invoiceStatus';
-import type Invoice from '@interfaces/invoice';
+import { ContractHistory } from '@interfaces/contractHistory';
 import { formatDate } from '@utils';
 import { Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -10,14 +10,14 @@ import { useMemo } from 'react';
 
 const { Text } = Typography;
 
-interface InvoicesTabProps {
+interface HistoryTabProps {
   contractId: string | null;
 }
 
-const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
+const HistoryTab: React.FC<HistoryTabProps> = ({ contractId }) => {
   if (!contractId) return;
 
-  const columns: ColumnsType<Invoice> = useMemo(
+  const columns: ColumnsType<ContractHistory> = useMemo(
     () => [
       {
         title: 'N° Facture',
@@ -74,8 +74,8 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
   );
 
   return (
-    <TablePageLayout<Invoice> // TODO: plutot séparer la logique call + tableau dans un autre composant comme ça on peut utiliser soit le tableau uniquement soit ce layout qui utilisera le composant tableau
-      listEndpoint={`/contracts/${contractId}/invoices`} // TODO faire la route
+    <TablePageLayout<ContractHistory> // TODO: plutot séparer la logique call + tableau dans un autre composant comme ça on peut utiliser soit le tableau uniquement soit ce layout qui utilisera le composant tableau
+      listEndpoint="/contracts/${contractId}/history" // TODO faire la route
       columns={columns}
       additionalQueryParams={{ includeClient: true }}
       showHeader={false}
@@ -83,4 +83,4 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
   );
 };
 
-export default InvoicesTab;
+export default HistoryTab;

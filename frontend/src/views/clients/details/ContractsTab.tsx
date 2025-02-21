@@ -1,4 +1,3 @@
-import { Loader } from '@components/common';
 import type Contract from '@interfaces/contract';
 import { formatDate } from '@utils';
 import type { ColumnsType } from 'antd/es/table';
@@ -7,11 +6,11 @@ import type React from 'react';
 import { useMemo } from 'react';
 
 interface ContractsTabProps {
-  contracts: Contract[] | null;
+  clientId: string | null;
 }
 
-const ContractsTab: React.FC<ContractsTabProps> = ({ contracts }) => {
-  if (!contracts) return <Loader />;
+const ContractsTab: React.FC<ContractsTabProps> = ({ clientId }) => {
+  if (!clientId) return;
 
   const columns: ColumnsType<Contract> = useMemo(
     () => [
@@ -57,8 +56,7 @@ const ContractsTab: React.FC<ContractsTabProps> = ({ contracts }) => {
 
   return (
     <TablePageLayout<Contract> // TODO: plutot séparer la logique call + tableau dans un autre composant comme ça on peut utiliser soit le tableau uniquement soit ce layout qui utilisera le composant tableau
-      listEndpoint="/contracts"
-      deleteEndpoint="/contracts"
+      listEndpoint={`/clients/${clientId}/contracts`} // TODO faire la route
       columns={columns}
       additionalQueryParams={{ includeClient: true }}
       showHeader={false}

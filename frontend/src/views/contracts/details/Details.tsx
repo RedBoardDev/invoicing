@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Icon } from '@components/common';
 import type Contract from '@interfaces/contract';
 import InvoicesTab from '@views/contracts/details/InvoicesTab';
+import HistoryTab from '@views/contracts/details/HistoryTab';
 
 const ContractsDetails: React.FC = () => {
   const params = useParams();
@@ -16,7 +17,7 @@ const ContractsDetails: React.FC = () => {
 
   const fetchData = useCallback(async () => {
     const response = await fetch(
-      `http://localhost:3000/contracts/${params.id}?includeInvoices=true&includeHistory=true`,
+      `http://localhost:3000/contracts/${params.id}`,
     );
 
     if (!response.ok) {
@@ -41,11 +42,20 @@ const ContractsDetails: React.FC = () => {
         </div>
       ),
     },
+    {
+      key: 'history',
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Icon name="contract" size="15" color="black" />
+          Historique
+        </div>
+      ),
+    },
   ];
 
   const tabContent = {
-    invoices: <InvoicesTab key={invoicesRefreshKey} invoices={contract?.invoices || null} />,
-    // history tab
+    invoices: <InvoicesTab key={invoicesRefreshKey} contractId={contract?.id || null} />,
+    history: <HistoryTab key={invoicesRefreshKey} contractId={contract?.id || null} />,
   };
 
   return (

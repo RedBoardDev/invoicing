@@ -1,4 +1,5 @@
 import type Client from '@interfaces/client';
+import { ContractHistory } from '@interfaces/contractHistory';
 import type Invoice from '@interfaces/invoice';
 
 interface Contract {
@@ -11,6 +12,7 @@ interface Contract {
   title: string;
   description: string;
   invoices?: Invoice[];
+  history: ContractHistory[];
   startDate: string;
   endDate: string;
   invoice: Invoice;

@@ -100,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ contract, refreshInvoices }) => {
         title="Contrat"
         icon="contract"
         data={contract}
-        editEndpoint={`/api/contracts/${contractId}`}
+        editEndpoint={`/contracts/${contractId}`}
         fields={fields}
         extraButtons={[
           <Button key="add-invoice" onClick={() => setAddModalVisible(true)}>

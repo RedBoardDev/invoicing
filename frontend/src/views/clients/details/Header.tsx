@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ client, refreshContracts }) => {
         title="Client"
         icon="contract"
         data={client}
-        editEndpoint={`/api/clients/${clientId}`}
+        editEndpoint={`/clients/${clientId}`}
         fields={[
           {
             key: 'name',
@@ -73,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({ client, refreshContracts }) => {
         onDelete={() => {
           refreshContracts();
         }}
-        onEdit={(updatedClient) => {
+        onEdit={() => {
           refreshContracts();
         }}
       />

@@ -15,14 +15,13 @@ const ClientsDetails: React.FC = () => {
   const refreshContracts = () => setContractsRefreshKey((prev) => prev + 1);
 
   const fetchData = useCallback(async () => {
-    const response = await fetch(`http://localhost:3000/clients/${params.id}?includeContracts=true`);
+    const response = await fetch(`http://localhost:3000/clients/${params.id}`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
     setClient(responseData);
   }, [params.id]);
 
@@ -43,7 +42,7 @@ const ClientsDetails: React.FC = () => {
   ];
 
   const tabContent = {
-    contracts: <ContractsTab key={contractsRefreshKey} contracts={client?.contracts || null} />,
+    contracts: <ContractsTab key={contractsRefreshKey} clientId={client?.id || null}/>,
   };
 
   return (
