@@ -17,8 +17,8 @@ model User {
 }
 
 model Client {
-  id   String @id @default(uuid())
-  name String
+  id    String @id @default(uuid())
+  name  String
   email String
 
   contracts Contract[]
@@ -36,6 +36,7 @@ model Contract {
   amountHT     Decimal  @db.Decimal(10, 2)
   taxRate      Decimal  @db.Decimal(5, 2)
   paymentDelay Int
+  title        String
   description  String?
   startDate    DateTime
   endDate      DateTime

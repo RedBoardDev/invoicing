@@ -1,15 +1,16 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { body, response } from './schemas';
+import { body, params, response } from './schemas';
 
 const updateInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
-    method: 'PUT',
+    method: 'PATCH',
     url: '/:id',
     schema: {
       tags: ['Invoices'],
-      description: 'Update an invoice',
+      description: 'Partially update an invoice by ID',
       body,
+      params,
       response,
     },
     handler,

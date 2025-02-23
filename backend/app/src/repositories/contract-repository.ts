@@ -1,7 +1,7 @@
 import type { CreateContractData, UpdateContractData } from '@entities/contract-entity';
 import { type CursorPaginationQuery, type Pagination, cursorPaginationForQuery } from '@libs/pagination';
 import { prismaInstance } from '@libs/prisma-client';
-import type { Contract, Prisma } from '@prisma/client';
+import type { Contract, ContractHistory, Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { handleError } from './error-handling-repository';
 
@@ -15,21 +15,21 @@ const countContractsFn = async (where?: Prisma.ContractWhereInput): Promise<numb
 export const countContracts = handleError(countContractsFn);
 
 /**
+ * Count ContractHistory
+ */
+const countContractHistoryFn = async (where?: Prisma.ContractHistoryWhereInput): Promise<number> => {
+  return prismaInstance.contractHistory.count({ where });
+};
+
+export const countContractHistory = handleError(countContractHistoryFn);
+
+/**
  * Create Contract
  */
-const createContractQuery = async (data: CreateContractData): Promise<Contract> => {
-  return prismaInstance.contract.create({
-    data: {
-      clientId: data.clientId,
-      amountHT: data.amountHT,
-      taxRate: data.taxRate,
-      paymentDelay: data.paymentDelay,
-      description: data.description,
-      startDate: data.startDate,
-      endDate: data.endDate,
-    },
+const createContractQuery = async (data: CreateContractData): Promise<Contract> =>
+  prismaInstance.contract.create({
+    data,
   });
-};
 
 export type CreateContractQueryType = Prisma.PromiseReturnType<typeof createContractQuery>;
 
@@ -149,3 +149,34 @@ const deleteContractsFn = async (ids: string[]): Promise<DeleteContractsQueryTyp
 };
 
 export const deleteContracts = handleError(deleteContractsFn);
+
+/**
+ * List ContractHistory
+ */
+const listContractHistoryQuery = async (
+  paginationQuery: { skip?: number; take: number } | undefined,
+  include?: Prisma.ContractHistoryInclude,
+  where?: Prisma.ContractHistoryWhereInput,
+): Promise<ContractHistory[]> =>
+  prismaInstance.contractHistory.findMany({
+    ...(paginationQuery || {}),
+    include: { ...include },
+    where,
+    orderBy: { createdAt: 'desc' },
+  });
+
+export type ListContractHistoryQueryType = Prisma.PromiseReturnType<typeof listContractHistoryQuery>;
+
+const listContractHistoryFn = async (
+  pagination?: Pagination,
+  include?: Prisma.ContractHistoryInclude,
+  where?: Prisma.ContractHistoryWhereInput,
+): Promise<ListContractHistoryQueryType> => {
+  let paginationQuery: CursorPaginationQuery | undefined = undefined;
+  if (pagination) {
+    paginationQuery = cursorPaginationForQuery(pagination);
+  }
+  return await listContractHistoryQuery(paginationQuery, include, where);
+};
+
+export const listContractHistory = handleError(listContractHistoryFn);

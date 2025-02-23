@@ -4,13 +4,13 @@ import { body, params, response } from './schemas';
 
 const updateClientRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
-    method: 'PUT',
+    method: 'PATCH',
     url: '/:id',
     schema: {
       tags: ['Clients'],
-      description: 'Update a client',
-      params,
+      description: 'Partially update a client by ID',
       body,
+      params,
       response,
     },
     handler,

@@ -7,7 +7,7 @@ export type TBody = FromSchema<typeof body>;
 export const params = {
   type: 'object',
   properties: {
-    id: { type: 'string' },
+    id: { type: 'string', format: 'uuid' },
   },
   required: ['id'],
   additionalProperties: false,
@@ -21,5 +21,4 @@ export const querystring = {} as const;
 export type TQuerystring = FromSchema<typeof querystring>;
 
 export const response = {} as const;
-
 export type TResponse = FromSchema<typeof response>;

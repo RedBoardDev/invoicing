@@ -14,7 +14,7 @@ export type TBody = FromSchema<typeof body>;
 export const params = {
   type: 'object',
   properties: {
-    id: { type: 'string' },
+    id: { type: 'string', format: 'uuid' },
   },
   required: ['id'],
   additionalProperties: false,

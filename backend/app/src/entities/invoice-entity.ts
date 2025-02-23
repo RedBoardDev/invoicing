@@ -34,7 +34,6 @@ export const UpdateInvoiceSchema = {
   type: 'object',
   properties: {
     status: { type: 'string', enum: Object.values(InvoiceStatus) },
-    sendDate: { type: 'string', format: 'date-time' },
     pdfUrl: { type: 'string' },
   },
   additionalProperties: false,

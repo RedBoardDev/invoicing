@@ -3,7 +3,6 @@ import path from 'node:path';
 import { setupCors } from '@config/cors';
 import { setupDecorators } from '@config/decorators/setupDecorators';
 import { setupHelmet } from '@config/helmet';
-import { setupRateLimit } from '@config/rate-limit';
 import { setupSwagger } from '@config/swagger';
 import { ErrorsEnum } from '@enums/errors-enums';
 import ApiError from '@libs/error-management/api-error';
@@ -25,7 +24,7 @@ export const setupServer = async (): Promise<void> => {
   // plugins
   setupHelmet(ffy);
   setupCors(ffy);
-  setupRateLimit(ffy);
+  // setupRateLimit(ffy);
 
   // swagger
   setupSwagger(ffy);

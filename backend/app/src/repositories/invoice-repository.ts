@@ -112,10 +112,7 @@ export const getInvoiceById = handleError(getInvoiceByIdFn);
 const updateInvoiceQuery = async (invoiceId: string, data: UpdateInvoiceData): Promise<Invoice> => {
   return prismaInstance.invoice.update({
     where: { id: invoiceId },
-    data: {
-      ...data,
-      ...(data.sendDate && { sendDate: new Date(data.sendDate) }),
-    },
+    data,
   });
 };
 
