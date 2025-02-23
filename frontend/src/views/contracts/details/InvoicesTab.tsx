@@ -1,4 +1,5 @@
 import { FilePdfOutlined } from '@ant-design/icons';
+import { ROUTE_PATHS } from '@config/routePaths';
 import { STATUS_COLORS, type InvoiceStatus } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
@@ -75,9 +76,10 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
 
   return (
     <TablePageLayout<Invoice> // TODO: plutot séparer la logique call + tableau dans un autre composant comme ça on peut utiliser soit le tableau uniquement soit ce layout qui utilisera le composant tableau
-      listEndpoint={`/contracts/${contractId}/invoices`} // TODO faire la route
+      listEndpoint={`/contracts/${contractId}/invoices`}
+      detailsRoutePath={(id) => ROUTE_PATHS.private.invoices.detail(id)}
       columns={columns}
-      additionalQueryParams={{ includeClient: true }}
+      additionalQueryParams={{}}
       showHeader={false}
     />
   );

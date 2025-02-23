@@ -104,3 +104,7 @@ textarea {
 .square-input-number .ant-input-number-group-addon {
   border-radius: 0 !important;
 }
+
+.ant-table-row {
+  cursor: pointer;
+}

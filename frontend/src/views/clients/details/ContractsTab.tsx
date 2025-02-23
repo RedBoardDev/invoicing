@@ -1,3 +1,4 @@
+import { ROUTE_PATHS } from '@config/routePaths';
 import type Contract from '@interfaces/contract';
 import { formatDate } from '@utils';
 import type { ColumnsType } from 'antd/es/table';
@@ -56,9 +57,10 @@ const ContractsTab: React.FC<ContractsTabProps> = ({ clientId }) => {
 
   return (
     <TablePageLayout<Contract> // TODO: plutot séparer la logique call + tableau dans un autre composant comme ça on peut utiliser soit le tableau uniquement soit ce layout qui utilisera le composant tableau
-      listEndpoint={`/clients/${clientId}/contracts`} // TODO faire la route
+      listEndpoint={`/clients/${clientId}/contracts`}
       columns={columns}
-      additionalQueryParams={{ includeClient: true }}
+      detailsRoutePath={(id) => ROUTE_PATHS.private.contracts.detail(id)}
+      additionalQueryParams={{}}
       showHeader={false}
     />
   );

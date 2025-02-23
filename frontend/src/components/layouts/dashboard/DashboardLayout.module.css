@@ -20,7 +20,32 @@
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid var(--color-border);
+  gap: 12px;
 }
+
+.logo {
+  height: 36px;
+  width: 36px;
+  object-fit: contain;
+}
+
+.titleText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .logo {
+    height: 32px;
+    width: 32px;
+  }
+
+  .titleText {
+    font-size: 1.1rem;
+  }
+}
+
 
 .menu {
   border-right: none;

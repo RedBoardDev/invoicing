@@ -114,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ invoice, refreshItems }) => {
         title="Facture"
         icon="contract"
         data={invoice}
-        editEndpoint={`/api/invoices/${contractId}`}
+        editEndpoint={`/invoices/${contractId}`}
         fields={fields}
         extraButtons={[]}
         onBack={() => navigate(ROUTE_PATHS.private.invoices.root)}

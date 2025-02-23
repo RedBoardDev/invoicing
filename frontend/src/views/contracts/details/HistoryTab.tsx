@@ -1,6 +1,6 @@
 import { FilePdfOutlined } from '@ant-design/icons';
 import { STATUS_COLORS, type InvoiceStatus } from '@enums/invoiceStatus';
-import { ContractHistory } from '@interfaces/contractHistory';
+import type { ContractHistory } from '@interfaces/contractHistory';
 import { formatDate } from '@utils';
 import { Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -75,9 +75,9 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ contractId }) => {
 
   return (
     <TablePageLayout<ContractHistory> // TODO: plutot séparer la logique call + tableau dans un autre composant comme ça on peut utiliser soit le tableau uniquement soit ce layout qui utilisera le composant tableau
-      listEndpoint="/contracts/${contractId}/history" // TODO faire la route
+      listEndpoint={`/contracts/${contractId}/history`}
       columns={columns}
-      additionalQueryParams={{ includeClient: true }}
+      additionalQueryParams={{}}
       showHeader={false}
     />
   );

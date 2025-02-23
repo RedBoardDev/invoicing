@@ -25,7 +25,8 @@ const DashboardLayout: React.FC = () => {
     <Layout className={styles.layout}>
       <Sider width={250} className={styles.sider}>
         <Title level={4} className={styles.title}>
-          Gestion de facturation
+          <img src="/favicon.png" alt="Logo" className={styles.logo} />
+          <span className={styles.titleText}>Facturation</span>
         </Title>
         <Menu mode="inline" selectedKeys={[selectedKey]} className={styles.menu}>
           {menuItems.map((item) => (
