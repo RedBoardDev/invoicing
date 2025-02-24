@@ -12,6 +12,7 @@ interface AddModalProps<T = unknown> {
   endpoint: string;
   title: string;
   initialValues?: Partial<T>;
+  form?: FormInstance<T>;
   children: (form: FormInstance<T>) => React.ReactNode;
 }
 
@@ -22,9 +23,11 @@ export const AddModal = <T extends object>({
   endpoint,
   title,
   initialValues,
+  form,
   children,
 }: AddModalProps<T>) => {
-  const [form] = Form.useForm<T>();
+  const [formInstance] = Form.useForm<T>();
+  form = form || formInstance;
   const [loading, setLoading] = useState(false);
   const messageApi = useMessage();
 

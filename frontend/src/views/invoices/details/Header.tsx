@@ -4,7 +4,7 @@ import { STATUS_COLORS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
 import { Typography, Input, Select, Tag, DatePicker } from 'antd';
-import AddInvoice from 'components/common/modal/create/AddInvoice';
+import AddInvoice from 'components/common/modal/create/invoice/AddInvoice';
 import HeaderDetailsLayout from 'components/layouts/headerDetails/HeaderDetails';
 import type { FieldConfig } from 'components/layouts/headerDetails/types';
 import type React from 'react';

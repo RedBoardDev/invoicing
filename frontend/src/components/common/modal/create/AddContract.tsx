@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type Contract from '@interfaces/contract';
 import { Col, DatePicker, Form, Input, Row } from 'antd';
-import { AddModal } from 'components/common/modal/AddModal';
+import { AddModal } from 'components/common/modal/create/component/AddModal';
 import ClientSelect from 'components/dataEntry/ClientSelect';
 import dayjs, { type Dayjs } from 'dayjs';
 import type React from 'react';

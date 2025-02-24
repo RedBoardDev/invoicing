@@ -1,6 +1,5 @@
-import {} from 'react';
 import { Form, Input } from 'antd';
-import { AddModal } from 'components/common/modal/AddModal';
+import { AddModal } from 'components/common/modal/create/component/AddModal';
 import type React from 'react';
 import type Client from '@interfaces/client';
 

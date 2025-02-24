@@ -5,7 +5,7 @@ import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
 import { Tag, Typography, Button, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import AddInvoice from 'components/common/modal/create/AddInvoice';
+import AddInvoice from 'components/common/modal/create/invoice/AddInvoice';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo, useState } from 'react';

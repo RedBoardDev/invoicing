@@ -3,7 +3,7 @@ import type Contract from '@interfaces/contract';
 import { Typography, Button, DatePicker, InputNumber, Input } from 'antd';
 import type { FormInstance } from 'antd/lib';
 import TextArea from 'antd/lib/input/TextArea';
-import AddInvoice from 'components/common/modal/create/AddInvoice';
+import AddInvoice from 'components/common/modal/create/invoice/AddInvoice';
 import HeaderDetailsLayout from 'components/layouts/headerDetails/HeaderDetails';
 import type { FieldConfig } from 'components/layouts/headerDetails/types';
 import type { Dayjs } from 'dayjs';

@@ -1,0 +1,190 @@
+Maintenant que nous avons accès à la codebase du backend, nous pouvons affiner l’analyse précédente en comparant les implémentations frontend et backend avec le cahier des charges (README.md). Voici une évaluation mise à jour des éléments manquants ou partiellement implémentés, en tenant compte des deux parties de l’application.
+
+---
+
+### 1. Contexte & Objectifs
+
+- **Objectifs :**
+  - ✅ Gestion des clients, contrats, factures : Implémentée dans le frontend (`Clients.tsx`, `Contracts.tsx`, `Invoices.tsx`) et backend (routes `/clients`, `/contracts`, `/invoices`).
+  - ⚠️ Historisation complète : Partiellement implémentée. Le modèle `ContractHistory` existe dans `schema.prisma`, et une route `/contracts/:contractId/history` est définie, mais la logique de création des entrées d’historique lors des modifications n’est pas visible.
+  - ✅ Interface moderne, sécurisée : Frontend responsive avec Ant Design, backend avec JWT (`authMiddleware.ts`).
+
+**Manquant :**
+
+- Logique automatique pour enregistrer chaque modification de contrat dans `ContractHistory` avec les détails (avant/après, utilisateur).
+
+---
+
+### 2. Architecture Technique & Technologies
+
+- **Backend :**
+  - ✅ Node.js/TypeScript : Utilisé avec Fastify (`app.ts`).
+  - ✅ Prisma : Présent avec `schema.prisma` et repositories (`client-repository.ts`, etc.).
+  - ✅ AWS Lambda : Configuration dans `serverless.yml` et `handler.ts`.
+  - ⚠️ Base de données AWS : `docker-compose.yml` utilise PostgreSQL localement, mais rien n’indique une configuration spécifique pour RDS/Aurora dans le code fourni.
+- **Frontend :**
+  - ✅ React/TypeScript/JWT : Implémenté comme requis.
+- **Stockage & Envoi :**
+  - ⚠️ AWS S3 : Pas d’intégration visible pour stocker les PDF (aucune utilisation de `@aws-sdk/client-s3` malgré sa présence dans `package.json`).
+  - ⚠️ Nodemailer : Présent dans `package.json`, utilisé dans `email-builder.ts`, mais non intégré dans les routes (ex. `/invoices/:id/send` est simulé).
+  - ⚠️ Template PDF : Pas de génération visible (simulé dans `send-invoice/handler.ts`).
+
+**Manquant :**
+
+- Intégration réelle avec AWS S3 pour le stockage des PDF.
+- Génération effective des PDF (template codé en dur).
+- Configuration de la base de données pour AWS (RDS/Aurora).
+
+---
+
+### 3. Fonctionnalités & Workflow
+
+#### A. Gestion des Clients
+
+- ✅ Implémenté : CRUD complet dans le backend (`/clients`) et frontend (`Clients.tsx`, `ClientsDetails.tsx`).
+- ✅ Relation avec contrats : Modèle `Client` lié à `Contract` dans `schema.prisma`, affiché dans `ContractsTab.tsx`.
+
+**Manquant :** Rien d’évident.
+
+#### B. Gestion des Contrats
+
+- ✅ **Informations contractuelles :**
+  - Montant HT/TTC, délai, dates, description : Dans `schema.prisma` et `contract-entity.ts`.
+- ⚠️ **Modification & Historisation :**
+  - ✅ Modification : Route `PATCH /contracts/:id` et `EditManager` dans le frontend.
+  - ⚠️ Historisation : Modèle `ContractHistory` existe, mais aucune logique dans `updateContract` pour créer des entrées d’historique.
+- ⚠️ **Impact des modifications :** Pas de logique explicite pour préserver les factures passées (dépend de la gestion des factures).
+
+**Manquant :**
+
+- Création automatique d’entrées dans `ContractHistory` lors des mises à jour (`updateContract`).
+- Garantie que les modifications n’affectent pas les factures existantes (logique à implémenter dans le backend).
+
+#### C. Gestion des Factures
+
+- ⚠️ **Génération :**
+  - ✅ Création manuelle : `POST /invoices` et `AddInvoice.tsx`.
+  - ✅ Pré-remplissage : Données du contrat utilisées dans `AddInvoice.tsx`.
+  - ⚠️ Modification avant validation : Possible via `PATCH /invoices/:id`, mais pas de restriction explicite après validation.
+- ⚠️ **Modification & Workflow :**
+  - ⚠️ Sauvegarde brouillon : Statut `DRAFT` par défaut dans `createInvoice`, mais pas de distinction claire dans le frontend.
+  - ⚠️ Validation : Route `PUT /invoices/:id/validate` existe, mais ne verrouille pas les modifications futures.
+  - ⚠️ Envoi : Route `PUT /invoices/:id/send` simulée, pas d’envoi réel ni de validation automatique.
+- ⚠️ **Numérotation :**
+  - ❌ Format `AAAA-xxxxx` : Frontend utilise `uuidv4`, backend accepte `invoiceNumber` sans génération automatique annuelle.
+- ✅ **Items supplémentaires :** Présents dans `InvoiceItem` et `AddInvoice.tsx`.
+- ⚠️ **Historique d’envoi :** `sendDate` dans `schema.prisma`, mais non mis à jour dans `send-invoice/handler.ts`.
+
+**Manquant :**
+
+- Génération automatique de numéros au format `AAAA-xxxxx` avec réinitialisation annuelle.
+- Verrouillage des factures validées (restriction sur `PATCH /invoices/:id`).
+- Envoi réel d’email avec validation automatique dans `/invoices/:id/send`.
+- Mise à jour de `sendDate` lors de l’envoi.
+
+#### D. Templates d’Email et Génération PDF
+
+- ⚠️ **Email :**
+  - ✅ Template éditable : CRUD dans `/email-templates` et `EmailTemplate` dans `schema.prisma`.
+  - ⚠️ Intégration : Pas utilisé dans `/invoices/:id/send` (simulé).
+- ⚠️ **PDF :**
+  - ❌ Génération/Stockage : Simulé dans `send-invoice/handler.ts`, pas d’implémentation réelle.
+
+**Manquant :**
+
+- Génération et stockage des PDF sur S3.
+- Utilisation réelle des templates d’email dans l’envoi.
+
+---
+
+### 4. Conformité & Normes
+
+- ⚠️ **RGPD :**
+  - Historisation partielle via `ContractHistory`.
+  - Pas de gestion de suppression ou conservation limitée visible.
+- ⚠️ **Normes Fiscales :**
+  - ❌ Mentions obligatoires : Non présentes dans les données ou la logique.
+  - ⚠️ Conservation : Pas de politique explicite.
+
+**Manquant :**
+
+- Gestion RGPD (suppression, conservation).
+- Mentions fiscales dans les factures/PDF.
+
+---
+
+### 5. Sécurité & Gestion Utilisateur
+
+- ✅ **Authentification :** JWT dans `authMiddleware.ts` et routes `/auth`.
+- ⚠️ **Journalisation :** `ContractHistory` existe, mais incomplet.
+
+**Manquant :**
+
+- Journalisation complète des actions (toutes les modifications, pas seulement les contrats).
+
+---
+
+### 6. Exigences Non Fonctionnelles
+
+- ✅ **Performance & Scalabilité :** Backend serverless avec Lambda, frontend modulaire.
+- ✅ **Maintenance & Évolutivité :** Code structuré (services, repositories).
+
+**Manquant :**
+
+- Tests unitaires/fonctionnels (présents dans `jest.config.js`, mais aucun fichier de test visible).
+
+---
+
+### 7. Livrables Attendus
+
+- ✅ **Code source :** Frontend et backend fournis.
+- ⚠️ **Documentation :** README.md basique, mais pas de diagrammes ou guides détaillés.
+- ⚠️ **Tests :** Non visibles.
+- ⚠️ **Guide de conformité :** Non fourni.
+
+**Manquant :**
+
+- Documentation technique complète (diagrammes, workflows).
+- Tests unitaires/fonctionnels.
+- Guide RGPD/fiscal.
+
+---
+
+### Synthèse des Éléments Manquants ou Partiellement Implémentés
+
+1. **Historisation Complète :**
+   - ❌ Logique pour enregistrer les modifications dans `ContractHistory` (backend).
+2. **Gestion des Factures :**
+   - ❌ Numérotation `AAAA-xxxxx` avec réinitialisation annuelle (backend).
+   - ❌ Verrouillage des factures validées (backend).
+   - ❌ Envoi réel d’email avec validation automatique (backend, `send-invoice`).
+3. **PDF et S3 :**
+   - ❌ Génération et stockage des PDF (backend).
+4. **Conformité :**
+   - ❌ Gestion RGPD (suppression, conservation).
+   - ❌ Mentions fiscales dans les factures/PDF.
+5. **Tests & Documentation :**
+   - ❌ Tests unitaires/fonctionnels.
+   - ❌ Documentation complète (diagrammes, guides).
+
+---
+
+### Prochaines Étapes Prioritaires
+
+1. **Backend :**
+   - Implémenter la génération de numéros de facture `AAAA-xxxxx` dans `createInvoice`.
+   - Ajouter la génération PDF (ex. avec `pdfkit`) et l’upload sur S3 dans `/invoices/:id/send`.
+   - Intégrer Nodemailer pour l’envoi réel dans `/invoices/:id/send` avec validation automatique.
+   - Restreindre les modifications des factures validées dans `updateInvoice`.
+   - Enregistrer les modifications des contrats dans `ContractHistory` dans `updateContract`.
+2. **Frontend :**
+   - Ajouter des boutons pour sauvegarder brouillon/valider/envoyer dans `InvoicesDetails.tsx`.
+   - Intégrer une vue pour éditer les templates d’email (ex. `EmailTemplates.tsx`).
+3. **Conformité :**
+   - Ajouter les mentions fiscales dans les données de facture (backend) et l’affichage (frontend).
+   - Implémenter une logique de conservation/suppression RGPD.
+4. **Tests & Docs :**
+   - Écrire des tests unitaires (ex. pour `createInvoice`, `JWTService`).
+   - Fournir une documentation technique (diagrammes UML, guide de déploiement AWS).
+
+Que souhaites-tu prioriser parmi ces points ? Je peux te guider sur une implémentation spécifique si besoin !
