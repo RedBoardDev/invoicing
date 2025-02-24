@@ -21,14 +21,16 @@ const EditManager = <T extends object>({ data, configs, editEndpoint, onSuccess,
         confirmLoading={isSubmitting}
         destroyOnClose>
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          {configs.map(({ key, label, rules, renderInput }, index) => (
+          {configs.map(({ key, label, rules, renderInput, normalize, getValueProps }, index) => (
             <Form.Item
               key={`${String(key)}-${index}`}
               name={key as string}
               label={label}
               rules={rules}
+              normalize={normalize}
+              getValueProps={getValueProps}
               validateTrigger={['onChange', 'onBlur']}>
-              {renderInput()}
+              {renderInput(form)}
             </Form.Item>
           ))}
         </Form>

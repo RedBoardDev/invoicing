@@ -61,6 +61,9 @@ const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible
             </Form.Item>
           )}
 
+          <Form.Item name="title" label="Titre" rules={[{ required: true, message: 'Titre requis' }]}>
+            <Input placeholder="Titre du contrat" />
+          </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item

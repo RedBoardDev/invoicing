@@ -1,4 +1,4 @@
-import Contract from "@interfaces/contract";
+import type Contract from '@interfaces/contract';
 
 export interface ContractHistory {
   id: number;

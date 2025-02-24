@@ -14,7 +14,7 @@ const Contracts: React.FC = () => {
     () => [
       {
         title: 'Titre',
-        dataIndex: 'description',
+        dataIndex: 'title',
         render: (description: string) => description || 'N/A',
       },
       {

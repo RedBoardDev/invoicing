@@ -3,7 +3,7 @@ import { ROUTE_PATHS } from '@config/routePaths';
 import { STATUS_COLORS, type InvoiceStatus } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
-import { Tag, Typography } from 'antd';
+import { Button, Space, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
@@ -27,12 +27,28 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
         sorter: (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber),
       },
       {
-        title: 'Montant Total',
-        dataIndex: 'totalAmount',
-        render: (amount: number) => (
-          <Text type="secondary">{amount.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</Text>
+        title: 'Contrat',
+        dataIndex: ['contract', 'title'],
+        render: (title: string) => <Text>{title}</Text>,
+        sorter: (a, b) => a.contract?.title.localeCompare(b.contract?.title || '') || 0,
+      },
+      {
+        title: 'PDF / Envoyée',
+        render: (_: unknown, record: Invoice) => (
+          <Space>
+            {record.pdfUrl ? (
+              <Button
+                type="link"
+                icon={<FilePdfOutlined />}
+                onClick={() => window.open(record.pdfUrl, '_blank', 'noopener,noreferrer')}>
+                PDF
+              </Button>
+            ) : (
+              'N/A'
+            )}
+            {record.sendDate ? formatDate(record.sendDate, 'DD/MM/YYYY') : ''}
+          </Space>
         ),
-        sorter: (a, b) => a.totalAmount - b.totalAmount,
       },
       {
         title: 'Statut',
@@ -43,32 +59,8 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
       {
         title: 'Échéance',
         dataIndex: 'dueDate',
-        render: (date: Date) => formatDate(date, 'DD/MM/YYYY'),
-        sorter: (a, b) => a.dueDate.getTime() - b.dueDate.getTime(),
-      },
-      {
-        title: 'Envoyée le',
-        dataIndex: 'sendDate',
-        render: (date?: Date) => (date ? formatDate(date, 'DD/MM/YYYY') : 'N/A'),
-        sorter: (a, b) => (a.sendDate?.getTime() || 0) - (b.sendDate?.getTime() || 0),
-      },
-      {
-        title: 'PDF',
-        dataIndex: 'pdfUrl',
-        render: (url?: string) =>
-          url ? (
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              <FilePdfOutlined />
-            </a>
-          ) : (
-            'N/A'
-          ),
-      },
-      {
-        title: 'Créé le',
-        dataIndex: 'createdAt',
-        render: (date: Date) => formatDate(date, 'DD/MM/YYYY'),
-        sorter: (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+        render: (date: string) => formatDate(date, 'DD/MM/YYYY'),
+        sorter: (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
       },
     ],
     [],
@@ -79,7 +71,7 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
       listEndpoint={`/contracts/${contractId}/invoices`}
       detailsRoutePath={(id) => ROUTE_PATHS.private.invoices.detail(id)}
       columns={columns}
-      additionalQueryParams={{}}
+      additionalQueryParams={{ includeItems: true, includeContract: true }}
       showHeader={false}
     />
   );

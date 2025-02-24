@@ -1,14 +1,26 @@
 import { Form, Input, InputNumber } from 'antd';
 import type React from 'react';
 
-const AmountInput: React.FC = () => (
+interface AmountInputProps {
+  disabled?: boolean;
+}
+
+const AmountInput: React.FC<AmountInputProps> = ({ disabled = false }) => (
   <Input.Group compact>
     <Form.Item name="amountHT" noStyle rules={[{ required: true, message: 'Montant HT requis' }]}>
-      <InputNumber min={0} style={{ width: '40%' }} placeholder="HT" />
+      <InputNumber disabled={disabled} step={0.01} min={0} style={{ width: '40%' }} placeholder="HT" />
     </Form.Item>
     <span style={{ padding: '0 8px', lineHeight: '32px' }}> + </span>
     <Form.Item name="taxRate" noStyle initialValue={20}>
-      <InputNumber min={0} style={{ width: '25%' }} placeholder="TVA" addonAfter="%" className="square-input-number" />
+      <InputNumber
+        disabled={disabled}
+        step={0.1}
+        min={0}
+        style={{ width: '25%' }}
+        placeholder="TVA"
+        addonAfter="%"
+        className="square-input-number"
+      />
     </Form.Item>
     <span style={{ padding: '0 8px', lineHeight: '32px' }}> = </span>
     <Form.Item shouldUpdate noStyle>

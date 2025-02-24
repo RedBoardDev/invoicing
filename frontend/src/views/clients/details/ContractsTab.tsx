@@ -16,6 +16,11 @@ const ContractsTab: React.FC<ContractsTabProps> = ({ clientId }) => {
   const columns: ColumnsType<Contract> = useMemo(
     () => [
       {
+        title: 'Titre',
+        dataIndex: 'title',
+        render: (description: string) => description || 'N/A',
+      },
+      {
         title: 'Début',
         dataIndex: 'startDate',
         render: (date: string) => formatDate(date, 'DD/MM/YYYY'),
@@ -44,12 +49,6 @@ const ContractsTab: React.FC<ContractsTabProps> = ({ clientId }) => {
         dataIndex: 'paymentDelay',
         render: (days: number) => `${days} jours`,
         sorter: (a, b) => a.paymentDelay - b.paymentDelay,
-      },
-      {
-        title: 'Créé le',
-        dataIndex: 'createdAt',
-        render: (date: string) => formatDate(date, 'DD/MM/YYYY'),
-        sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       },
     ],
     [],

@@ -1,13 +1,13 @@
 import type Client from '@interfaces/client';
-import { ContractHistory } from '@interfaces/contractHistory';
+import type { ContractHistory } from '@interfaces/contractHistory';
 import type Invoice from '@interfaces/invoice';
 
 interface Contract {
   id: string;
   clientId: string;
   client: Client;
-  amountHT: string;
-  taxRate: string;
+  amountHT: number;
+  taxRate: number;
   paymentDelay: number;
   title: string;
   description: string;

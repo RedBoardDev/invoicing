@@ -2,51 +2,48 @@ import Header from './Header';
 import type { TabsProps } from 'antd';
 import FocusItem from 'components/layouts/focusItem/FocusItem';
 import type React from 'react';
-import { useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
-import Invoice from '@interfaces/invoice';
+import {} from 'react';
+import type Invoice from '@interfaces/invoice';
+import { ROUTE_PATHS } from '@config/routePaths';
+import { useEntityDetails } from '@hooks/useEntityDetails';
+import ItemsTab from '@views/invoices/details/ItemsTab';
+import { Icon } from '@components/common';
+
+const items: TabsProps['items'] = [
+  {
+    key: 'items',
+    label: (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Icon name="contract" size="15" color="black" />
+        Factures
+      </div>
+    ),
+  },
+];
 
 const InvoicesDetails: React.FC = () => {
-  const params = useParams();
-  const [invoice, setInvoice] = useState<Invoice | null>(null);
-  const [itemsRefreshKey, setItemsRefreshKey] = useState<number>(0);
-  const refreshItems = () => setItemsRefreshKey((prev) => prev + 1);
-
-  const fetchData = useCallback(async () => {
-    const response = await fetch(`http://localhost:3000/invoices/${params.id}`);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const responseData = await response.json();
-    setInvoice(responseData);
-  }, [params.id]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  const items: TabsProps['items'] = [
-    // {
-    //   key: 'invoices',
-    //   label: (
-    //     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-    //       <Icon name="contract" size="15" color="black" />
-    //       Factures
-    //     </div>
-    //   ),
-    // },
-  ];
+  const {
+    entity: invoice,
+    handleEditSuccess,
+    handleDelete,
+    handleRefresh,
+    refreshKey,
+  } = useEntityDetails<Invoice>({
+    endpoint: '/invoices',
+    redirectPath: ROUTE_PATHS.private.invoices.root,
+    fetchOnMount: true,
+  });
 
   const tabContent = {
-    // invoices: <InvoicesTab key={itemsRefreshKey} invoices={contract?.invoices || null} />,
+    items: <ItemsTab key={refreshKey} items={invoice?.items || undefined} />,
     // history tab
   };
 
   return (
     <FocusItem
-      childrenTop={<Header invoice={invoice} refreshItems={refreshItems} />}
+      childrenTop={
+        <Header invoice={invoice} onEditSuccess={handleEditSuccess} onDelete={handleDelete} refresh={handleRefresh} />
+      }
       tabsItems={items}
       tabContent={tabContent}
     />

@@ -1,8 +1,9 @@
 import { useMessage } from '@hooks/useMessage';
-import { Form, Modal } from 'antd';
+import { Form, Modal, Button } from 'antd';
 import type { FormInstance } from 'antd/lib';
 import type React from 'react';
 import { useState } from 'react';
+import styles from './AddModal.module.css';
 
 interface AddModalProps<T = unknown> {
   visible: boolean;
@@ -54,16 +55,27 @@ export const AddModal = <T extends object>({
     onCancel();
   };
 
+  const modalFooter = (
+    <div className={styles.footer}>
+      <Button onClick={handleCancel} disabled={loading}>
+        Annuler
+      </Button>
+      <Button type="primary" htmlType="submit" loading={loading}>
+        OK
+      </Button>
+    </div>
+  );
+
   return (
-    <Modal
-      title={title}
-      open={visible}
-      onCancel={handleCancel}
-      onOk={() => form.submit()}
-      confirmLoading={loading}
-      cancelButtonProps={{ disabled: loading }}>
-      <Form form={form} layout="vertical" initialValues={initialValues} onFinish={handleSubmit}>
+    <Modal title={title} open={visible} onCancel={handleCancel} footer={null}>
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={initialValues}
+        onFinish={handleSubmit}
+        onValuesChange={(changed, all) => console.log('Changed:', changed, 'All:', all)}>
         {children(form)}
+        {modalFooter}
       </Form>
     </Modal>
   );

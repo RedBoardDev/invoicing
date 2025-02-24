@@ -32,7 +32,8 @@ export default function useEdit<T extends object>({ data, editEndpoint, onSucces
       try {
         setIsSubmitting(true);
 
-        const response = await fetch(`http://localhost/${editEndpoint}`, {
+        console.log('call', 'editEndpoint', values);
+        const response = await fetch(`http://localhost:3000${editEndpoint}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(values),

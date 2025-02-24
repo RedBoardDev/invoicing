@@ -1,16 +1,19 @@
 import type { InvoiceStatus } from '@enums/invoiceStatus';
+import type Contract from '@interfaces/contract';
+import type InvoiceItem from '@interfaces/invoiceItem';
 
 interface Invoice {
   id: string;
   contractId: string;
-  // contract?: Contract;
+  contract?: Contract;
   invoiceNumber: string;
-  totalAmount: number;
+  amountHT: number;
+  taxRate: number;
   status: InvoiceStatus;
   dueDate: Date;
   sendDate?: Date;
   pdfUrl?: string;
-  // items: InvoiceItem[];
+  items: InvoiceItem[];
   createdAt: Date;
   updatedAt: Date;
 }
