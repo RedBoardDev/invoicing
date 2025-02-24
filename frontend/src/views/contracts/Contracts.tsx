@@ -27,13 +27,13 @@ const Contracts: React.FC = () => {
         title: 'Montant HT',
         dataIndex: 'amountHT',
         render: (value: string) => `€${Number.parseFloat(value).toFixed(2)}`,
-        sorter: (a, b) => Number.parseFloat(a.amountHT) - Number.parseFloat(b.amountHT),
+        sorter: (a, b) => a.amountHT - b.amountHT,
       },
       {
         title: 'Taux TVA',
         dataIndex: 'taxRate',
         render: (value: string) => `${Number.parseFloat(value).toFixed(2)}%`,
-        sorter: (a, b) => Number.parseFloat(a.taxRate) - Number.parseFloat(b.taxRate),
+        sorter: (a, b) => a.taxRate - b.taxRate,
       },
       {
         title: 'Délai paiement',

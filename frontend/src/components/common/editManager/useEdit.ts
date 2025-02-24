@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Form } from 'antd';
 import { useMessage } from '@hooks/useMessage';
+import { shallowEqual } from '@utils';
 
 type UseEditProps<T> = {
   data?: T | null;
@@ -27,16 +28,38 @@ export default function useEdit<T extends object>({ data, editEndpoint, onSucces
     form.resetFields();
   }, [form]);
 
+  const getChangedFields = useCallback((initialData: T | null, newValues: Partial<T>): Partial<T> => {
+    if (!initialData) return newValues;
+
+    const changedFields: Partial<T> = {};
+    for (const key in newValues) {
+      const typedKey = key as keyof T;
+      if (
+        Object.prototype.hasOwnProperty.call(newValues, typedKey) &&
+        !shallowEqual(newValues[typedKey], initialData[typedKey])
+      ) {
+        changedFields[typedKey] = newValues[typedKey];
+      }
+    }
+    return changedFields;
+  }, []);
+
   const handleSubmit = useCallback(
     async (values: Partial<T>) => {
       try {
         setIsSubmitting(true);
 
-        console.log('call', 'editEndpoint', values);
+        const changedValues = getChangedFields(data ?? null, values);
+
+        if (Object.keys(changedValues).length === 0) {
+          messageApi.info('Aucune modification détectée');
+          handleClose();
+          return;
+        }
         const response = await fetch(`http://localhost:3000${editEndpoint}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(values),
+          body: JSON.stringify(changedValues),
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -47,14 +70,13 @@ export default function useEdit<T extends object>({ data, editEndpoint, onSucces
         handleClose();
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Erreur inconnue');
-        messageApi.success('Création réussie');
         onError?.(error);
         messageApi.error('Échec de la mise à jour');
       } finally {
         setIsSubmitting(false);
       }
     },
-    [editEndpoint, handleClose, onSuccess, onError, messageApi],
+    [editEndpoint, handleClose, onSuccess, onError, messageApi, data, getChangedFields],
   );
 
   return {
