@@ -53,13 +53,24 @@ model Contract {
   @@index([endDate])
 }
 
+enum ContractChangeType {
+  AMOUNTHT_UPDATE
+  TAXRATE_UPDATE
+  PAYMENT_DELAY_UPDATE
+  TITLE_UPDATE
+  DESCRIPTION_UPDATE
+  STARTDATE_UPDATE
+  ENDDATE_UPDATE
+}
+
 model ContractHistory {
-  id         Int      @id @default(autoincrement())
+  id         Int                @id @default(autoincrement())
   contractId String
-  contract   Contract @relation(fields: [contractId], references: [id])
-  changeType String
-  data       Json
-  createdAt  DateTime @default(now())
+  contract   Contract           @relation(fields: [contractId], references: [id])
+  changeType ContractChangeType
+  oldValue   String?
+  newValue   String?
+  createdAt  DateTime           @default(now())
 
   @@index([contractId])
 }

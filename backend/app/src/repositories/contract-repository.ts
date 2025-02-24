@@ -3,6 +3,11 @@ import { type CursorPaginationQuery, type Pagination, cursorPaginationForQuery }
 import { prismaInstance } from '@libs/prisma-client';
 import type { Contract, ContractHistory, Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import {
+  type ContractUpdatePrimitives,
+  createContractHistoryEntries,
+  saveContractHistory,
+} from '@services/contract-history-service';
 import { handleError } from './error-handling-repository';
 
 /**
@@ -92,7 +97,7 @@ export const getContractById = handleError(getContractByIdFn);
 /**
  * Update Contract
  */
-const updateContractQuery = async (contractId: string, data: UpdateContractData): Promise<Contract> => {
+const updateContractQuery = async (contractId: string, data: Prisma.ContractUpdateInput): Promise<Contract> => {
   return prismaInstance.contract.update({
     where: { id: contractId },
     data,
@@ -102,11 +107,32 @@ const updateContractQuery = async (contractId: string, data: UpdateContractData)
 export type UpdateContractQueryType = Prisma.PromiseReturnType<typeof updateContractQuery>;
 
 const updateContractFn = async (contractId: string, data: UpdateContractData): Promise<UpdateContractQueryType> => {
-  return await updateContractQuery(contractId, data);
+  // Conversion des dates et création d'un objet compatible
+  const processedData: Prisma.ContractUpdateInput = {
+    ...data,
+    startDate: data.startDate ? new Date(data.startDate) : undefined,
+    endDate: data.endDate ? new Date(data.endDate) : undefined,
+  };
+
+  return prismaInstance.$transaction(async (prisma) => {
+    const currentContract = await prisma.contract.findUniqueOrThrow({
+      where: { id: contractId },
+    });
+
+    // Conversion explicite vers le type primitif
+    const historyEntries = createContractHistoryEntries(
+      currentContract,
+      processedData as Record<string, unknown> as ContractUpdatePrimitives,
+      contractId,
+    );
+
+    await saveContractHistory(historyEntries, prisma);
+
+    return updateContractQuery(contractId, processedData);
+  });
 };
 
 export const updateContract = handleError(updateContractFn);
-
 /**
  * Delete Contract
  */
