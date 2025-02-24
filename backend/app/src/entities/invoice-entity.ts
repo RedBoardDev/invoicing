@@ -5,7 +5,6 @@ export const CreateInvoiceSchema = {
   type: 'object',
   properties: {
     contractId: { type: 'string', format: 'uuid' },
-    invoiceNumber: { type: 'string', minLength: 1 },
     amountHT: { type: 'number', minimum: 0 },
     taxRate: { type: 'number', minimum: 0 },
     status: { type: 'string', enum: Object.values(InvoiceStatus) },
@@ -22,11 +21,13 @@ export const CreateInvoiceSchema = {
       },
     },
   },
-  required: ['contractId', 'invoiceNumber', 'amountHT', 'taxRate', 'status', 'dueDate'],
+  required: ['contractId', 'amountHT', 'taxRate', 'status', 'dueDate'],
   additionalProperties: false,
 } as const;
 
-export type CreateInvoiceData = FromSchema<typeof CreateInvoiceSchema>;
+export type CreateInvoiceData = FromSchema<typeof CreateInvoiceSchema> & {
+  invoiceNumber: string;
+};
 
 export const UpdateInvoiceSchema = {
   type: 'object',
