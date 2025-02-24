@@ -29,13 +29,12 @@ const createInvoiceQuery = async (
     data: {
       contractId: data.contractId,
       invoiceNumber: data.invoiceNumber,
-      totalAmount: data.totalAmount,
+      amountHT: data.amountHT,
+      taxRate: data.taxRate,
       status: data.status || 'DRAFT',
       dueDate: data.dueDate,
-      sendDate: data.sendDate ? data.sendDate : null,
-      pdfUrl: data.pdfUrl,
       items: {
-        create: data.items.map((item) => ({
+        create: data.items?.map((item) => ({
           description: item.description,
           amount: item.amount,
         })),
@@ -112,7 +111,10 @@ export const getInvoiceById = handleError(getInvoiceByIdFn);
 const updateInvoiceQuery = async (invoiceId: string, data: UpdateInvoiceData): Promise<Invoice> => {
   return prismaInstance.invoice.update({
     where: { id: invoiceId },
-    data,
+    data: {
+      ...data,
+      ...(data.sendDate && { sendDate: new Date(data.sendDate) }),
+    },
   });
 };
 

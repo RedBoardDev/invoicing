@@ -6,15 +6,7 @@ import type { TBody } from './schemas';
 const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> => {
   const body = req.body as TBody;
 
-  const invoiceData = {
-    ...body,
-    items: body.items.map((item) => ({
-      description: item.description,
-      amount: item.amount,
-    })),
-  };
-
-  const invoice = await createInvoice(invoiceData);
+  const invoice = await createInvoice(body);
 
   res.status(HttpStatusCode.created).send(invoice);
 };

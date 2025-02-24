@@ -33,8 +33,8 @@ model Contract {
   id           String   @id @default(uuid())
   clientId     String
   client       Client   @relation(fields: [clientId], references: [id])
-  amountHT     Decimal  @db.Decimal(10, 2)
-  taxRate      Decimal  @db.Decimal(5, 2)
+  amountHT     Float
+  taxRate      Float
   paymentDelay Int
   title        String
   description  String?
@@ -68,6 +68,7 @@ enum InvoiceStatus {
   DRAFT
   VALIDATED
   SENT
+  PAID
 }
 
 model Invoice {
@@ -75,7 +76,8 @@ model Invoice {
   contractId    String
   contract      Contract      @relation(fields: [contractId], references: [id])
   invoiceNumber String        @unique
-  totalAmount   Decimal       @db.Decimal(10, 2)
+  amountHT      Float
+  taxRate       Float
   status        InvoiceStatus @default(DRAFT)
   dueDate       DateTime
   sendDate      DateTime?
@@ -96,7 +98,7 @@ model InvoiceItem {
   invoiceId   String
   invoice     Invoice @relation(fields: [invoiceId], references: [id])
   description String
-  amount      Decimal @db.Decimal(10, 2)
+  amount      Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

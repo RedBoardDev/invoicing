@@ -6,11 +6,10 @@ export const CreateInvoiceSchema = {
   properties: {
     contractId: { type: 'string', format: 'uuid' },
     invoiceNumber: { type: 'string', minLength: 1 },
-    totalAmount: { type: 'number', minimum: 0 },
+    amountHT: { type: 'number', minimum: 0 },
+    taxRate: { type: 'number', minimum: 0 },
     status: { type: 'string', enum: Object.values(InvoiceStatus) },
     dueDate: { type: 'string', format: 'date-time' },
-    sendDate: { type: 'string', format: 'date-time' },
-    pdfUrl: { type: 'string' },
     items: {
       type: 'array',
       items: {
@@ -21,10 +20,9 @@ export const CreateInvoiceSchema = {
         },
         required: ['description', 'amount'],
       },
-      minItems: 1,
     },
   },
-  required: ['contractId', 'invoiceNumber', 'totalAmount', 'dueDate', 'items'],
+  required: ['contractId', 'invoiceNumber', 'amountHT', 'taxRate', 'status', 'dueDate'],
   additionalProperties: false,
 } as const;
 
@@ -34,6 +32,7 @@ export const UpdateInvoiceSchema = {
   type: 'object',
   properties: {
     status: { type: 'string', enum: Object.values(InvoiceStatus) },
+    sendDate: { type: 'string', format: 'date-time' },
     pdfUrl: { type: 'string' },
   },
   additionalProperties: false,

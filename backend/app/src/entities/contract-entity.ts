@@ -21,7 +21,6 @@ export type CreateContractData = FromSchema<typeof CreateContractSchema>;
 export const UpdateContractSchema = {
   type: 'object',
   properties: {
-    clientId: { type: 'string', format: 'uuid' },
     amountHT: { type: 'number', minimum: 0 },
     taxRate: { type: 'number', minimum: 0 },
     paymentDelay: { type: 'integer', minimum: 0 },
