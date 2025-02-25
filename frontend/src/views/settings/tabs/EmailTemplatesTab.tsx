@@ -37,7 +37,7 @@ const EmailTemplatesTab: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <Title level={3} className={styles.title}>
-          Templates d’Email
+          Templates email
         </Title>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate} className={styles.addButton}>
           Nouveau Template

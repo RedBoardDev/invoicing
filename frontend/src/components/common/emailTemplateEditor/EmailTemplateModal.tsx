@@ -16,10 +16,16 @@ const EmailTemplateModal: React.FC<EmailTemplateModalProps> = ({ visible, templa
     useEmailTemplateLogic(form, template, onSuccess, onClose, { subjectRef, contentRef });
 
   useEffect(() => {
-    if (visible) {
-      form.setFieldsValue(template || {});
-    }
+    if (!visible) return;
+    form.resetFields();
+    if (template) form.setFieldsValue(template);
   }, [visible, template, form]);
+
+  const handleClose = () => {
+    form.resetFields();
+    console.log('Après resetFields (fermeture) :', form.getFieldsValue());
+    onClose();
+  };
 
   const subject = Form.useWatch('subject', form) || '';
   const content = Form.useWatch('content', form) || '';
@@ -28,7 +34,7 @@ const EmailTemplateModal: React.FC<EmailTemplateModalProps> = ({ visible, templa
     <Modal
       title={template ? 'Modifier le Template' : 'Nouveau Template'}
       open={visible}
-      onCancel={onClose}
+      onCancel={handleClose}
       footer={null}
       destroyOnClose
       width={900}
@@ -38,7 +44,7 @@ const EmailTemplateModal: React.FC<EmailTemplateModalProps> = ({ visible, templa
           form={form}
           template={template}
           loading={loading}
-          onClose={onClose}
+          onClose={handleClose}
           onSubmit={handleSubmit}
           onInsertVariable={insertVariable}
           onKeyDown={handleKeyDown}

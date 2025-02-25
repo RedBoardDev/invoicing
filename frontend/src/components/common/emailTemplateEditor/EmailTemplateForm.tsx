@@ -35,7 +35,7 @@ export const EmailTemplateForm: React.FC<EmailTemplateFormProps> = ({
 
   return (
     <div className={styles.editor}>
-      <Form form={form} layout="vertical" initialValues={template || {}} onFinish={onSubmit} className={styles.form}>
+      <Form form={form} layout="vertical" onFinish={onSubmit} className={styles.form}>
         <div className={styles.formContent}>
           <Form.Item name="name" label="Nom" rules={[{ required: true, message: '' }, { min: 1 }]}>
             <Input placeholder="Nom du template" />
@@ -82,3 +82,5 @@ export const EmailTemplateForm: React.FC<EmailTemplateFormProps> = ({
     </div>
   );
 };
+
+export default EmailTemplateForm;

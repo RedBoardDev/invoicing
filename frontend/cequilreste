@@ -168,6 +168,7 @@ Maintenant que nous avons accès à la codebase du backend, nous pouvons affiner
    - ❌ Documentation complète (diagrammes, guides).
 
   -> changer tout les PUT en PATCH pour les updates
+  -> afficher les erreurs quand le delete fail pour contrainte (vu que j'ai mis les messages dans les retours)
 
 ---
 

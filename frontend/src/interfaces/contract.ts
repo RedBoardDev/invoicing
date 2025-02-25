@@ -1,5 +1,6 @@
 import type Client from '@interfaces/client';
 import type { ContractHistory } from '@interfaces/contractHistory';
+import type EmailTemplate from '@interfaces/emailTemplate';
 import type Invoice from '@interfaces/invoice';
 
 interface Contract {
@@ -13,6 +14,7 @@ interface Contract {
   description: string;
   invoices?: Invoice[];
   history: ContractHistory[];
+  emailTemplate: EmailTemplate;
   startDate: string;
   endDate: string;
   invoice: Invoice;

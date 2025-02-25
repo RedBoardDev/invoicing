@@ -23,7 +23,7 @@ const Settings: React.FC = () => {
 
   return (
     <FocusItem
-      childrenTop={<h1 style={{ margin: '16px 24px', fontSize: 24, color: 'var(--color-primary)' }}>Paramètres</h1>}
+      childrenTop={<h1 style={{ margin: '16px 24px', fontSize: 24 }}>Paramètres</h1>}
       tabsItems={items}
       tabContent={tabContent}
     />

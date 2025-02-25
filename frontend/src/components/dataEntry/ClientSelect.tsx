@@ -52,6 +52,7 @@ const ClientSelectSelect: React.FC<ClientSelectSelectProps> = ({ value, onChange
       filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
       value={value}
       onChange={onChange}
+      
     />
   );
 };
