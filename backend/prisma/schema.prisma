@@ -32,9 +32,9 @@ model Client {
 model Contract {
   id              String        @id @default(uuid())
   clientId        String
-  client          Client        @relation(fields: [clientId], references: [id])
+  client          Client        @relation(fields: [clientId], references: [id], onDelete: Restrict)
   emailTemplateId String
-  emailTemplate   EmailTemplate @relation(fields: [emailTemplateId], references: [id])
+  emailTemplate   EmailTemplate @relation(fields: [emailTemplateId], references: [id], onDelete: Restrict)
   amountHT        Float
   taxRate         Float
   paymentDelay    Int
@@ -42,7 +42,6 @@ model Contract {
   description     String?
   startDate       DateTime
   endDate         DateTime
-  // extras            String?
 
   invoices Invoice[]
   history  ContractHistory[]
@@ -68,7 +67,7 @@ enum ContractChangeType {
 model ContractHistory {
   id         Int                @id @default(autoincrement())
   contractId String
-  contract   Contract           @relation(fields: [contractId], references: [id])
+  contract   Contract           @relation(fields: [contractId], references: [id], onDelete: Cascade)
   changeType ContractChangeType
   oldValue   String?
   newValue   String?
@@ -95,7 +94,7 @@ enum InvoiceStatus {
 model Invoice {
   id            String        @id @default(uuid())
   contractId    String
-  contract      Contract      @relation(fields: [contractId], references: [id])
+  contract      Contract      @relation(fields: [contractId], references: [id], onDelete: Restrict)
   invoiceNumber String        @unique
   amountHT      Float
   taxRate       Float
@@ -117,7 +116,7 @@ model Invoice {
 model InvoiceItem {
   id          Int     @id @default(autoincrement())
   invoiceId   String
-  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   description String
   amount      Float
 
