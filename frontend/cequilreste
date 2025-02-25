@@ -167,6 +167,8 @@ Maintenant que nous avons accès à la codebase du backend, nous pouvons affiner
    - ❌ Tests unitaires/fonctionnels.
    - ❌ Documentation complète (diagrammes, guides).
 
+  -> changer tout les PUT en PATCH pour les updates
+
 ---
 
 ### Prochaines Étapes Prioritaires

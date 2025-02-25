@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface ApiDataState<T> {
   data: T[];
@@ -32,6 +32,8 @@ export const useApiData = <T extends object>({
     pageSize: initialPageSize,
   });
 
+  const memoizedAdditionalQueryParams = useMemo(() => additionalQueryParams, [JSON.stringify(additionalQueryParams)]);
+
   const fetchData = useCallback(async () => {
     setState((prev) => ({ ...prev, loading: true }));
     try {
@@ -39,7 +41,7 @@ export const useApiData = <T extends object>({
         page: pagination.page.toString(),
         pageSize: pagination.pageSize.toString(),
         includeCount: 'true',
-        ...additionalQueryParams,
+        ...memoizedAdditionalQueryParams,
       });
 
       const response = await fetch(`http://localhost:3000${endpoint}?${params}`);
@@ -52,7 +54,7 @@ export const useApiData = <T extends object>({
       const { data, meta } = responseData;
 
       setState({
-        data: data,
+        data,
         total: meta.totalCount,
         loading: false,
         error: null,
@@ -65,7 +67,7 @@ export const useApiData = <T extends object>({
         error: error as Error,
       });
     }
-  }, [endpoint, pagination.page, pagination.pageSize, additionalQueryParams]);
+  }, [endpoint, pagination.page, pagination.pageSize, memoizedAdditionalQueryParams]);
 
   useEffect(() => {
     fetchData();
