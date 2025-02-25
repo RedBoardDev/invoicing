@@ -23,10 +23,10 @@ const items: TabsProps['items'] = [
 const ClientsDetails: React.FC = () => {
   const {
     entity: client,
-    handleEditSuccess,
-    handleDelete,
-    handleRefresh,
-    refreshKey,
+    updateEntity,
+    deleteEntity,
+    refresh,
+    refreshCount,
   } = useEntityDetails<Client>({
     endpoint: '/clients',
     redirectPath: ROUTE_PATHS.private.clients.root,
@@ -34,19 +34,12 @@ const ClientsDetails: React.FC = () => {
   });
 
   const tabContent = {
-    contracts: <ContractsTab key={refreshKey} clientId={client?.id || null} />,
+    contracts: <ContractsTab key={refreshCount} clientId={client?.id || null} />,
   };
 
   return (
     <FocusItem
-      childrenTop={
-        <Header
-          client={client}
-          onEditSuccess={handleEditSuccess}
-          onDelete={handleDelete}
-          refresh={handleRefresh}
-        />
-      }
+      childrenTop={<Header client={client} onEditSuccess={updateEntity} onDelete={deleteEntity} refresh={refresh} />}
       tabsItems={items}
       tabContent={tabContent}
     />

@@ -40,6 +40,7 @@ const Clients: React.FC = () => {
     [],
   );
 
+  // TODO pourquoi il reload plus le tableau quand je fait entrée ?
   return (
     <>
       <TablePageLayout<Client>

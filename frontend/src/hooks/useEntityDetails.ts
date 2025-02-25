@@ -1,14 +1,25 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMessage } from '@hooks/useMessage';
 
-interface UseEntityDetailsProps {
+interface EntityDetailsOptions {
   endpoint: string;
   entityId?: string;
   redirectPath: string;
   fetchOnMount?: boolean;
   onFetchError?: (error: Error) => void;
   onDeleteError?: (error: Error) => void;
+  queryParams?: Record<string, string | number | boolean>;
+}
+
+interface EntityDetailsResult<T> {
+  entity: T | null;
+  isLoading: boolean;
+  fetchEntity: () => Promise<void>;
+  deleteEntity: () => Promise<void>;
+  refresh: () => void;
+  updateEntity: (updatedEntity: T) => void;
+  refreshCount: number;
 }
 
 export const useEntityDetails = <T>({
@@ -18,76 +29,112 @@ export const useEntityDetails = <T>({
   fetchOnMount = true,
   onFetchError,
   onDeleteError,
-}: UseEntityDetailsProps) => {
+  queryParams: initialQueryParams,
+}: EntityDetailsOptions): EntityDetailsResult<T> => {
   const params = useParams();
   const navigate = useNavigate();
   const messageApi = useMessage();
   const id = entityId || params.id;
 
   const [entity, setEntity] = useState<T | null>(null);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [refreshCount, setRefreshCount] = useState<number>(0);
+  const shouldFetchRef = useRef(fetchOnMount);
+  const queryParamsRef = useRef(initialQueryParams);
 
-  const fetchData = useCallback(async () => {
-    if (!id) return;
-    try {
-      const response = await fetch(`http://localhost:3000${endpoint}/${id}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  useEffect(() => {
+    queryParamsRef.current = initialQueryParams;
+    shouldFetchRef.current = fetchOnMount;
+  }, [fetchOnMount, initialQueryParams]);
+
+  const url = useMemo(() => {
+    if (!id) return null;
+    const baseUrl = new URL(`http://localhost:3000${endpoint}/${id}`);
+    const params = queryParamsRef.current;
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        baseUrl.searchParams.append(key, String(value));
       }
-      const responseData = await response.json();
-      setEntity(responseData);
-    } catch (error) {
+    }
+    return baseUrl.toString();
+  }, [id, endpoint]);
+
+  const handleFetchError = useCallback(
+    (error: Error) => {
       console.error(`Failed to fetch ${endpoint} data:`, error);
       messageApi.error('Échec de la mise à jour');
-      onFetchError?.(error as Error);
-    }
-  }, [id, endpoint, messageApi, onFetchError]);
+      onFetchError?.(error);
+    },
+    [endpoint, messageApi, onFetchError],
+  );
 
-  const handleDelete = useCallback(async () => {
+  const handleDeleteError = useCallback(
+    (error: Error) => {
+      console.error(`Failed to delete ${endpoint}:`, error);
+      messageApi.error('Échec de la suppression');
+      onDeleteError?.(error);
+    },
+    [endpoint, messageApi, onDeleteError],
+  );
+
+  const fetchEntity = useCallback(async () => {
+    if (!url) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setEntity(data);
+    } catch (error) {
+      handleFetchError(error as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [url, handleFetchError]);
+
+  const deleteEntity = useCallback(async () => {
     if (!id) return;
+    setIsLoading(true);
     try {
       const response = await fetch(`http://localhost:3000${endpoint}`, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: [id] }),
       });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const responseData = await response.json();
-      if (responseData.failedIds && responseData.failedIds.length > 0) {
-        throw new Error('Failed to delete some entities');
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (data.failedIds?.length > 0) throw new Error('Failed to delete some entities');
       navigate(redirectPath);
     } catch (error) {
-      console.error(`Failed to delete ${endpoint}:`, error);
-      messageApi.error('Échec de la suppression');
-      onDeleteError?.(error as Error);
+      handleDeleteError(error as Error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [id, endpoint, navigate, redirectPath, messageApi, onDeleteError]);
+  }, [id, endpoint, navigate, redirectPath, handleDeleteError]);
 
-  const handleRefresh = useCallback(() => {
-    setRefreshKey((prev) => prev + 1);
-  }, []);
+  const refresh = useCallback(() => {
+    setRefreshCount((prev) => prev + 1);
+    fetchEntity();
+  }, [fetchEntity]);
 
-  const handleEditSuccess = useCallback((updatedEntity: T) => {
+  const updateEntity = useCallback((updatedEntity: T) => {
     setEntity(updatedEntity);
   }, []);
 
   useEffect(() => {
-    if (fetchOnMount) {
-      fetchData();
+    if (shouldFetchRef.current && id) {
+      fetchEntity();
+      shouldFetchRef.current = false;
     }
-  }, [fetchData, fetchOnMount]);
+  }, [id, fetchEntity]);
 
   return {
     entity,
-    fetchData,
-    handleDelete,
-    handleRefresh,
-    handleEditSuccess,
-    refreshKey,
+    isLoading,
+    fetchEntity,
+    deleteEntity,
+    refresh,
+    updateEntity,
+    refreshCount,
   };
 };

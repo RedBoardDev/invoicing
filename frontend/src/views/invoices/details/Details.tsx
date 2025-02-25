@@ -24,10 +24,10 @@ const items: TabsProps['items'] = [
 const InvoicesDetails: React.FC = () => {
   const {
     entity: invoice,
-    handleEditSuccess,
-    handleDelete,
-    handleRefresh,
-    refreshKey,
+    updateEntity,
+    deleteEntity,
+    refresh,
+    refreshCount,
   } = useEntityDetails<Invoice>({
     endpoint: '/invoices',
     redirectPath: ROUTE_PATHS.private.invoices.root,
@@ -35,16 +35,14 @@ const InvoicesDetails: React.FC = () => {
   });
 
   const tabContent = {
-    items: <ItemsTab key={refreshKey} items={invoice?.items || undefined} />, // TODO a virer non ?
+    items: <ItemsTab key={refreshCount} items={invoice?.items || undefined} />, // TODO a virer non ?
     // TODO: faire un tab pour afficher le template mail lié au contrat avec affiché la preview simulate du l'email
     // TODO voir s'il faut faire un historique des modifs (genre avant le draft puis passage au draft et envoi etc)
   };
 
   return (
     <FocusItem
-      childrenTop={
-        <Header invoice={invoice} onEditSuccess={handleEditSuccess} onDelete={handleDelete} refresh={handleRefresh} />
-      }
+      childrenTop={<Header invoice={invoice} onEditSuccess={updateEntity} onDelete={deleteEntity} refresh={refresh} />}
       tabsItems={items}
       tabContent={tabContent}
     />

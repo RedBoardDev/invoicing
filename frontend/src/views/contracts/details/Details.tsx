@@ -33,31 +33,27 @@ const items: TabsProps['items'] = [
 const ContractsDetails: React.FC = () => {
   const {
     entity: contract,
-    handleEditSuccess,
-    handleDelete,
-    handleRefresh,
-    refreshKey,
+    updateEntity,
+    deleteEntity,
+    refresh,
+    refreshCount,
   } = useEntityDetails<Contract>({
     endpoint: '/contracts',
     redirectPath: ROUTE_PATHS.private.contracts.root,
     fetchOnMount: true,
+    queryParams: { includeEmailTemplate: true },
   });
 
   const tabContent = {
-    invoices: <InvoicesTab key={refreshKey} contractId={contract?.id || null} />,
-    history: <HistoryTab key={refreshKey} contractId={contract?.id || null} />,
+    invoices: <InvoicesTab key={refreshCount} contractId={contract?.id || null} />,
+    history: <HistoryTab key={refreshCount} contractId={contract?.id || null} />,
     // TODO: faire un tab pour afficher le template mail lié au contrat avec une carte comme dans settings
   };
 
   return (
     <FocusItem
       childrenTop={
-        <Header
-          contract={contract}
-          onEditSuccess={handleEditSuccess}
-          onDelete={handleDelete}
-          refresh={handleRefresh}
-        />
+        <Header contract={contract} onEditSuccess={updateEntity} onDelete={deleteEntity} refresh={refresh} />
       }
       tabsItems={items}
       tabContent={tabContent}
