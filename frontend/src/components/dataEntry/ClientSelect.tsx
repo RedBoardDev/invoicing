@@ -1,21 +1,43 @@
+import { useMessage } from '@hooks/useMessage';
 import type Client from '@interfaces/client';
 import { Select } from 'antd';
 import type React from 'react';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-interface ClientSelectProps {
+interface ClientSelectSelectProps {
   value?: string;
   onChange?: (value: string) => void;
-  loading?: boolean;
-  clients: Client[];
 }
 
-const ClientSelect: React.FC<ClientSelectProps> = ({ value, onChange, loading, clients }) => {
+const ClientSelectSelect: React.FC<ClientSelectSelectProps> = ({ value, onChange }) => {
+  const messageApi = useMessage();
+  const [clients, setClients] = useState<Client[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const fetchClients = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('http://localhost:3000/clients');
+      if (!response.ok) throw new Error('Erreur lors de la récupération des clients');
+      const data = await response.json();
+      setClients(data.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des clients:', error);
+      messageApi.error('Erreur lors du chargement des clients');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [messageApi]);
+
+  useEffect(() => {
+    fetchClients();
+  }, [fetchClients]);
+
   const options = useMemo(
     () =>
-      clients.map((c) => ({
-        value: c.id,
-        label: c.name,
+      clients.map((client) => ({
+        value: client.id,
+        label: client.name,
       })),
     [clients],
   );
@@ -25,7 +47,7 @@ const ClientSelect: React.FC<ClientSelectProps> = ({ value, onChange, loading, c
       showSearch
       placeholder="Sélectionnez un client"
       optionFilterProp="label"
-      loading={loading}
+      loading={isLoading}
       options={options}
       filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
       value={value}
@@ -34,4 +56,4 @@ const ClientSelect: React.FC<ClientSelectProps> = ({ value, onChange, loading, c
   );
 };
 
-export default ClientSelect;
+export default ClientSelectSelect;

@@ -35,8 +35,9 @@ const InvoicesDetails: React.FC = () => {
   });
 
   const tabContent = {
-    items: <ItemsTab key={refreshKey} items={invoice?.items || undefined} />,
-    // history tab
+    items: <ItemsTab key={refreshKey} items={invoice?.items || undefined} />, // TODO a virer non ?
+    // TODO: faire un tab pour afficher le template mail lié au contrat avec affiché la preview simulate du l'email
+    // TODO voir s'il faut faire un historique des modifs (genre avant le draft puis passage au draft et envoi etc)
   };
 
   return (

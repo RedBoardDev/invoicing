@@ -1,9 +1,10 @@
 import { FilePdfOutlined } from '@ant-design/icons';
 import { ROUTE_PATHS } from '@config/routePaths';
 import { STATUS_COLORS } from '@enums/invoiceStatus';
+import { useMessage } from '@hooks/useMessage';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
-import { Typography, Input, Select, Tag, DatePicker } from 'antd';
+import { Typography, Input, Select, Tag, DatePicker, Button, Modal } from 'antd';
 import AddInvoice from 'components/common/modal/create/invoice/AddInvoice';
 import HeaderDetailsLayout from 'components/layouts/headerDetails/HeaderDetails';
 import type { FieldConfig } from 'components/layouts/headerDetails/types';
@@ -103,9 +104,43 @@ const fields: FieldConfig<Invoice>[] = [
 ];
 
 const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refresh }) => {
-  const [addModalVisible, setAddModalVisible] = useState<boolean>(false);
+  const messageApi = useMessage();
   const navigate = useNavigate();
+
+  const [addModalVisible, setAddModalVisible] = useState<boolean>(false);
+  const [confirmModalVisible, setConfirmModalVisible] = useState<boolean>(false);
+  const [isValidating, setIsValidating] = useState<boolean>(false);
   const contractId = invoice?.id;
+
+  const handleValidateInvoice = async () => {
+    if (!contractId) return;
+
+    setIsValidating(true);
+    try {
+      const response = await fetch(`http://localhost:3000/invoices/${contractId}/validate`, {
+        // TODO voir pk il fail
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) throw new Error('Échec de la validation de la facture');
+      messageApi.success('Facture validée avec succès');
+      setConfirmModalVisible(false);
+      refresh();
+    } catch (error) {
+      messageApi.error('Erreur lors de la validation de la facture');
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const showConfirmModal = () => {
+    setConfirmModalVisible(true);
+  };
+
+  const handleCancelValidation = () => {
+    setConfirmModalVisible(false);
+  };
 
   return (
     <>
@@ -115,11 +150,37 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
         data={invoice}
         editEndpoint={`/invoices/${contractId}`}
         fields={fields}
-        extraButtons={[]}
+        extraButtons={[
+          <Button
+            type="primary"
+            key="validate-invoice"
+            onClick={showConfirmModal}
+            disabled={!invoice || invoice.status === 'VALIDATED'}>
+            Valider
+          </Button>,
+          // TODO pour envoyer enfaite il faut déjà check si c'est valider, si non, messageApi 'faut valider avant' sinon on redirige sur la suite
+          <Button key="send-invoice" onClick={() => console.log('Send invoice')}>
+            Envoyer
+          </Button>,
+          // TODO ajouter un button de preview pdf (ouvrir dans un nouvel onglet ?)
+        ]}
         onDelete={onDelete}
         onEdit={onEditSuccess}
         onBack={() => navigate(ROUTE_PATHS.private.invoices.root)}
       />
+      <Modal
+        title="Confirmation de validation"
+        open={confirmModalVisible}
+        onOk={handleValidateInvoice}
+        onCancel={handleCancelValidation}
+        okText="Oui, valider"
+        cancelText="Non, annuler"
+        confirmLoading={isValidating}
+        okButtonProps={{ danger: true }}>
+        <Text>
+          Êtes-vous sûr de vouloir valider cette facture ? Une fois validée, elle ne pourra plus être modifiée.
+        </Text>
+      </Modal>
       <AddInvoice
         contractId={invoice?.id}
         visible={addModalVisible}

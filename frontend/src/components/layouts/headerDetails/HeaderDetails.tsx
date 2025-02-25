@@ -5,6 +5,7 @@ import { Icon } from '@components/common';
 import EditManager from 'components/common/editManager';
 import type { HeaderDetailsLayoutProps } from 'components/layouts/headerDetails/types';
 import type { EditManagerConfig } from 'components/common/editManager/types';
+import type React from 'react';
 
 const { Text } = Typography;
 
@@ -58,9 +59,15 @@ const HeaderDetailsLayout = <T extends object>({
       </div>
       {extraButtons && (
         <div>
-          {extraButtons.map((button) => (
-            <div key={button?.toString()}>{button}</div>
-          ))}
+          {extraButtons && (
+            <div className={styles.extraButtonsContainer}>
+              <Flex gap="small" align="center">
+                {extraButtons.map((button, index) => (
+                  <div key={(button as React.ReactElement)?.key || index}>{button}</div>
+                ))}
+              </Flex>
+            </div>
+          )}
         </div>
       )}
     </div>

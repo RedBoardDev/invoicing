@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import type Contract from '@interfaces/contract';
 import { Col, DatePicker, Form, Input, Row } from 'antd';
 import { AddModal } from 'components/common/modal/create/component/AddModal';
 import ClientSelect from 'components/dataEntry/ClientSelect';
 import dayjs, { type Dayjs } from 'dayjs';
 import type React from 'react';
-import type Client from '@interfaces/client';
 import AmountInput from 'components/dataEntry/AmountInput';
+import EmailTemplateSelect from 'components/dataEntry/EmailTemplateSelect';
 
 interface AddContractProps {
   clientId?: string | undefined;
@@ -16,26 +16,6 @@ interface AddContractProps {
 }
 
 const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible, onSuccess }) => {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [clientsLoading, setClientsLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchClients = async () => {
-      setClientsLoading(true);
-      try {
-        const response = await fetch('http://localhost:3000/clients');
-        const data = await response.json();
-        setClients(data.data);
-      } catch (error) {
-        console.error('Error fetching clients:', error);
-      } finally {
-        setClientsLoading(false);
-      }
-    };
-
-    if (visible) fetchClients();
-  }, [visible]);
-
   const handleAddSuccess = useCallback(() => {
     setVisible(false);
     onSuccess?.();
@@ -57,9 +37,16 @@ const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible
             </Form.Item>
           ) : (
             <Form.Item name="clientId" label="Client" rules={[{ required: true, message: 'Sélectionnez un client' }]}>
-              <ClientSelect clients={clients} loading={clientsLoading} />
+              <ClientSelect />
             </Form.Item>
           )}
+
+          <Form.Item
+            name="emailTemplateId"
+            label="Template de l'email"
+            rules={[{ required: true, message: 'Sélectionnez un template' }]}>
+            <EmailTemplateSelect />
+          </Form.Item>
 
           <Form.Item name="title" label="Titre" rules={[{ required: true, message: 'Titre requis' }]}>
             <Input placeholder="Titre du contrat" />

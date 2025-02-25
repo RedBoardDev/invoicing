@@ -46,6 +46,7 @@ const ContractsDetails: React.FC = () => {
   const tabContent = {
     invoices: <InvoicesTab key={refreshKey} contractId={contract?.id || null} />,
     history: <HistoryTab key={refreshKey} contractId={contract?.id || null} />,
+    // TODO: faire un tab pour afficher le template mail lié au contrat avec une carte comme dans settings
   };
 
   return (
