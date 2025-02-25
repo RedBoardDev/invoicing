@@ -21,6 +21,7 @@ export type THeaders = FromSchema<typeof headers>;
 
 export const includeConfigs: IncludeConfigs = {
   invoices: { type: IncludeType.DEFINE, include: { invoices: true } },
+  emailTemplate: { type: IncludeType.DEFINE, include: { emailTemplate: true } },
   history: { type: IncludeType.DEFINE, include: { history: true } },
 };
 

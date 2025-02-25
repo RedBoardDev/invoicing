@@ -30,16 +30,18 @@ model Client {
 }
 
 model Contract {
-  id           String   @id @default(uuid())
-  clientId     String
-  client       Client   @relation(fields: [clientId], references: [id])
-  amountHT     Float
-  taxRate      Float
-  paymentDelay Int
-  title        String
-  description  String?
-  startDate    DateTime
-  endDate      DateTime
+  id              String        @id @default(uuid())
+  clientId        String
+  client          Client        @relation(fields: [clientId], references: [id])
+  emailTemplateId String
+  emailTemplate   EmailTemplate @relation(fields: [emailTemplateId], references: [id])
+  amountHT        Float
+  taxRate         Float
+  paymentDelay    Int
+  title           String
+  description     String?
+  startDate       DateTime
+  endDate         DateTime
   // extras            String?
 
   invoices Invoice[]
@@ -130,6 +132,8 @@ model EmailTemplate {
   name    String
   subject String
   content String
+
+  Contract Contract[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
