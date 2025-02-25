@@ -1,11 +1,14 @@
 export enum EmailVariable {
-  YEAR = 'year',
-  CURRENT_DATE = 'currentDate',
-  INVOICE_NUMBER = 'invoiceNumber',
-  INVOICE_DATE = 'invoiceDate',
-  DUE_DATE = 'dueDate',
-  TOTAL_AMOUNT = 'totalAmount',
-  EMAIL_EMAIL = 'emailClient',
+  YEAR = 'YEAR',
+  CURRENT_DATE = 'CURRENT_DATE',
+  INVOICE_NUMBER = 'INVOICE_NUMBER',
+  TAX_RATE = 'TAX_RATE',
+  INVOICE_DATE = 'INVOICE_DATE',
+  DUE_DATE = 'DUE_DATE',
+  CLIENT_MAIL = 'CLIENT_MAIL',
+  CLIENT_NAME = 'CLIENT_NAME',
+  CONTRACT_PAYMENT_DELAY = 'CONTRACT_PAYMENT_DELAY',
+  CONTRACT_TITLE = 'CONTRACT_TITLE',
 }
 
 export const VARIABLES_METADATA = {
@@ -21,6 +24,10 @@ export const VARIABLES_METADATA = {
     description: 'Numéro de facture',
     example: '123456',
   },
+  [EmailVariable.TAX_RATE]: {
+    description: 'Taux de TVA',
+    example: '20',
+  },
   [EmailVariable.INVOICE_DATE]: {
     description: "Date d'émission de la facture",
     example: '2024-12-31',
@@ -29,13 +36,21 @@ export const VARIABLES_METADATA = {
     description: "Date d'échéance de la facture",
     example: '2024-12-31',
   },
-  [EmailVariable.TOTAL_AMOUNT]: {
-    description: 'Montant total de la facture',
-    example: '1234.56',
-  },
-  [EmailVariable.EMAIL_EMAIL]: {
+  [EmailVariable.CLIENT_MAIL]: {
     description: 'Email du client',
     example: 'client@example.com',
+  },
+  [EmailVariable.CLIENT_NAME]: {
+    description: 'Nom du client',
+    example: 'John Doe',
+  },
+  [EmailVariable.CONTRACT_PAYMENT_DELAY]: {
+    description: 'Délai de paiement du contrat',
+    example: '30',
+  },
+  [EmailVariable.CONTRACT_TITLE]: {
+    description: 'Titre du contrat',
+    example: 'Contrat de prestation de service',
   },
 } satisfies Record<EmailVariable, { description: string; example: string }>;
 
