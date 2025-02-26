@@ -18,6 +18,7 @@ const InvoicesDetails: React.FC = () => {
     endpoint: '/invoices',
     redirectPath: ROUTE_PATHS.private.invoices.root,
     fetchOnMount: true,
+    queryParams: { includeContract: true },
   });
 
   const tabContent = {

@@ -13,8 +13,9 @@ interface Contract {
   title: string;
   description: string;
   invoices?: Invoice[];
-  history: ContractHistory[];
-  emailTemplate: EmailTemplate;
+  history?: ContractHistory[];
+  emailTemplateId: string;
+  emailTemplate?: EmailTemplate;
   startDate: string;
   endDate: string;
   invoice: Invoice;

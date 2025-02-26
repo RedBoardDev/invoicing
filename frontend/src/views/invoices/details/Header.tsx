@@ -1,44 +1,30 @@
-import { FilePdfOutlined } from '@ant-design/icons';
+import { FilePdfOutlined, EyeOutlined } from '@ant-design/icons';
 import { ROUTE_PATHS } from '@config/routePaths';
 import { STATUS_COLORS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
-import { Typography, Input, Select, Tag, DatePicker, Button, Modal } from 'antd';
+import { Typography, Tag, DatePicker, Button, Modal } from 'antd';
 import HeaderDetailsLayout from 'components/layouts/headerDetails/HeaderDetails';
 import type { FieldConfig } from 'components/layouts/headerDetails/types';
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInvoiceActions } from './useInvoiceActions';
+import SendInvoiceModal from 'components/common/modal/sendInvoice/SendInvoiceModal';
 
 const { Text } = Typography;
 
+// TODO en update on peux modifier: dueDate et a voir quoi d'autre mais je pense pas bcp plus (voir le schemas du update dans le backend)
 const fields: FieldConfig<Invoice>[] = [
   {
     key: 'invoiceNumber',
     label: 'N° Facture',
     render: (data) => <Text strong>#{data.invoiceNumber}</Text>,
-    editConfig: {
-      rules: [{ required: true, message: 'Le numéro de facture est obligatoire' }],
-      renderInput: () => <Input placeholder="FAC-0001" />,
-    },
   },
   {
     key: 'status',
     label: 'Statut',
     render: (data) => <Tag color={STATUS_COLORS[data.status]}>{data.status.toUpperCase()}</Tag>,
-    editConfig: {
-      rules: [{ required: true, message: 'Le statut est obligatoire' }],
-      renderInput: () => (
-        <Select>
-          {Object.keys(STATUS_COLORS).map((status) => (
-            <Select.Option key={status} value={status}>
-              {status.toUpperCase()}
-            </Select.Option>
-          ))}
-        </Select>
-      ),
-    },
   },
   {
     key: 'dueDate',
@@ -53,9 +39,6 @@ const fields: FieldConfig<Invoice>[] = [
     key: 'sendDate',
     label: 'Envoyée le',
     render: (data) => (data.sendDate ? formatDate(data.sendDate, 'DD/MM/YYYY') : <Text type="secondary">-</Text>),
-    editConfig: {
-      renderInput: () => <DatePicker format="DD/MM/YYYY" />,
-    },
   },
   {
     key: 'pdfUrl',
@@ -68,10 +51,6 @@ const fields: FieldConfig<Invoice>[] = [
       ) : (
         <Text type="secondary">-</Text>
       ),
-    editConfig: {
-      rules: [{ type: 'url', message: 'URL invalide' }],
-      renderInput: () => <Input placeholder="https://..." />,
-    },
   },
 ];
 
@@ -93,12 +72,14 @@ interface ButtonConfig {
 
 const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refresh }) => {
   const navigate = useNavigate();
-  const { validateInvoice, sendInvoice, markAsPaid, isValidating, isSending, isMarkingAsPaid } = useInvoiceActions(
-    invoice,
-    refresh,
-  );
+  const { validateInvoice, markAsPaid, isValidating, isSending, isMarkingAsPaid } = useInvoiceActions(invoice, refresh);
 
   const [confirmModalVisible, setConfirmModalVisible] = useState<'validate' | 'markAsPaid' | null>(null);
+  const [sendModalVisible, setSendModalVisible] = useState(false);
+
+  const closeSendModal = () => {
+    setSendModalVisible(false);
+  };
 
   const showConfirmModal = (action: 'validate' | 'markAsPaid') => {
     setConfirmModalVisible(action);
@@ -112,6 +93,10 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
     if (confirmModalVisible === 'validate') await validateInvoice();
     else if (confirmModalVisible === 'markAsPaid') await markAsPaid();
     setConfirmModalVisible(null);
+  };
+
+  const handleOpenInvoice = () => {
+    if (invoice?.pdfUrl) window.open(invoice.pdfUrl, '_blank');
   };
 
   const getActionButtons = () => {
@@ -134,7 +119,7 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
         {
           key: 'send-invoice',
           label: 'Envoyer',
-          action: sendInvoice,
+          action: () => setSendModalVisible(true),
           loading: isSending,
           disabled: false,
           primary: true,
@@ -165,7 +150,7 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
       ],
     };
 
-    return buttonConfigs[status]?.map(({ key, label, action, loading, disabled, primary }) => (
+    return (buttonConfigs[status] || []).map(({ key, label, action, loading, disabled, primary }) => (
       <Button key={key} type={primary ? 'primary' : 'default'} onClick={action} loading={loading} disabled={disabled}>
         {label}
       </Button>
@@ -180,11 +165,17 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
         data={invoice}
         editEndpoint={`/invoices/${invoice?.id}`}
         fields={fields}
-        extraButtons={getActionButtons()}
+        extraButtons={[
+          <Button key="view-invoice" icon={<EyeOutlined />} onClick={() => handleOpenInvoice()}>
+            Voir la facture
+          </Button>,
+          ...getActionButtons(),
+        ]}
         onDelete={onDelete}
         onEdit={onEditSuccess}
         onBack={() => navigate(ROUTE_PATHS.private.invoices.root)}
       />
+      <SendInvoiceModal visible={sendModalVisible} invoice={invoice} onClose={closeSendModal} onSuccess={refresh} />
       <Modal
         title={confirmModalVisible === 'validate' ? 'Confirmation de validation' : 'Confirmation de paiement'}
         open={!!confirmModalVisible}
