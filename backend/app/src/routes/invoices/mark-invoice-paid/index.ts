@@ -2,17 +2,17 @@ import type { FastifyInstance } from 'fastify';
 import handler from './handler';
 import { response } from './schemas';
 
-const validateInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
+const markInvoicePaidRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
     method: 'PUT',
-    url: '/:id/validate',
+    url: '/:id/paid',
     schema: {
       tags: ['Invoices'],
-      description: 'Validate an invoice',
+      description: 'Mark an invoice as paid',
       response,
     },
     handler,
   });
 };
 
-export default validateInvoiceRoute;
+export default markInvoicePaidRoute;
