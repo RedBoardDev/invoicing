@@ -2,7 +2,6 @@
   padding: 16px;
 }
 
-/* Optionnel : ajuster l’espacement si nécessaire */
 .container :global(.ant-space) {
   width: 100%;
 }

@@ -38,7 +38,6 @@ const fields: FieldConfig<Contract>[] = [
       renderInput: (_form: FormInstance<Partial<Contract>>) => <Input placeholder="Titre du contrat" />,
     },
   },
-  // TODO: implémenter le select emailTemplateId pour pouvoir update le template lié
   {
     key: 'description',
     label: 'Description',
