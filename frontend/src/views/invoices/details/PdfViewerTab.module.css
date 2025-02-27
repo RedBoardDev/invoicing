@@ -1,0 +1,21 @@
+/* src/views/invoices/details/PdfViewerTab.module.css */
+.pdfContainer {
+  height: calc(100vh - 300px);
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+:global(.rpv-core__viewer) {
+  background-color: var(--color-background);
+}
+
+:global(.rpv-toolbar) {
+  background-color: var(--color-container);
+  border-bottom: 1px solid var(--color-border);
+}
+
+:global(.rpv-core__page-layer) {
+  box-shadow: var(--box-shadow);
+}

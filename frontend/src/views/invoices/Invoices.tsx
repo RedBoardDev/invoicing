@@ -1,6 +1,6 @@
 import { FilePdfOutlined } from '@ant-design/icons';
 import { ROUTE_PATHS } from '@config/routePaths';
-import { type InvoiceStatus, STATUS_COLORS } from '@enums/invoiceStatus';
+import { type InvoiceStatus, STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
 import { Tag, Typography, Button, Space } from 'antd';
@@ -33,11 +33,11 @@ const Invoices: React.FC = () => {
         title: 'PDF / Envoyée',
         render: (_: unknown, record: Invoice) => (
           <Space>
-            {record.pdfUrl ? (
+            {record.fileId ? (
               <Button
                 type="link"
                 icon={<FilePdfOutlined />}
-                onClick={() => window.open(record.pdfUrl, '_blank', 'noopener,noreferrer')}>
+                onClick={() => window.open(record.fileId, '_blank', 'noopener,noreferrer')}>
                 PDF
               </Button>
             ) : (
@@ -50,7 +50,7 @@ const Invoices: React.FC = () => {
       {
         title: 'Statut',
         dataIndex: 'status',
-        render: (status: InvoiceStatus) => <Tag color={STATUS_COLORS[status]}>{status.toUpperCase()}</Tag>,
+        render: (status: InvoiceStatus) => <Tag color={STATUS_COLORS[status]}>{STATUS_LABELS[status]}</Tag>,
         sorter: (a, b) => a.status.localeCompare(b.status),
       },
       {

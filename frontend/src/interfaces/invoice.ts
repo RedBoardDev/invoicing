@@ -12,7 +12,7 @@ interface Invoice {
   status: InvoiceStatus;
   dueDate: Date;
   sendDate?: Date;
-  pdfUrl?: string;
+  fileId?: string;
   items: InvoiceItem[];
   createdAt: Date;
   updatedAt: Date;

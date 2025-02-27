@@ -36,11 +36,11 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
         title: 'PDF / Envoyée',
         render: (_: unknown, record: Invoice) => (
           <Space>
-            {record.pdfUrl ? (
+            {record.fileId ? (
               <Button
                 type="link"
                 icon={<FilePdfOutlined />}
-                onClick={() => window.open(record.pdfUrl, '_blank', 'noopener,noreferrer')}>
+                onClick={() => window.open(record.fileId, '_blank', 'noopener,noreferrer')}>
                 PDF
               </Button>
             ) : (

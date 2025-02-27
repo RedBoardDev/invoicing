@@ -19,6 +19,8 @@
     "@ant-design/icons": "^5.6.1",
     "@ant-design/pro-components": "2.8.6",
     "@ant-design/pro-descriptions": "2.6.6",
+    "@react-pdf-viewer/core": "3.12.0",
+    "@react-pdf-viewer/default-layout": "3.12.0",
     "antd": "^5.23.4",
     "dayjs": "1.11.13",
     "i": "0.3.7",

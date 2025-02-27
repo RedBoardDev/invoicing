@@ -1,6 +1,7 @@
+// src/views/invoices/details/Header.tsx
 import { FilePdfOutlined, EyeOutlined } from '@ant-design/icons';
 import { ROUTE_PATHS } from '@config/routePaths';
-import { STATUS_COLORS } from '@enums/invoiceStatus';
+import { STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
 import { Typography, Tag, DatePicker, Button, Modal } from 'antd';
@@ -11,10 +12,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInvoiceActions } from './useInvoiceActions';
 import SendInvoiceModal from 'components/common/modal/sendInvoice/SendInvoiceModal';
+import dayjs from 'dayjs';
 
 const { Text } = Typography;
 
-// TODO en update on peux modifier: dueDate et a voir quoi d'autre mais je pense pas bcp plus (voir le schemas du update dans le backend)
 const fields: FieldConfig<Invoice>[] = [
   {
     key: 'invoiceNumber',
@@ -24,7 +25,7 @@ const fields: FieldConfig<Invoice>[] = [
   {
     key: 'status',
     label: 'Statut',
-    render: (data) => <Tag color={STATUS_COLORS[data.status]}>{data.status.toUpperCase()}</Tag>,
+    render: (data) => <Tag color={STATUS_COLORS[data.status]}>{STATUS_LABELS[data.status]}</Tag>,
   },
   {
     key: 'dueDate',
@@ -33,6 +34,8 @@ const fields: FieldConfig<Invoice>[] = [
     editConfig: {
       rules: [{ required: true, message: "La date d'échéance est obligatoire" }],
       renderInput: () => <DatePicker format="DD/MM/YYYY" />,
+      getValueProps: (value) => ({ value: value ? dayjs(value) : null }),
+      normalize: (value) => (value ? value.toISOString() : null),
     },
   },
   {
@@ -41,11 +44,11 @@ const fields: FieldConfig<Invoice>[] = [
     render: (data) => (data.sendDate ? formatDate(data.sendDate, 'DD/MM/YYYY') : <Text type="secondary">-</Text>),
   },
   {
-    key: 'pdfUrl',
+    key: 'fileId',
     label: 'Lien PDF',
     render: (data) =>
-      data.pdfUrl ? (
-        <a href={data.pdfUrl} target="_blank" rel="noreferrer">
+      data.fileId ? (
+        <a href={data.fileId} target="_blank" rel="noreferrer">
           <FilePdfOutlined />
         </a>
       ) : (
@@ -72,22 +75,42 @@ interface ButtonConfig {
 
 const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refresh }) => {
   const navigate = useNavigate();
-  const { validateInvoice, markAsPaid, isValidating, isSending, isMarkingAsPaid } = useInvoiceActions(invoice, refresh);
+  const { validateInvoice, markAsPaid, isValidating, isMarkingAsPaid } = useInvoiceActions(invoice, refresh);
 
   const [confirmModalVisible, setConfirmModalVisible] = useState<'validate' | 'markAsPaid' | null>(null);
   const [sendModalVisible, setSendModalVisible] = useState(false);
+  const [isViewingPdf, setIsViewingPdf] = useState(false);
 
-  const closeSendModal = () => {
-    setSendModalVisible(false);
+  const handleViewPdf = async () => {
+    if (!invoice?.id) return;
+    setIsViewingPdf(true);
+    try {
+      const pdfRoute = `http://localhost:3000/invoices/${invoice.id}/pdf`;
+      const response = await fetch(pdfRoute, { method: 'GET' });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erreur lors de la récupération du PDF');
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error('Erreur lors de la visualisation du PDF:', error);
+      Modal.error({
+        title: 'Erreur',
+        content: error instanceof Error ? error.message : 'Impossible de charger le PDF',
+      });
+    } finally {
+      setIsViewingPdf(false);
+    }
   };
 
-  const showConfirmModal = (action: 'validate' | 'markAsPaid') => {
-    setConfirmModalVisible(action);
-  };
+  const closeSendModal = () => setSendModalVisible(false);
 
-  const handleCancelConfirmation = () => {
-    setConfirmModalVisible(null);
-  };
+  const showConfirmModal = (action: 'validate' | 'markAsPaid') => setConfirmModalVisible(action);
+
+  const handleCancelConfirmation = () => setConfirmModalVisible(null);
 
   const handleConfirmAction = async () => {
     if (confirmModalVisible === 'validate') await validateInvoice();
@@ -95,11 +118,7 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
     setConfirmModalVisible(null);
   };
 
-  const handleOpenInvoice = () => {
-    if (invoice?.pdfUrl) window.open(invoice.pdfUrl, '_blank');
-  };
-
-  const getActionButtons = () => {
+  const getActionButtons = (): ButtonConfig[] => {
     const status = invoice?.status || 'UNKNOWN';
     const buttonConfigs: Record<string, ButtonConfig[]> = {
       DRAFT: [
@@ -111,24 +130,18 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
           disabled: false,
           primary: true,
         },
-        { key: 'send-invoice', label: 'Envoyer', loading: isSending, disabled: true },
-        { key: 'mark-as-paid', label: 'Marquer comme payé', loading: isMarkingAsPaid, disabled: true, primary: true },
       ],
       VALIDATED: [
-        { key: 'validate-invoice', label: 'Valider', loading: isValidating, disabled: true },
         {
           key: 'send-invoice',
           label: 'Envoyer',
           action: () => setSendModalVisible(true),
-          loading: isSending,
+          loading: false,
           disabled: false,
           primary: true,
         },
-        { key: 'mark-as-paid', label: 'Marquer comme payé', loading: isMarkingAsPaid, disabled: true, primary: true },
       ],
       SENT: [
-        { key: 'validate-invoice', label: 'Valider', loading: isValidating, disabled: true },
-        { key: 'send-invoice', label: 'Envoyer', loading: isSending, disabled: true },
         {
           key: 'mark-as-paid',
           label: 'Marquer comme payé',
@@ -138,23 +151,11 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
           primary: true,
         },
       ],
-      PAID: [
-        { key: 'validate-invoice', label: 'Valider', loading: isValidating, disabled: true },
-        { key: 'send-invoice', label: 'Envoyer', loading: isSending, disabled: true },
-        { key: 'mark-as-paid', label: 'Marquer comme payé', loading: isMarkingAsPaid, disabled: true, primary: true },
-      ],
-      UNKNOWN: [
-        { key: 'validate-invoice', label: 'Valider', loading: isValidating, disabled: true },
-        { key: 'send-invoice', label: 'Envoyer', loading: isSending, disabled: true },
-        { key: 'mark-as-paid', label: 'Marquer comme payé', loading: isMarkingAsPaid, disabled: true, primary: true },
-      ],
+      PAID: [],
+      UNKNOWN: [],
     };
 
-    return (buttonConfigs[status] || []).map(({ key, label, action, loading, disabled, primary }) => (
-      <Button key={key} type={primary ? 'primary' : 'default'} onClick={action} loading={loading} disabled={disabled}>
-        {label}
-      </Button>
-    ));
+    return buttonConfigs[status] || [];
   };
 
   return (
@@ -165,12 +166,17 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
         data={invoice}
         editEndpoint={`/invoices/${invoice?.id}`}
         fields={fields}
-        extraButtons={[
-          <Button key="view-invoice" icon={<EyeOutlined />} onClick={() => handleOpenInvoice()}>
-            Voir la facture
-          </Button>,
-          ...getActionButtons(),
-        ]}
+        extraButtons={getActionButtons().map(({ key, label, action, loading, disabled, primary }) => (
+          <Button
+            key={key}
+            type={primary ? 'primary' : 'default'}
+            icon={key === 'view-pdf' ? <EyeOutlined /> : undefined}
+            onClick={action}
+            loading={loading}
+            disabled={disabled}>
+            {label}
+          </Button>
+        ))}
         onDelete={onDelete}
         onEdit={onEditSuccess}
         onBack={() => navigate(ROUTE_PATHS.private.invoices.root)}

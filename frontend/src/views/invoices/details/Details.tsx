@@ -5,8 +5,20 @@ import type React from 'react';
 import type Invoice from '@interfaces/invoice';
 import { ROUTE_PATHS } from '@config/routePaths';
 import { useEntityDetails } from '@hooks/useEntityDetails';
+import { Icon } from '@components/common';
+import PdfViewerTab from '@views/invoices/details/PdfViewerTab';
 
-const items: TabsProps['items'] = [];
+const items: TabsProps['items'] = [
+  {
+    key: 'pdf',
+    label: (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Icon name="contract" size="15" color="black" />
+        PDF
+      </div>
+    ),
+  },
+];
 
 const InvoicesDetails: React.FC = () => {
   const {
@@ -22,6 +34,7 @@ const InvoicesDetails: React.FC = () => {
   });
 
   const tabContent = {
+    pdf: <PdfViewerTab invoice={invoice} />,
     // items: <ItemsTab key={refreshCount} items={invoice?.items || undefined} />, // TODO a virer non ?
     // TODO voir s'il faut faire un historique des modifs (genre avant le draft puis passage au draft et envoi etc)
   };

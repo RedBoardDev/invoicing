@@ -17,7 +17,6 @@ const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, o
   const fetchEmailData = useCallback(
     async (invoice: Invoice) => {
       try {
-        console.log('invoice', invoice);
         const response = await fetch(
           `http://localhost:3000/email-templates/${invoice.contract?.emailTemplateId}/simulate/${invoice.id}`,
         );
@@ -42,8 +41,8 @@ const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, o
 
   const handleSend = async () => {
     try {
-      const values = await form.validateFields();
       setIsSending(true);
+      const values = await form.validateFields();
       const response = await fetch(`http://localhost:3000/invoices/${invoice?.id}/send`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
