@@ -69,7 +69,7 @@ const Contracts: React.FC = () => {
         deleteEndpoint="/contracts"
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
-        additionalQueryParams={{ includeClient: true }}
+        extendsOptions={['client']}
       />
 
       <AddContract visible={addModalVisible} setVisible={setAddModalVisible} />

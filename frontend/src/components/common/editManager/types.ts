@@ -14,6 +14,7 @@ export type EditManagerConfig<T> = {
 
 export type EditManagerProps<T> = {
   data: T | null;
+  disabled?: boolean;
   configs: EditManagerConfig<T>[];
   editEndpoint: string;
   onSuccess?: (data: T) => void;

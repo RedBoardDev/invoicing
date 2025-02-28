@@ -20,4 +20,6 @@ export interface HeaderDetailsLayoutProps<T> {
   onBack: () => void;
   onDelete: () => void;
   onEdit: (updatedData: T) => void;
+  canBeDeleted?: boolean;
+  canBeUpdated?: boolean;
 }

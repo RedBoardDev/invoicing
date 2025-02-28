@@ -36,7 +36,13 @@ const HeaderDetailsLayout = <T extends object>({
         <Flex gap={8} align="center">
           <Flex vertical gap={8} className={styles.buttons}>
             <Button icon={<DeleteOutlined />} onClick={onDelete} disabled={isLoading} danger />
-            <EditManager<T> data={data} configs={configs} editEndpoint={editEndpoint} onSuccess={onEdit} />
+            <EditManager<T>
+              data={data}
+              disabled={isLoading}
+              configs={configs}
+              editEndpoint={editEndpoint}
+              onSuccess={onEdit}
+            />
             <Button icon={<ArrowLeftOutlined />} onClick={onBack} />
           </Flex>
 

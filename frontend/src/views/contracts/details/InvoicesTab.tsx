@@ -71,7 +71,7 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
       listEndpoint={`/contracts/${contractId}/invoices`}
       detailsRoutePath={(id) => ROUTE_PATHS.private.invoices.detail(id)}
       columns={columns}
-      additionalQueryParams={{ includeItems: true, includeContract: true }}
+      extendsOptions={['items', 'contract']}
       showHeader={false}
     />
   );

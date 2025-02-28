@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 interface TablePageLayoutProps<T extends object> extends Omit<TableProps<T>, 'title' | 'dataSource'> {
   title?: string;
   listEndpoint: string;
-  additionalQueryParams?: Record<string, string | number | boolean>;
+  extendsOptions?: string[];
   deleteEndpoint?: string;
   detailsRoutePath?: (id: string) => string;
   onAdd?: () => void;
@@ -22,7 +22,7 @@ interface TablePageLayoutProps<T extends object> extends Omit<TableProps<T>, 'ti
 export const TablePageLayout = <T extends object>({
   title = '',
   listEndpoint,
-  additionalQueryParams = {},
+  extendsOptions = [],
   deleteEndpoint,
   detailsRoutePath,
   onAdd,
@@ -39,7 +39,7 @@ export const TablePageLayout = <T extends object>({
 
   const { data, loading, total, pagination, setPagination, refresh } = useApiData<T>({
     endpoint: listEndpoint,
-    additionalQueryParams,
+    extendsOptions,
   });
 
   const handleDelete = async () => {

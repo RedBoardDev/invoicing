@@ -72,7 +72,7 @@ const Invoices: React.FC = () => {
         deleteEndpoint="/invoices"
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
-        additionalQueryParams={{ includeContract: true }}
+        extendsOptions={['contract']}
       />
       <AddInvoice visible={addModalVisible} setVisible={setAddModalVisible} />
     </>

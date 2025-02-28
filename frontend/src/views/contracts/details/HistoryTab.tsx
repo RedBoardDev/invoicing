@@ -51,7 +51,6 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ contractId }) => {
     <TablePageLayout<ContractHistory>
       listEndpoint={`/contracts/${contractId}/history`}
       columns={columns}
-      additionalQueryParams={{}}
       rowKey="id"
       showHeader={false}
     />

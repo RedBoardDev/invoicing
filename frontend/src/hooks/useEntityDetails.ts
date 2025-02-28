@@ -1,24 +1,26 @@
+// File: frontend/src/hooks/useEntityDetails.ts
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMessage } from '@hooks/useMessage';
+import type { WithExtends } from '@interfaces/extends';
 
 interface EntityDetailsOptions {
   endpoint: string;
   entityId?: string;
   redirectPath: string;
   fetchOnMount?: boolean;
+  extendsOptions?: string[];
   onFetchError?: (error: Error) => void;
   onDeleteError?: (error: Error) => void;
-  queryParams?: Record<string, string | number | boolean>;
 }
 
 interface EntityDetailsResult<T> {
-  entity: T | null;
+  entity: WithExtends<T> | null;
   isLoading: boolean;
   fetchEntity: () => Promise<void>;
   deleteEntity: () => Promise<void>;
   refresh: () => void;
-  updateEntity: (updatedEntity: T) => void;
+  updateEntity: (updatedEntity: WithExtends<T>) => void;
   refreshCount: number;
 }
 
@@ -27,42 +29,44 @@ export const useEntityDetails = <T>({
   entityId,
   redirectPath,
   fetchOnMount = true,
+  extendsOptions = [],
   onFetchError,
   onDeleteError,
-  queryParams: initialQueryParams,
 }: EntityDetailsOptions): EntityDetailsResult<T> => {
   const params = useParams();
   const navigate = useNavigate();
   const messageApi = useMessage();
   const id = entityId || params.id;
 
-  const [entity, setEntity] = useState<T | null>(null);
+  const [entity, setEntity] = useState<WithExtends<T> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshCount, setRefreshCount] = useState<number>(0);
   const shouldFetchRef = useRef(fetchOnMount);
-  const queryParamsRef = useRef(initialQueryParams);
+  const extendsOptionsRef = useRef(extendsOptions);
 
   useEffect(() => {
-    queryParamsRef.current = initialQueryParams;
+    extendsOptionsRef.current = extendsOptions;
     shouldFetchRef.current = fetchOnMount;
-  }, [fetchOnMount, initialQueryParams]);
+  }, [fetchOnMount, extendsOptions]);
 
   const url = useMemo(() => {
     if (!id) return null;
+
     const baseUrl = new URL(`http://localhost:3000${endpoint}/${id}`);
-    const params = queryParamsRef.current;
-    if (params) {
-      for (const [key, value] of Object.entries(params)) {
-        baseUrl.searchParams.append(key, String(value));
-      }
+    const params = new URLSearchParams();
+
+    if (extendsOptionsRef.current.length > 0) {
+      params.append('extends', extendsOptionsRef.current.join(','));
     }
+
+    baseUrl.search = params.toString();
     return baseUrl.toString();
   }, [id, endpoint]);
 
   const handleFetchError = useCallback(
     (error: Error) => {
       console.error(`Failed to fetch ${endpoint} data:`, error);
-      messageApi.error('Échec de la mise à jour');
+      messageApi.error('Échec de la récupération des données');
       onFetchError?.(error);
     },
     [endpoint, messageApi, onFetchError],
@@ -79,6 +83,7 @@ export const useEntityDetails = <T>({
 
   const fetchEntity = useCallback(async () => {
     if (!url) return;
+
     setIsLoading(true);
     try {
       const response = await fetch(url);
@@ -94,6 +99,7 @@ export const useEntityDetails = <T>({
 
   const deleteEntity = useCallback(async () => {
     if (!id) return;
+
     setIsLoading(true);
     try {
       const response = await fetch(`http://localhost:3000${endpoint}`, {
@@ -117,7 +123,7 @@ export const useEntityDetails = <T>({
     fetchEntity();
   }, [fetchEntity]);
 
-  const updateEntity = useCallback((updatedEntity: T) => {
+  const updateEntity = useCallback((updatedEntity: WithExtends<T>) => {
     setEntity(updatedEntity);
   }, []);
 

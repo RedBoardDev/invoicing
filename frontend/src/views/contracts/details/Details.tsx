@@ -53,7 +53,7 @@ const ContractsDetails: React.FC = () => {
     endpoint: '/contracts',
     redirectPath: ROUTE_PATHS.private.contracts.root,
     fetchOnMount: true,
-    queryParams: { includeEmailTemplate: true },
+    extendsOptions: ['emailTemplate'],
   });
 
   const handleTemplateUpdate = (updatedTemplate: EmailTemplate, refreshCallback: () => void) => {

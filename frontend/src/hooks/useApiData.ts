@@ -9,14 +9,14 @@ interface ApiDataState<T> {
 
 interface ApiDataConfig {
   endpoint: string;
-  additionalQueryParams?: Record<string, string | number | boolean>;
+  extendsOptions?: string[];
   initialPage?: number;
   initialPageSize?: number;
 }
 
 export const useApiData = <T extends object>({
   endpoint,
-  additionalQueryParams = {},
+  extendsOptions = [],
   initialPage = 1,
   initialPageSize = 30,
 }: ApiDataConfig) => {
@@ -32,16 +32,16 @@ export const useApiData = <T extends object>({
     pageSize: initialPageSize,
   });
 
-  const memoizedAdditionalQueryParams = useMemo(() => additionalQueryParams, [JSON.stringify(additionalQueryParams)]);
+  const memoizedExtendsOptions = useMemo(() => extendsOptions, [JSON.stringify(extendsOptions)]);
 
   const fetchData = useCallback(async () => {
     setState((prev) => ({ ...prev, loading: true }));
     try {
       const params = new URLSearchParams({
-        page: pagination.page.toString(),
-        pageSize: pagination.pageSize.toString(),
-        includeCount: 'true',
-        ...memoizedAdditionalQueryParams,
+        ...(pagination.page > 1 ? { page: pagination.page.toString() } : {}),
+        ...(pagination.pageSize !== initialPageSize ? { pageSize: pagination.pageSize.toString() } : {}),
+        totalCount: 'true',
+        ...(memoizedExtendsOptions.length > 0 ? { extends: memoizedExtendsOptions.join(',') } : {}),
       });
 
       const response = await fetch(`http://localhost:3000${endpoint}?${params}`);
@@ -55,7 +55,7 @@ export const useApiData = <T extends object>({
 
       setState({
         data,
-        total: meta.totalCount,
+        total: meta?.totalCount ?? 0,
         loading: false,
         error: null,
       });
@@ -67,7 +67,7 @@ export const useApiData = <T extends object>({
         error: error as Error,
       });
     }
-  }, [endpoint, pagination.page, pagination.pageSize, memoizedAdditionalQueryParams]);
+  }, [endpoint, pagination.page, pagination.pageSize, memoizedExtendsOptions, initialPageSize]);
 
   useEffect(() => {
     fetchData();

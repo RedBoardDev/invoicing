@@ -59,7 +59,6 @@ const ContractsTab: React.FC<ContractsTabProps> = ({ clientId }) => {
       listEndpoint={`/clients/${clientId}/contracts`}
       columns={columns}
       detailsRoutePath={(id) => ROUTE_PATHS.private.contracts.detail(id)}
-      additionalQueryParams={{}}
       showHeader={false}
     />
   );

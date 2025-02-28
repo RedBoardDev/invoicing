@@ -20,7 +20,6 @@ const EmailTemplatesTab: React.FC = () => {
     refresh,
   } = useApiData<EmailTemplate>({
     endpoint: '/email-templates',
-    additionalQueryParams: { includeCount: true },
   });
 
   const handleCreate = () => {

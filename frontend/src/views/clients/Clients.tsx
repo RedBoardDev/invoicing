@@ -47,7 +47,7 @@ const Clients: React.FC = () => {
         title="Clients"
         listEndpoint="/clients"
         detailsRoutePath={(id) => ROUTE_PATHS.private.clients.detail(id)}
-        additionalQueryParams={{ includeContracts: true }}
+        extendsOptions={['contracts']}
         deleteEndpoint="/clients"
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
