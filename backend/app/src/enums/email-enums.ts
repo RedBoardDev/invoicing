@@ -1,4 +1,5 @@
 export enum EmailVariable {
+  MONTH = 'MONTH',
   YEAR = 'YEAR',
   CURRENT_DATE = 'CURRENT_DATE',
   INVOICE_NUMBER = 'INVOICE_NUMBER',
@@ -12,6 +13,10 @@ export enum EmailVariable {
 }
 
 export const VARIABLES_METADATA = {
+  [EmailVariable.MONTH]: {
+    description: 'Mois courant',
+    example: '12',
+  },
   [EmailVariable.YEAR]: {
     description: 'Année courante',
     example: '2024',
@@ -55,6 +60,7 @@ export const VARIABLES_METADATA = {
 } satisfies Record<EmailVariable, { description: string; example: string }>;
 
 export const VARIABLES_DEFAULT_VALUES = {
+  [EmailVariable.MONTH]: () => (new Date().getMonth() + 1).toString(),
   [EmailVariable.YEAR]: () => new Date().getFullYear().toString(),
   [EmailVariable.CURRENT_DATE]: () => new Date().toISOString(),
 } satisfies Partial<Record<EmailVariable, () => string>>;

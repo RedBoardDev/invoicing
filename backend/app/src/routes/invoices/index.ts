@@ -1,6 +1,7 @@
 import createInvoiceRoute from '@routes/invoices/create-invoice';
 import deleteInvoiceRoute from '@routes/invoices/delete-invoice';
 import getInvoiceRoute from '@routes/invoices/get-invoice';
+import getInvoicePdfRoute from '@routes/invoices/get-invoice-pdf';
 import listInvoicesRoute from '@routes/invoices/list-invoices';
 import markInvoicePaidRoute from '@routes/invoices/mark-invoice-paid';
 import previewInvoiceNumberRoute from '@routes/invoices/preview-invoice-number';
@@ -19,6 +20,7 @@ const invoicesRoutes = async (app: FastifyInstance): Promise<void> => {
   app.register(validateInvoiceRoute);
   app.register(markInvoicePaidRoute);
   app.register(previewInvoiceNumberRoute);
+  app.register(getInvoicePdfRoute);
 };
 
 export default invoicesRoutes;

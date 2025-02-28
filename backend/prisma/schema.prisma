@@ -101,7 +101,7 @@ model Invoice {
   status        InvoiceStatus @default(DRAFT)
   dueDate       DateTime
   sendDate      DateTime?
-  pdfUrl        String?
+  fileId         String?
 
   items InvoiceItem[]
 

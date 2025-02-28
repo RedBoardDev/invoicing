@@ -1,7 +1,6 @@
-import { UpdateInvoiceSchema } from '@entities/invoice-entity';
 import type { FromSchema } from 'json-schema-to-ts';
 
-export const body = UpdateInvoiceSchema;
+export const body = {}; // TODO en update on peux modifier: dueDate et a voir quoi d'autre mais je pense pas bcp plus
 export type TBody = FromSchema<typeof body>;
 
 export const params = {

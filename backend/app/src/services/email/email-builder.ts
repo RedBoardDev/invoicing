@@ -1,19 +1,22 @@
-import { ErrorsEnum } from '@enums/errors-enums';
-import ApiError from '@libs/error-management/api-error';
-import type { Transporter } from 'nodemailer';
-import type Mail from 'nodemailer/lib/mailer';
-import { createTransporter } from './email-client';
+// app/src/services/email/email-builder.ts
+import { createTransporter } from '@services/email/email-client';
+import type { SentMessageInfo } from 'nodemailer';
 
 export class EmailBuilder {
-  private mailOptions: Partial<Mail.Options> = {};
-  private transporter: Transporter;
+  private mailOptions: {
+    from?: string;
+    to?: string | string[];
+    subject?: string;
+    html?: string;
+    attachments?: { filename: string; path?: string; content?: Buffer }[];
+  } = {};
 
   constructor() {
-    this.transporter = createTransporter();
+    this.mailOptions.from = process.env.NODEMAILER_USER;
   }
 
   setRecipients(recipients: string[]): this {
-    this.mailOptions.to = recipients.join(', ');
+    this.mailOptions.to = recipients;
     return this;
   }
 
@@ -27,24 +30,16 @@ export class EmailBuilder {
     return this;
   }
 
-  async send(): Promise<void> {
-    try {
-      this.validateOptions();
-      await this.transporter.sendMail({
-        from: `"Service" <${process.env.NODEMAILER_USER}>`,
-        ...this.mailOptions,
-      });
-    } catch (error) {
-      throw new ApiError('Échec denvoi de lemail', 500, ErrorsEnum.internalServerError, { originalError: error });
+  addAttachment(attachment: { filename: string; path?: string; content?: Buffer }): this {
+    if (!this.mailOptions.attachments) {
+      this.mailOptions.attachments = [];
     }
+    this.mailOptions.attachments.push(attachment);
+    return this;
   }
 
-  private validateOptions(): void {
-    const required: (keyof Mail.Options)[] = ['to', 'subject', 'html'];
-    const missing = required.filter((field) => !this.mailOptions[field]);
-
-    if (missing.length) {
-      throw new ApiError(`Champs manquants: ${missing.join(', ')}`, 400, ErrorsEnum.badRequest);
-    }
+  async send(): Promise<SentMessageInfo> {
+    const transporter = createTransporter();
+    return transporter.sendMail(this.mailOptions);
   }
 }
