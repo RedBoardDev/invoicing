@@ -8,7 +8,7 @@
       "@images/*": ["assets/images/*"],
       "@components/*": ["components/*/index.ts"],
       "@enums/*": ["enums/*"],
-      "@api/*": ["services/api/*"],
+      "@api/*": ["api/*"],
       "@services/*": ["services/*"],
       "@contexts/*": ["contexts/*"],
       "@utils": ["utils/index.ts"],
