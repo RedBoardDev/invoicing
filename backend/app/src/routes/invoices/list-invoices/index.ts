@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { response } from './schemas';
+import { querystring } from './schemas';
 
 const listInvoicesRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -9,7 +9,7 @@ const listInvoicesRoute = async (app: FastifyInstance): Promise<void> => {
     schema: {
       tags: ['Invoices'],
       description: 'List invoices',
-      response,
+      querystring,
     },
     handler,
   });

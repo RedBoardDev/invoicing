@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { body, response } from './schemas';
+import { body, params } from './schemas';
 
 const sendInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -10,7 +10,7 @@ const sendInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
       tags: ['Invoices'],
       description: 'Send an invoice by email',
       body,
-      response,
+      params,
     },
     handler,
   });

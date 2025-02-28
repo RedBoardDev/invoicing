@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { params, response } from './schemas';
+import { body } from './schemas';
 
 const deleteEmailTemplateRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -9,8 +9,7 @@ const deleteEmailTemplateRoute = async (app: FastifyInstance): Promise<void> => 
     schema: {
       tags: ['Templates'],
       description: 'Delete one or multiple email template by IDs',
-      params,
-      response,
+      body,
     },
     handler,
   });

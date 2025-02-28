@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { body, response } from './schemas';
+import { body } from './schemas';
 
 const createClientRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -10,7 +10,6 @@ const createClientRoute = async (app: FastifyInstance): Promise<void> => {
       tags: ['Clients'],
       description: 'Create a new client',
       body,
-      response,
     },
     handler,
   });

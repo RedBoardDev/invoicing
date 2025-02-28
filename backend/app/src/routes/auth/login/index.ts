@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { body, response } from './schemas';
+import { body } from './schemas';
 
 const loginRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -10,7 +10,6 @@ const loginRoute = async (app: FastifyInstance): Promise<void> => {
       tags: ['Auth'],
       description: 'Login to obtain access and refresh tokens',
       body,
-      response,
     },
     handler,
   });

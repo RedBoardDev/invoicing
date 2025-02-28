@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { body, response } from './schemas';
+import { body } from './schemas';
 
 const deleteContractRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -10,7 +10,6 @@ const deleteContractRoute = async (app: FastifyInstance): Promise<void> => {
       tags: ['Contracts'],
       description: 'Delete one or multiple contracts by IDs',
       body,
-      response,
     },
     handler,
   });

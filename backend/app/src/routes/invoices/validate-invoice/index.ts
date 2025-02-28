@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { response } from './schemas';
+import { params } from './schemas';
 
 const validateInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -9,7 +9,7 @@ const validateInvoiceRoute = async (app: FastifyInstance): Promise<void> => {
     schema: {
       tags: ['Invoices'],
       description: 'Validate an invoice',
-      response,
+      params,
     },
     handler,
   });

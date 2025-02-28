@@ -6,3 +6,4 @@ export const InvoiceStatus = {
 } as const;
 
 export type InvoiceStatus = keyof typeof InvoiceStatus;
+// a virer, utiliser celui dans prisma

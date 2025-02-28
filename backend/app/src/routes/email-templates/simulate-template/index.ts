@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { querystring, params, response } from './schemas';
+import { params } from './schemas';
 
 const simulateTemplateRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -10,8 +10,6 @@ const simulateTemplateRoute = async (app: FastifyInstance): Promise<void> => {
       tags: ['Templates'],
       description: 'Simumate an email template by id for an invoice',
       params,
-      querystring,
-      response,
     },
     handler,
   });

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { body, response } from './schemas';
+import { body } from './schemas';
 
 const createContractRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -10,7 +10,6 @@ const createContractRoute = async (app: FastifyInstance): Promise<void> => {
       tags: ['Contracts'],
       description: 'Create a new contract',
       body,
-      response,
     },
     handler,
   });

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { querystring, params, response } from './schemas';
+import { querystring, params } from './schemas';
 
 const listHistoryForContractRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -11,7 +11,6 @@ const listHistoryForContractRoute = async (app: FastifyInstance): Promise<void> 
       description: 'List history entries for a specific contract',
       params,
       querystring,
-      response,
     },
     handler,
   });

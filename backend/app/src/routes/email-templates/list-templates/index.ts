@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import handler from './handler';
-import { querystring, response } from './schemas';
+import { querystring } from './schemas';
 
 const listEmailTemplatesRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -10,7 +10,6 @@ const listEmailTemplatesRoute = async (app: FastifyInstance): Promise<void> => {
       tags: ['Templates'],
       description: 'List email templates',
       querystring,
-      response,
     },
     handler,
   });

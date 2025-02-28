@@ -1,7 +1,6 @@
 import { paginationQuerySchema } from '@entities/pagination-query';
-import { type IncludeConfigs, IncludeType } from '@libs/parseQuery/types/include';
+import { buildExtendsQuerySchema } from '@libs/parseQuery';
 import { mergeSchemas } from '@libs/utils';
-import { buildIncludeQuerySchema } from '@libs/utils/build-include-query-schema';
 import type { FromSchema } from 'json-schema-to-ts';
 
 export const body = {} as const;
@@ -20,13 +19,14 @@ export type TParams = FromSchema<typeof params>;
 export const headers = {} as const;
 export type THeaders = FromSchema<typeof headers>;
 
-export const includeConfigs: IncludeConfigs = {
-  invoices: { type: IncludeType.DEFINE, include: { invoices: true } },
-  history: { type: IncludeType.DEFINE, include: { history: true } },
-  client: { type: IncludeType.DEFINE, include: { client: true } },
+export const extendsMap = {
+  invoices: { include: { invoices: true } },
+  history: { include: { history: true } },
+  client: { include: { client: true } },
 };
+export const allowedExtensions = Object.keys(extendsMap);
 
-export const querystring = mergeSchemas(paginationQuerySchema, buildIncludeQuerySchema(includeConfigs));
+export const querystring = mergeSchemas(paginationQuerySchema, buildExtendsQuerySchema(allowedExtensions));
 export type TQuerystring = FromSchema<typeof querystring>;
 
 export const response = {} as const;

@@ -1,13 +1,13 @@
 import { HttpStatusCode } from '@enums/http-status-enums';
 import { parsePaginationParams } from '@libs/pagination';
-import { parseIncludeParams } from '@libs/parseQuery';
+import { parseExtendsParams } from '@libs/parseQuery';
 import { countClients, listClients } from '@repositories/client-repository';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { type TQuerystring, includeConfigs } from './schemas';
+import { type TQuerystring, extendsMap } from './schemas';
 
 const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> => {
   const { pagination, includeTotalCount } = parsePaginationParams(req);
-  const includes = parseIncludeParams(req.query as TQuerystring, includeConfigs);
+  const { includes } = parseExtendsParams(req.query as TQuerystring, extendsMap);
 
   const clients = await listClients(pagination, includes);
 

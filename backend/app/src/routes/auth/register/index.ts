@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import registerHandler from './handler';
-import { body, response } from './schemas';
+import { body } from './schemas';
 
 const registerRoute = async (app: FastifyInstance): Promise<void> => {
   app.route({
@@ -10,7 +10,6 @@ const registerRoute = async (app: FastifyInstance): Promise<void> => {
       tags: ['Auth'],
       description: 'Route for creating a new user',
       body,
-      response,
     },
     handler: registerHandler,
   });
