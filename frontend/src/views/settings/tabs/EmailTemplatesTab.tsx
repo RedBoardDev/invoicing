@@ -15,12 +15,17 @@ const EmailTemplatesTab: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
 
+  const listService = (
+    _extendsOptions?: never[],
+    pagination?: { page?: number; pageSize?: number; totalCount?: boolean },
+  ) => getEmailTemplates(pagination);
+
   const {
     data: templates,
     loading,
     refresh,
   } = useApiData<EmailTemplate>({
-    listService: getEmailTemplates,
+    listService,
   });
 
   const handleCreate = () => {

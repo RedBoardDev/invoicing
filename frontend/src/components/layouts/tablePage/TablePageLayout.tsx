@@ -60,7 +60,7 @@ export const TablePageLayout = <T extends object, E extends string = never>({
       const result = await deleteService(selectedKeys as string[]);
       if (!result.success) throw new Error(result.error || 'Erreur lors de la suppression');
 
-      const { deletedIds, failedIds } = result.data.data;
+      const { failedIds } = result.data.data;
       if (failedIds?.length > 0) {
         messageApi?.error(`Échec de la suppression de ${failedIds.length} élément(s) sur ${selectedKeys.length}.`);
       } else {
