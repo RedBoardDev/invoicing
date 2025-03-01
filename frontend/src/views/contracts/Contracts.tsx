@@ -11,6 +11,11 @@ import { getContracts, deleteContracts } from '@api/services/contracts';
 
 const Contracts: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
 
   const columns: ColumnsType<WithExtends<Contract, 'client'>> = useMemo(
     () => [
@@ -65,6 +70,7 @@ const Contracts: React.FC = () => {
   return (
     <>
       <TablePageLayout<WithExtends<Contract, 'client'>, 'client'>
+        key={refreshKey}
         title="Contrats"
         listService={getContracts}
         deleteService={deleteContracts}
@@ -73,7 +79,7 @@ const Contracts: React.FC = () => {
         columns={columns}
         extendsOptions={['client']}
       />
-      <AddContract visible={addModalVisible} setVisible={setAddModalVisible} />
+      <AddContract visible={addModalVisible} setVisible={setAddModalVisible} onSuccess={handleRefresh} />
     </>
   );
 };

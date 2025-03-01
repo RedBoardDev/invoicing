@@ -7,14 +7,18 @@ import { createClient } from '@api/services/clients';
 interface AddClientProps {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  onSuccess: () => void;
 }
 
-const AddClient: React.FC<AddClientProps> = ({ visible, setVisible }) => {
+const AddClient: React.FC<AddClientProps> = ({ visible, setVisible, onSuccess }) => {
   return (
     <AddModal<Client>
       visible={visible}
       onCancel={() => setVisible(false)}
-      onSuccess={() => setVisible(false)}
+      onSuccess={() => {
+        setVisible(false);
+        onSuccess();
+      }}
       title="Nouveau client"
       createService={createClient}>
       {() => (

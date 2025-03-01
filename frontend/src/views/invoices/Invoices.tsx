@@ -16,6 +16,11 @@ const { Text } = Typography;
 
 const Invoices: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
 
   const columns: ColumnsType<WithExtends<Invoice, 'contract'>> = useMemo(
     () => [
@@ -68,6 +73,7 @@ const Invoices: React.FC = () => {
   return (
     <>
       <TablePageLayout<WithExtends<Invoice, 'contract'>, 'contract'>
+        key={refreshKey}
         title="Factures"
         listService={getInvoices}
         deleteService={deleteInvoices}
@@ -76,7 +82,7 @@ const Invoices: React.FC = () => {
         columns={columns}
         extendsOptions={['contract']}
       />
-      <AddInvoice visible={addModalVisible} setVisible={setAddModalVisible} />
+      <AddInvoice visible={addModalVisible} setVisible={setAddModalVisible} onSuccess={handleRefresh} />
     </>
   );
 };

@@ -12,6 +12,11 @@ import { deleteClients, getClients } from '@api/services/clients';
 
 const Clients: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
 
   const columns: ColumnsType<WithExtends<Client, 'contracts'>> = useMemo(
     () => [
@@ -45,6 +50,7 @@ const Clients: React.FC = () => {
   return (
     <>
       <TablePageLayout<Client, 'contracts'>
+        key={refreshKey}
         title="Clients"
         listService={getClients}
         deleteService={deleteClients}
@@ -53,7 +59,7 @@ const Clients: React.FC = () => {
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
       />
-      <AddClient visible={addModalVisible} setVisible={setAddModalVisible} />
+      <AddClient visible={addModalVisible} setVisible={setAddModalVisible} onSuccess={handleRefresh} />
     </>
   );
 };
