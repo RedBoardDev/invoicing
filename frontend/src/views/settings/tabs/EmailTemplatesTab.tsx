@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Empty, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import EmailTemplateCard from './EmailTemplateCard';
@@ -15,10 +15,11 @@ const EmailTemplatesTab: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
 
-  const listService = (
-    _extendsOptions?: never[],
-    pagination?: { page?: number; pageSize?: number; totalCount?: boolean },
-  ) => getEmailTemplates(pagination);
+  const listService = useCallback(
+    (_extendsOptions?: never[], pagination?: { page?: number; pageSize?: number; totalCount?: boolean }) =>
+      getEmailTemplates(pagination),
+    [],
+  );
 
   const {
     data: templates,

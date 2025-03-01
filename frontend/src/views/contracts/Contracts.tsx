@@ -7,7 +7,7 @@ import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo, useState } from 'react';
 import type { WithExtends } from '@api/types/extends';
-import { getContracts, deleteContracts } from '@api/services/contracts';
+import { getContracts } from '@api/services/contracts';
 
 const Contracts: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -73,11 +73,10 @@ const Contracts: React.FC = () => {
         key={refreshKey}
         title="Contrats"
         listService={getContracts}
-        deleteService={deleteContracts}
+        extendsOptions={['client']}
         detailsRoutePath={(id) => ROUTE_PATHS.private.contracts.detail(id)}
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
-        extendsOptions={['client']}
       />
       <AddContract visible={addModalVisible} setVisible={setAddModalVisible} onSuccess={handleRefresh} />
     </>

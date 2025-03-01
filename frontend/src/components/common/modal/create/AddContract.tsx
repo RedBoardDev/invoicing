@@ -98,8 +98,7 @@ const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible
 
           <Form.Item
             name="description"
-            label="Description"
-            rules={[{ required: true, message: 'Description requise' }]}>
+            label="Description">
             <Input.TextArea rows={4} placeholder="Description du contrat" />
           </Form.Item>
         </>

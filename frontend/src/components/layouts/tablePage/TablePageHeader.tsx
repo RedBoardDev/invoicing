@@ -1,4 +1,4 @@
-import { DeleteOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Divider, Space, Typography } from 'antd';
 import React from 'react';
 import styles from './TablePageLayout.module.css';
@@ -9,23 +9,11 @@ interface TablePageHeaderProps {
   title: string;
   onAdd?: () => void;
   onRefresh: () => void;
-  onDeleteClick: () => void;
-  selectedKeysCount: number;
   loading?: boolean;
   extraButtons?: React.ReactNode[];
-  hasDelete: boolean;
 }
 
-export const TablePageHeader = ({
-  title,
-  onAdd,
-  onRefresh,
-  onDeleteClick,
-  selectedKeysCount,
-  loading,
-  extraButtons = [],
-  hasDelete,
-}: TablePageHeaderProps) => {
+export const TablePageHeader = ({ title, onAdd, onRefresh, loading, extraButtons = [] }: TablePageHeaderProps) => {
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
@@ -45,17 +33,6 @@ export const TablePageHeader = ({
           {onAdd && (
             <Button type="primary" icon={<PlusOutlined />} onClick={onAdd} aria-label="créer">
               Créer
-            </Button>
-          )}
-
-          {hasDelete && (
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              onClick={onDeleteClick}
-              disabled={selectedKeysCount === 0}
-              aria-label="supprimer">
-              Supprimer ({selectedKeysCount})
             </Button>
           )}
         </Space>

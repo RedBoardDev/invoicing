@@ -77,9 +77,9 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
   return (
     <TablePageLayout<WithExtends<Invoice, 'contract'>, 'contract' | 'items'>
       listService={listService}
+      extendsOptions={['items', 'contract']}
       detailsRoutePath={(id) => ROUTE_PATHS.private.invoices.detail(id)}
       columns={columns}
-      extendsOptions={['items', 'contract']}
       showHeader={false}
     />
   );

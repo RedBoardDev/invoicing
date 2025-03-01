@@ -47,7 +47,7 @@ const ClientsDetails: React.FC = () => {
         <Header
           client={client}
           permissions={permissions}
-          onEditSuccess={updateEntity}
+          onEditSuccess={updateEntity as any}
           onDelete={deleteEntity}
           refresh={refresh}
         />

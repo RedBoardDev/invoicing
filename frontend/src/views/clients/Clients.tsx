@@ -8,13 +8,13 @@ import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import AddClient from 'components/common/modal/create/AddClient';
 import { ROUTE_PATHS } from '@config/routePaths';
 import type { WithExtends } from '@api/types/extends';
-import { deleteClients, getClientById, getClients } from '@api/services/clients';
+import { getClientById, getClients } from '@api/services/clients';
 
 const Clients: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleRefresh = async() => {
+  const handleRefresh = async () => {
     setRefreshKey((prev) => prev + 1);
     const t = await getClientById('1', ['contracts', 'permissions']);
     if (t.success) {
@@ -57,7 +57,6 @@ const Clients: React.FC = () => {
         key={refreshKey}
         title="Clients"
         listService={getClients}
-        deleteService={deleteClients}
         extendsOptions={['contracts']}
         detailsRoutePath={(id) => ROUTE_PATHS.private.clients.detail(id)}
         onAdd={() => setAddModalVisible(true)}

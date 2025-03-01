@@ -76,11 +76,10 @@ const Invoices: React.FC = () => {
         key={refreshKey}
         title="Factures"
         listService={getInvoices}
-        deleteService={deleteInvoices}
+        extendsOptions={['contract']}
         detailsRoutePath={(id) => ROUTE_PATHS.private.invoices.detail(id)}
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
-        extendsOptions={['contract']}
       />
       <AddInvoice visible={addModalVisible} setVisible={setAddModalVisible} onSuccess={handleRefresh} />
     </>
