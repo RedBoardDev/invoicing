@@ -1,14 +1,7 @@
+import { UpdateClientSchema } from '@entities/client-entity';
 import type { FromSchema } from 'json-schema-to-ts';
 
-export const body = {
-  type: 'object',
-  properties: {
-    name: { type: 'string' },
-    email: { type: 'string', format: 'email' },
-  },
-  required: [],
-  additionalProperties: false,
-} as const;
+export const body = UpdateClientSchema;
 export type TBody = FromSchema<typeof body>;
 
 export const params = {

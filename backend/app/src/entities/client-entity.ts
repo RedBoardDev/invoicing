@@ -3,8 +3,8 @@ import type { FromSchema } from 'json-schema-to-ts';
 export const CreateClientSchema = {
   type: 'object',
   properties: {
-    name: { type: 'string', format: 'uuid' },
-    email: { type: 'string', format: 'email' },
+    name: { type: 'string', format: 'string' },
+    email: { type: 'array', items: { type: 'string', format: 'email' } },
   },
   required: ['name', 'email'],
   additionalProperties: false,
@@ -16,7 +16,7 @@ export const UpdateClientSchema = {
   type: 'object',
   properties: {
     name: { type: 'string', format: 'uuid' },
-    email: { type: 'string', format: 'email' },
+    email: { type: 'array', items: { type: 'string', format: 'email' } },
   },
   required: [],
   additionalProperties: false,

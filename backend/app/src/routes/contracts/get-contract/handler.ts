@@ -14,7 +14,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   if (computed.includes('permissions')) {
     const permissions = await computePermissions(contract, contractPermissionConditions);
-    return res.success(HttpStatusCode.ok, { contract }, { ...permissions });
+    return res.success(HttpStatusCode.ok, contract, { permissions });
   }
 
   res.success(HttpStatusCode.ok, contract);

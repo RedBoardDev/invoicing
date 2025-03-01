@@ -4,7 +4,7 @@ import type { PermissionConditions } from '../types';
 export const invoicePermissionConditions: PermissionConditions<Invoice> = {
   canBeDeleted: async (invoice) => {
     const isDraft = invoice.status === InvoiceStatus.DRAFT;
-    return !isDraft;
+    return isDraft;
   },
   canBeUpdated: {
     amountHT: async (invoice) => invoice.status === InvoiceStatus.DRAFT,

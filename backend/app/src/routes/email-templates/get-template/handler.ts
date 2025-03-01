@@ -15,7 +15,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   if (computed.includes('permissions')) {
     const permissions = await computePermissions(template, emailTemplatePermissionConditions);
-    return res.success(HttpStatusCode.ok, { template }, { ...permissions });
+    return res.success(HttpStatusCode.ok, template, { permissions });
   }
 
   res.success(HttpStatusCode.ok, template);
