@@ -6,13 +6,15 @@ import type { Result, ApiResponse, FetchParams } from '@api/types/fetch';
 import type { PaginatedApiResponse, PaginationParams } from '@api/types/pagination';
 import type Invoice from '@interfaces/invoice';
 
-export type ContractExtends = 'invoices' | 'history' | 'client' | 'emailTemplate';
+export type ContractExtends = 'invoices' | 'history' | 'client' | 'emailTemplate' | 'permissions';
 
 // Liste des contrats avec pagination
 export async function getContracts<E extends ContractExtends = never, TotalCount extends boolean = false>(
   extendsOptions?: E[],
   pagination?: PaginationParams<TotalCount>,
-): Promise<Result<PaginatedApiResponse<WithExtends<Contract, E>[], TotalCount>>> {
+): Promise<
+  Result<PaginatedApiResponse<WithExtends<Contract, E>[], TotalCount, E extends 'permissions' ? true : false>>
+> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
   };
@@ -24,11 +26,9 @@ export async function getContracts<E extends ContractExtends = never, TotalCount
 export async function getContractById<E extends ContractExtends = never>(
   id: string,
   extendsOptions?: E[],
-  includePermissions?: boolean,
-): Promise<Result<ApiResponse<WithExtends<Contract, E>>>> {
+): Promise<Result<ApiResponse<WithExtends<Contract, E>, E extends 'permissions' ? true : false>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
-    includePermissions: includePermissions ? 'true' : undefined,
   };
 
   return apiFetch('GET', `/contracts/${id}`, {}, params);
@@ -46,7 +46,7 @@ export async function updateContract<E extends ContractExtends = never>(
   id: string,
   data: Partial<Contract>,
   extendsOptions?: E[],
-): Promise<Result<ApiResponse<WithExtends<Contract, E>>>> {
+): Promise<Result<ApiResponse<WithExtends<Contract, E>, E extends 'permissions' ? true : false>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
   };
@@ -65,7 +65,9 @@ export async function getContractInvoices<E extends InvoiceExtends = never, Tota
   contractId: string,
   extendsOptions?: E[],
   pagination?: PaginationParams<TotalCount>,
-): Promise<Result<PaginatedApiResponse<WithExtends<Invoice, E>[], TotalCount>>> {
+): Promise<
+  Result<PaginatedApiResponse<WithExtends<Invoice, E>[], TotalCount, E extends 'permissions' ? true : false>>
+> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
   };
@@ -81,4 +83,4 @@ export async function getContractHistory<TotalCount extends boolean = false>(
   return apiFetch('GET', `/contracts/${contractId}/history`, {}, {}, pagination ?? { page: 1, pageSize: 1000 });
 }
 
-export type InvoiceExtends = 'items' | 'contract';
+export type InvoiceExtends = 'items' | 'contract' | 'permissions';

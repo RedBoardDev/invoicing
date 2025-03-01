@@ -27,13 +27,14 @@ const InvoicesDetails: React.FC = () => {
     updateEntity,
     deleteEntity,
     refresh,
-  } = useEntityDetails<Invoice, 'contract'>({
+    permissions,
+  } = useEntityDetails<Invoice, 'contract' | 'permissions'>({
     // endpoint: '/invoices',
     redirectPath: ROUTE_PATHS.private.invoices.root,
     fetchOnMount: true,
     fetchService: getInvoiceById,
     deleteService: deleteInvoices,
-    extendsOptions: ['contract'],
+    extendsOptions: ['contract', 'permissions'],
   });
 
   const tabContent = {
@@ -44,7 +45,15 @@ const InvoicesDetails: React.FC = () => {
 
   return (
     <FocusItem
-      childrenTop={<Header invoice={invoice} onEditSuccess={updateEntity} onDelete={deleteEntity} refresh={refresh} />}
+      childrenTop={
+        <Header
+          invoice={invoice}
+          permissions={permissions}
+          onEditSuccess={updateEntity as any}
+          onDelete={deleteEntity}
+          refresh={refresh}
+        />
+      }
       tabsItems={items}
       tabContent={tabContent}
     />

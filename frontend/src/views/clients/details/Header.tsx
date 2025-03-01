@@ -9,13 +9,14 @@ import type { FieldConfig } from 'components/layouts/headerDetails/types';
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { WithExtends } from '@api/types/extends';
+import type { Permissions, WithExtends } from '@api/types/extends';
 
 interface HeaderProps {
   client: WithExtends<Client, 'contracts'> | null;
   onEditSuccess: (updatedClient: WithExtends<Client, 'contracts'>) => void;
   onDelete: () => void;
   refresh: () => void;
+  permissions?: Permissions;
 }
 
 const { Text } = Typography;
@@ -58,7 +59,7 @@ const fields: FieldConfig<WithExtends<Client, 'contracts'>>[] = [
   },
 ];
 
-const Header: React.FC<HeaderProps> = ({ client, onEditSuccess, onDelete, refresh }) => {
+const Header: React.FC<HeaderProps> = ({ client, onEditSuccess, onDelete, refresh, permissions }) => {
   const [addModalVisible, setAddModalVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const clientId = client?.id;
@@ -80,6 +81,7 @@ const Header: React.FC<HeaderProps> = ({ client, onEditSuccess, onDelete, refres
         onDelete={onDelete}
         onEdit={onEditSuccess}
         onBack={() => navigate(ROUTE_PATHS.private.clients.root)}
+        permissions={permissions}
       />
       <AddContract
         clientId={client?.id}

@@ -50,12 +50,13 @@ const ContractsDetails: React.FC = () => {
     deleteEntity,
     refresh,
     refreshCount,
-  } = useEntityDetails<Contract, 'emailTemplate'>({
+    permissions,
+  } = useEntityDetails<Contract, 'emailTemplate' | 'permissions'>({
     redirectPath: ROUTE_PATHS.private.contracts.root,
     fetchOnMount: true,
     fetchService: getContractById,
     deleteService: deleteContracts,
-    extendsOptions: ['emailTemplate'],
+    extendsOptions: ['emailTemplate', 'permissions'],
   });
 
   const handleTemplateUpdate = (updatedTemplate: EmailTemplate, refreshCallback: () => void) => {
@@ -83,7 +84,13 @@ const ContractsDetails: React.FC = () => {
   return (
     <FocusItem
       childrenTop={
-        <Header contract={contract} onEditSuccess={updateEntity as any} onDelete={deleteEntity} refresh={refresh} />
+        <Header
+          contract={contract}
+          permissions={permissions}
+          onEditSuccess={updateEntity as any}
+          onDelete={deleteEntity}
+          refresh={refresh}
+        />
       }
       tabsItems={items}
       tabContent={tabContent}

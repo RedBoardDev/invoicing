@@ -1,11 +1,11 @@
-// api/types/pagination.ts
+import type { Permissions } from '@api/types/extends';
+
 export interface PaginationParams<TotalCount extends boolean = false> {
   page?: number;
   pageSize?: number;
   totalCount?: TotalCount;
 }
 
-// Meta de base sans totalCount
 export interface BasePaginationMeta {
   pagination: {
     page: number;
@@ -13,13 +13,14 @@ export interface BasePaginationMeta {
   };
 }
 
-// Meta avec totalCount si TotalCount est true
-export type PaginationMeta<TotalCount extends boolean = false> = TotalCount extends true
-  ? BasePaginationMeta & { totalCount: number }
-  : BasePaginationMeta;
+export type PaginationMeta<
+  TotalCount extends boolean = false,
+  IncludePermissions extends boolean = false,
+> = TotalCount extends true
+  ? BasePaginationMeta & { totalCount: number } & (IncludePermissions extends true ? { permissions: Permissions } : {})
+  : BasePaginationMeta & (IncludePermissions extends true ? { permissions: Permissions } : {});
 
-// Réponse API avec pagination
-export type PaginatedApiResponse<T, TotalCount extends boolean = false> = {
+export type PaginatedApiResponse<T, TotalCount extends boolean = false, IncludePermissions extends boolean = false> = {
   data: T;
-  meta: PaginationMeta<TotalCount>;
+  meta: PaginationMeta<TotalCount, IncludePermissions>;
 };

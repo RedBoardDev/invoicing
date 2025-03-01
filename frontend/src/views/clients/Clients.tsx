@@ -8,14 +8,18 @@ import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import AddClient from 'components/common/modal/create/AddClient';
 import { ROUTE_PATHS } from '@config/routePaths';
 import type { WithExtends } from '@api/types/extends';
-import { deleteClients, getClients } from '@api/services/clients';
+import { deleteClients, getClientById, getClients } from '@api/services/clients';
 
 const Clients: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleRefresh = () => {
+  const handleRefresh = async() => {
     setRefreshKey((prev) => prev + 1);
+    const t = await getClientById('1', ['contracts', 'permissions']);
+    if (t.success) {
+      console.log(t.data.data.permissions);
+    }
   };
 
   const columns: ColumnsType<WithExtends<Client, 'contracts'>> = useMemo(

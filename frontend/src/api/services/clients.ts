@@ -5,13 +5,13 @@ import type { Result, ApiResponse, FetchParams } from '@api/types/fetch';
 import type { PaginatedApiResponse, PaginationParams } from '@api/types/pagination';
 import type Contract from '@interfaces/contract';
 
-export type ClientExtends = 'contracts';
+export type ClientExtends = 'contracts' | 'permissions';
 
 // Liste des clients avec pagination
 export async function getClients<E extends ClientExtends = never, TotalCount extends boolean = false>(
   extendsOptions?: E[],
   pagination?: PaginationParams<TotalCount>,
-): Promise<Result<PaginatedApiResponse<WithExtends<Client, E>[], TotalCount>>> {
+): Promise<Result<PaginatedApiResponse<WithExtends<Client, E>[], TotalCount, E extends 'permissions' ? true : false>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
   };
@@ -23,11 +23,9 @@ export async function getClients<E extends ClientExtends = never, TotalCount ext
 export async function getClientById<E extends ClientExtends = never>(
   id: string,
   extendsOptions?: E[],
-  includePermissions?: boolean,
-): Promise<Result<ApiResponse<WithExtends<Client, E>>>> {
+): Promise<Result<ApiResponse<WithExtends<Client, E>, E extends 'permissions' ? true : false>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
-    includePermissions: includePermissions ? 'true' : undefined,
   };
 
   return apiFetch('GET', `/clients/${id}`, {}, params);
@@ -43,7 +41,7 @@ export async function updateClient<E extends ClientExtends = never>(
   id: string,
   data: Partial<Client>,
   extendsOptions?: E[],
-): Promise<Result<ApiResponse<WithExtends<Client, E>>>> {
+): Promise<Result<ApiResponse<WithExtends<Client, E>, E extends 'permissions' ? true : false>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
   };
@@ -62,7 +60,9 @@ export async function getClientContracts<E extends ContractExtends = never, Tota
   clientId: string,
   extendsOptions?: E[],
   pagination?: PaginationParams<TotalCount>,
-): Promise<Result<PaginatedApiResponse<WithExtends<Contract, E>[], TotalCount>>> {
+): Promise<
+  Result<PaginatedApiResponse<WithExtends<Contract, E>[], TotalCount, E extends 'permissions' ? true : false>>
+> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
   };
@@ -70,4 +70,4 @@ export async function getClientContracts<E extends ContractExtends = never, Tota
   return apiFetch('GET', `/clients/${clientId}/contracts`, {}, params, pagination ?? { page: 1, pageSize: 1000 });
 }
 
-export type ContractExtends = 'invoices' | 'history' | 'client';
+export type ContractExtends = 'invoices' | 'history' | 'client' | 'permissions';

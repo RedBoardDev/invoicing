@@ -4,7 +4,7 @@ import type { WithExtends } from '@api/types/extends';
 import type { Result, ApiResponse, FetchParams } from '@api/types/fetch';
 import type { PaginatedApiResponse, PaginationParams } from '@api/types/pagination';
 
-export type EmailTemplateExtends = never;
+export type EmailTemplateExtends = 'permissions';
 
 // Liste des templates avec pagination
 export async function getEmailTemplates<TotalCount extends boolean = false>(
@@ -17,11 +17,9 @@ export async function getEmailTemplates<TotalCount extends boolean = false>(
 export async function getEmailTemplateById<E extends EmailTemplateExtends = never>(
   id: string,
   extendsOptions?: E[],
-  includePermissions?: boolean,
-): Promise<Result<ApiResponse<WithExtends<EmailTemplate, E>>>> {
+): Promise<Result<ApiResponse<WithExtends<EmailTemplate, E>, E extends 'permissions' ? true : false>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
-    includePermissions: includePermissions ? 'true' : undefined,
   };
 
   return apiFetch('GET', `/email-templates/${id}`, {}, params);

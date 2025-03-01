@@ -8,7 +8,10 @@ interface EntityDetailsOptions<T, E extends string> {
   entityId?: string;
   redirectPath: string;
   fetchOnMount?: boolean;
-  fetchService: (id: string, extendsOptions?: E[]) => Promise<Result<ApiResponse<WithExtends<T, E>>>>;
+  fetchService: (
+    id: string,
+    extendsOptions?: E[],
+  ) => Promise<Result<ApiResponse<WithExtends<T, E>, E extends 'permissions' ? true : false>>>;
   deleteService: (
     ids: string[],
   ) => Promise<Result<ApiResponse<{ deletedIds: string[]; failedIds: { id: string; reason: string }[] }>>>;
@@ -25,6 +28,7 @@ interface EntityDetailsResult<T, E extends string> {
   refresh: () => void;
   updateEntity: (updatedEntity: WithExtends<T, E>) => void;
   refreshCount: number;
+  permissions?: { canBeDeleted: boolean; canBeUpdated: Record<string, boolean> };
 }
 
 export const useEntityDetails = <T extends object, E extends string = never>({
@@ -43,6 +47,9 @@ export const useEntityDetails = <T extends object, E extends string = never>({
   const id = entityId || params.id;
 
   const [entity, setEntity] = useState<WithExtends<T, E> | null>(null);
+  const [permissions, setPermissions] = useState<
+    { canBeDeleted: boolean; canBeUpdated: Record<string, boolean> } | undefined
+  >(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshCount, setRefreshCount] = useState<number>(0);
   const shouldFetchRef = useRef(fetchOnMount);
@@ -77,6 +84,9 @@ export const useEntityDetails = <T extends object, E extends string = never>({
       const result = await fetchService(id, extendsOptions);
       if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération');
       setEntity(result.data.data);
+      if (result.data.meta?.permissions) {
+        setPermissions(result.data.meta.permissions);
+      }
     } catch (error) {
       handleFetchError(error instanceof Error ? error : new Error('Erreur inconnue'));
     } finally {
@@ -125,5 +135,6 @@ export const useEntityDetails = <T extends object, E extends string = never>({
     refresh,
     updateEntity,
     refreshCount,
+    permissions,
   };
 };

@@ -6,8 +6,13 @@ import EditManager from 'components/common/editManager';
 import type { HeaderDetailsLayoutProps } from 'components/layouts/headerDetails/types';
 import type { EditManagerConfig } from 'components/common/editManager/types';
 import type React from 'react';
+import type { Permissions } from '@api/types/extends';
 
 const { Text } = Typography;
+
+interface ExtendedHeaderDetailsProps<T> extends HeaderDetailsLayoutProps<T> {
+  permissions?: Permissions;
+}
 
 const HeaderDetailsLayout = <T extends object>({
   title,
@@ -20,7 +25,8 @@ const HeaderDetailsLayout = <T extends object>({
   onBack,
   onDelete,
   onEdit,
-}: HeaderDetailsLayoutProps<T>) => {
+  permissions,
+}: ExtendedHeaderDetailsProps<T>) => {
   const isLoading = !data;
 
   const configs = fields
@@ -36,7 +42,12 @@ const HeaderDetailsLayout = <T extends object>({
       <div className={styles.leftPanel}>
         <Flex gap={8} align="center">
           <Flex vertical gap={8} className={styles.buttons}>
-            <Button icon={<DeleteOutlined />} onClick={onDelete} disabled={isLoading} danger />
+            <Button
+              icon={<DeleteOutlined />}
+              onClick={onDelete}
+              disabled={isLoading || (permissions && !permissions.canBeDeleted)}
+              danger
+            />
             <EditManager<T>
               data={data}
               id={id}

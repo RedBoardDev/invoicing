@@ -13,7 +13,7 @@ import { useInvoiceActions } from './useInvoiceActions';
 import SendInvoiceModal from 'components/common/modal/sendInvoice/SendInvoiceModal';
 import dayjs from 'dayjs';
 import { getInvoicePdf, updateInvoice } from '@api/services/invoices';
-import type { WithExtends } from '@api/types/extends';
+import type { Permissions, WithExtends } from '@api/types/extends';
 import type {} from '@api/types/fetch';
 
 const { Text } = Typography;
@@ -64,6 +64,7 @@ interface HeaderProps {
   onEditSuccess: (updatedInvoice: WithExtends<Invoice, 'contract'>) => void;
   onDelete: () => void;
   refresh: () => void;
+  permissions?: Permissions;
 }
 
 interface ButtonConfig {
@@ -75,7 +76,7 @@ interface ButtonConfig {
   primary?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refresh }) => {
+const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refresh, permissions }) => {
   const navigate = useNavigate();
   const { validateInvoice, markAsPaid, isValidating, isMarkingAsPaid } = useInvoiceActions(invoice, refresh);
 
@@ -195,6 +196,7 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
         id={invoiceId ?? ''}
         updateService={updateInvoice}
         fields={fields}
+        permissions={permissions}
         extraButtons={getActionButtons().map(({ key, label, action, loading, disabled, primary }) => (
           <Button
             key={key}

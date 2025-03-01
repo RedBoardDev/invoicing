@@ -5,6 +5,11 @@ import type EmailTemplate from '@interfaces/emailTemplate';
 import type Invoice from '@interfaces/invoice';
 import type InvoiceItem from '@interfaces/invoiceItem';
 
+export interface Permissions {
+  canBeDeleted: boolean;
+  canBeUpdated: Record<string, boolean>;
+}
+
 export type WithExtends<T, E extends string = never> = [E] extends [never]
   ? T
   : T & {
@@ -24,5 +29,7 @@ export type WithExtends<T, E extends string = never> = [E] extends [never]
                     ? Invoice[]
                     : K extends 'items'
                       ? InvoiceItem[]
-                      : never;
+                      : K extends 'permissions'
+                        ? Permissions
+                        : never;
     };

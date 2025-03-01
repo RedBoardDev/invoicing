@@ -4,13 +4,15 @@ import type { WithExtends } from '@api/types/extends';
 import type { Result, ApiResponse, FetchParams } from '@api/types/fetch';
 import type { PaginatedApiResponse, PaginationParams } from '@api/types/pagination';
 
-export type InvoiceExtends = 'items' | 'contract';
+export type InvoiceExtends = 'items' | 'contract' | 'permissions';
 
 // Liste des factures avec pagination
 export async function getInvoices<E extends InvoiceExtends = never, TotalCount extends boolean = false>(
   extendsOptions?: E[],
   pagination?: PaginationParams<TotalCount>,
-): Promise<Result<PaginatedApiResponse<WithExtends<Invoice, E>[], TotalCount>>> {
+): Promise<
+  Result<PaginatedApiResponse<WithExtends<Invoice, E>[], TotalCount, E extends 'permissions' ? true : false>>
+> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
   };
@@ -22,11 +24,9 @@ export async function getInvoices<E extends InvoiceExtends = never, TotalCount e
 export async function getInvoiceById<E extends InvoiceExtends = never>(
   id: string,
   extendsOptions?: E[],
-  includePermissions?: boolean,
-): Promise<Result<ApiResponse<WithExtends<Invoice, E>>>> {
+): Promise<Result<ApiResponse<WithExtends<Invoice, E>, E extends 'permissions' ? true : false>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
-    includePermissions: includePermissions ? 'true' : undefined,
   };
 
   return apiFetch('GET', `/invoices/${id}`, {}, params);
@@ -46,7 +46,7 @@ export async function updateInvoice<E extends InvoiceExtends = never>(
   id: string,
   data: Partial<Invoice>,
   extendsOptions?: E[],
-): Promise<Result<ApiResponse<WithExtends<Invoice, E>>>> {
+): Promise<Result<ApiResponse<WithExtends<Invoice, E>, E extends 'permissions' ? true : false>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
   };

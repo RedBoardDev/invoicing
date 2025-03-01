@@ -1,4 +1,5 @@
 import { updateContract } from '@api/services/contracts';
+import type { Permissions } from '@api/types/extends';
 import { ROUTE_PATHS } from '@config/routePaths';
 import type Contract from '@interfaces/contract';
 import { Typography, Button, DatePicker, InputNumber, Input } from 'antd';
@@ -18,6 +19,7 @@ interface HeaderProps {
   onEditSuccess: (updatedClient: Contract) => void;
   onDelete: () => void;
   refresh: () => void;
+  permissions?: Permissions;
 }
 
 const { Text } = Typography;
@@ -139,7 +141,7 @@ const fields: FieldConfig<Contract>[] = [
   },
 ];
 
-const Header: React.FC<HeaderProps> = ({ contract, onEditSuccess, onDelete, refresh }) => {
+const Header: React.FC<HeaderProps> = ({ contract, onEditSuccess, onDelete, refresh, permissions }) => {
   const [addModalVisible, setAddModalVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const contractId = contract?.id;
@@ -161,6 +163,7 @@ const Header: React.FC<HeaderProps> = ({ contract, onEditSuccess, onDelete, refr
         onDelete={onDelete}
         onEdit={onEditSuccess}
         onBack={() => navigate(ROUTE_PATHS.private.contracts.root)}
+        permissions={permissions}
       />
       <AddInvoice
         contractId={contract?.id}

@@ -28,21 +28,30 @@ const ClientsDetails: React.FC = () => {
     deleteEntity,
     refresh,
     refreshCount,
-  } = useEntityDetails<Client, 'contracts'>({
+    permissions,
+  } = useEntityDetails<Client, 'contracts' | 'permissions'>({
     redirectPath: ROUTE_PATHS.private.clients.root,
     fetchOnMount: true,
     fetchService: getClientById,
     deleteService: deleteClients,
-    extendsOptions: ['contracts'],
+    extendsOptions: ['contracts', 'permissions'],
   });
 
+  console.log(client)
   const tabContent = {
     contracts: <ContractsTab key={refreshCount} clientId={client?.id || null} />,
   };
-
   return (
     <FocusItem
-      childrenTop={<Header client={client} onEditSuccess={updateEntity} onDelete={deleteEntity} refresh={refresh} />}
+      childrenTop={
+        <Header
+          client={client}
+          permissions={permissions}
+          onEditSuccess={updateEntity}
+          onDelete={deleteEntity}
+          refresh={refresh}
+        />
+      }
       tabsItems={items}
       tabContent={tabContent}
     />
