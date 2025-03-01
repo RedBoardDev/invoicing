@@ -5,7 +5,7 @@ import type { Result, ApiResponse, FetchParams } from '@api/types/fetch';
 import type { PaginatedApiResponse, PaginationParams } from '@api/types/pagination';
 import type Contract from '@interfaces/contract';
 
-export type ClientExtends = 'contracts' | 'permissions';
+export type ClientExtends = 'contracts';
 
 // Liste des clients avec pagination
 export async function getClients<E extends ClientExtends = never, TotalCount extends boolean = false>(
@@ -23,9 +23,11 @@ export async function getClients<E extends ClientExtends = never, TotalCount ext
 export async function getClientById<E extends ClientExtends = never>(
   id: string,
   extendsOptions?: E[],
+  includePermissions?: boolean,
 ): Promise<Result<ApiResponse<WithExtends<Client, E>>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
+    includePermissions: includePermissions ? 'true' : undefined,
   };
 
   return apiFetch('GET', `/clients/${id}`, {}, params);
@@ -68,5 +70,4 @@ export async function getClientContracts<E extends ContractExtends = never, Tota
   return apiFetch('GET', `/clients/${clientId}/contracts`, {}, params, pagination ?? { page: 1, pageSize: 1000 });
 }
 
-// Extensions pour les contrats dans getClientContracts
 export type ContractExtends = 'invoices' | 'history' | 'client';

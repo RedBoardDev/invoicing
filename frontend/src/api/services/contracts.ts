@@ -6,7 +6,7 @@ import type { Result, ApiResponse, FetchParams } from '@api/types/fetch';
 import type { PaginatedApiResponse, PaginationParams } from '@api/types/pagination';
 import type Invoice from '@interfaces/invoice';
 
-export type ContractExtends = 'invoices' | 'history' | 'client' | 'emailTemplate' | 'permissions';
+export type ContractExtends = 'invoices' | 'history' | 'client' | 'emailTemplate';
 
 // Liste des contrats avec pagination
 export async function getContracts<E extends ContractExtends = never, TotalCount extends boolean = false>(
@@ -24,9 +24,11 @@ export async function getContracts<E extends ContractExtends = never, TotalCount
 export async function getContractById<E extends ContractExtends = never>(
   id: string,
   extendsOptions?: E[],
+  includePermissions?: boolean,
 ): Promise<Result<ApiResponse<WithExtends<Contract, E>>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
+    includePermissions: includePermissions ? 'true' : undefined,
   };
 
   return apiFetch('GET', `/contracts/${id}`, {}, params);
@@ -79,5 +81,4 @@ export async function getContractHistory<TotalCount extends boolean = false>(
   return apiFetch('GET', `/contracts/${contractId}/history`, {}, {}, pagination ?? { page: 1, pageSize: 1000 });
 }
 
-// Extensions pour les factures dans getContractInvoices
 export type InvoiceExtends = 'items' | 'contract';

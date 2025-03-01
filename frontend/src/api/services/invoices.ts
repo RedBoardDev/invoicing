@@ -4,7 +4,7 @@ import type { WithExtends } from '@api/types/extends';
 import type { Result, ApiResponse, FetchParams } from '@api/types/fetch';
 import type { PaginatedApiResponse, PaginationParams } from '@api/types/pagination';
 
-export type InvoiceExtends = 'items' | 'contract' | 'permissions';
+export type InvoiceExtends = 'items' | 'contract';
 
 // Liste des factures avec pagination
 export async function getInvoices<E extends InvoiceExtends = never, TotalCount extends boolean = false>(
@@ -22,9 +22,11 @@ export async function getInvoices<E extends InvoiceExtends = never, TotalCount e
 export async function getInvoiceById<E extends InvoiceExtends = never>(
   id: string,
   extendsOptions?: E[],
+  includePermissions?: boolean,
 ): Promise<Result<ApiResponse<WithExtends<Invoice, E>>>> {
   const params: FetchParams = {
     extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
+    includePermissions: includePermissions ? 'true' : undefined,
   };
 
   return apiFetch('GET', `/invoices/${id}`, {}, params);
