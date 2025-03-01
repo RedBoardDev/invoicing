@@ -40,8 +40,15 @@ export async function createInvoice(
 }
 
 // Mettre à jour une facture (pas de pagination)
-export async function updateInvoice(id: string, data: Partial<Invoice>): Promise<Result<ApiResponse<Invoice>>> {
-  return apiFetch('PATCH', `/invoices/${id}`, { body: JSON.stringify(data) });
+export async function updateInvoice<E extends InvoiceExtends = never>(
+  id: string,
+  data: Partial<Invoice>,
+  extendsOptions?: E[],
+): Promise<Result<ApiResponse<WithExtends<Invoice, E>>>> {
+  const params: FetchParams = {
+    extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
+  };
+  return apiFetch('PATCH', `/invoices/${id}`, { body: JSON.stringify(data) }, params);
 }
 
 // Supprimer des factures (pas de pagination)

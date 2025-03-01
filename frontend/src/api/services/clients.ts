@@ -37,8 +37,15 @@ export async function createClient(data: { name: string; email: string }): Promi
 }
 
 // Mettre à jour un client (pas de pagination)
-export async function updateClient(id: string, data: Partial<Client>): Promise<Result<ApiResponse<Client>>> {
-  return apiFetch('PATCH', `/clients/${id}`, { body: JSON.stringify(data) });
+export async function updateClient<E extends ClientExtends = never>(
+  id: string,
+  data: Partial<Client>,
+  extendsOptions?: E[],
+): Promise<Result<ApiResponse<WithExtends<Client, E>>>> {
+  const params: FetchParams = {
+    extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
+  };
+  return apiFetch('PATCH', `/clients/${id}`, { body: JSON.stringify(data) }, params);
 }
 
 // Supprimer des clients (pas de pagination)

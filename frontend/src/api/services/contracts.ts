@@ -40,8 +40,15 @@ export async function createContract(
 }
 
 // Mettre à jour un contrat (pas de pagination)
-export async function updateContract(id: string, data: Partial<Contract>): Promise<Result<ApiResponse<Contract>>> {
-  return apiFetch('PATCH', `/contracts/${id}`, { body: JSON.stringify(data) });
+export async function updateContract<E extends ContractExtends = never>(
+  id: string,
+  data: Partial<Contract>,
+  extendsOptions?: E[],
+): Promise<Result<ApiResponse<WithExtends<Contract, E>>>> {
+  const params: FetchParams = {
+    extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
+  };
+  return apiFetch('PATCH', `/contracts/${id}`, { body: JSON.stringify(data) }, params);
 }
 
 // Supprimer des contrats (pas de pagination)
