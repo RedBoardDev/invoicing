@@ -1,12 +1,13 @@
-import type Client from '@interfaces/client';
+import type React from 'react';
 import Header from './Header';
 import type { TabsProps } from 'antd';
 import FocusItem from 'components/layouts/focusItem/FocusItem';
-import type React from 'react';
 import { ROUTE_PATHS } from '@config/routePaths';
-import { useEntityDetails } from '@hooks/useEntityDetails'; // Chemin vers ton hook
+import { useEntityDetails } from '@hooks/useEntityDetails';
 import { Icon } from '@components/common';
 import ContractsTab from '@views/clients/details/ContractsTab';
+import type Client from '@interfaces/client';
+import { getClientById, deleteClients } from '@api/services/clients';
 
 const items: TabsProps['items'] = [
   {
@@ -27,10 +28,12 @@ const ClientsDetails: React.FC = () => {
     deleteEntity,
     refresh,
     refreshCount,
-  } = useEntityDetails<Client>({
-    endpoint: '/clients',
+  } = useEntityDetails<Client, 'contracts'>({
     redirectPath: ROUTE_PATHS.private.clients.root,
     fetchOnMount: true,
+    fetchService: getClientById,
+    deleteService: deleteClients,
+    extendsOptions: ['contracts'],
   });
 
   const tabContent = {

@@ -8,6 +8,8 @@ import type { ColumnsType } from 'antd/es/table';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo } from 'react';
+import type { WithExtends } from '@api/types/extends';
+import { getContractInvoices } from '@api/services/contracts';
 
 const { Text } = Typography;
 
@@ -16,9 +18,10 @@ interface InvoicesTabProps {
 }
 
 const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
-  if (!contractId) return;
+  if (!contractId) return null;
 
-  const columns: ColumnsType<Invoice> = useMemo(
+  // Typage corrigé pour inclure 'contract' et 'items'
+  const columns: ColumnsType<WithExtends<Invoice, 'contract' | 'items'>> = useMemo(
     () => [
       {
         title: 'N° Facture',
@@ -28,13 +31,13 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
       },
       {
         title: 'Contrat',
-        dataIndex: ['contract', 'title'],
-        render: (title: string) => <Text>{title}</Text>,
-        sorter: (a, b) => a.contract?.title.localeCompare(b.contract?.title || '') || 0,
+        dataIndex: 'contract',
+        render: (contract) => <Text>{contract?.title ?? 'N/A'}</Text>,
+        sorter: (a, b) => (a.contract?.title ?? '').localeCompare(b.contract?.title ?? ''),
       },
       {
         title: 'PDF / Envoyée',
-        render: (_: unknown, record: Invoice) => (
+        render: (_: unknown, record: WithExtends<Invoice, 'contract' | 'items'>) => (
           <Space>
             {record.fileId ? (
               <Button
@@ -59,16 +62,21 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
       {
         title: 'Échéance',
         dataIndex: 'dueDate',
-        render: (date: string) => formatDate(date, 'DD/MM/YYYY'),
+        render: (date: string | Date) => formatDate(date, 'DD/MM/YYYY'),
         sorter: (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
       },
     ],
     [],
   );
 
+  const listService = (
+    extendsOptions?: ('contract' | 'items')[],
+    pagination?: { page?: number; pageSize?: number; totalCount?: boolean },
+  ) => getContractInvoices(contractId, extendsOptions, pagination);
+
   return (
-    <TablePageLayout<Invoice> // TODO: plutot séparer la logique call + tableau dans un autre composant comme ça on peut utiliser soit le tableau uniquement soit ce layout qui utilisera le composant tableau
-      listEndpoint={`/contracts/${contractId}/invoices`}
+    <TablePageLayout<WithExtends<Invoice, 'contract'>, 'contract' | 'items'>
+      listService={listService}
       detailsRoutePath={(id) => ROUTE_PATHS.private.invoices.detail(id)}
       columns={columns}
       extendsOptions={['items', 'contract']}

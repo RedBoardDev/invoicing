@@ -1,9 +1,10 @@
-// src/views/invoices/details/PdfViewerTab.tsx
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 import { Spin } from 'antd';
 import type Invoice from '@interfaces/invoice';
 import { Viewer, type LoadError, SpecialZoomLevel } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import { getInvoicePdf } from '@api/services/invoices';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
@@ -11,8 +12,7 @@ interface PdfViewerTabProps {
   invoice: Invoice | null;
 }
 
-// Gestion des erreurs
-const RenderError = ({ error }: { error: LoadError }) => {
+const RenderError = (error: LoadError): React.ReactElement => {
   let message = '';
   switch (error.name) {
     case 'InvalidPDFException':
@@ -55,10 +55,7 @@ const PdfViewerTab: React.FC<PdfViewerTabProps> = ({ invoice }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Plugin pour la barre d’outils
-  const layoutPluginInstance = defaultLayoutPlugin({
-    sidebarTabs: () => [], // Pas de sidebar
-  });
+  const layoutPluginInstance = defaultLayoutPlugin({ sidebarTabs: () => [] });
 
   useEffect(() => {
     const fetchPdf = async () => {
@@ -68,14 +65,10 @@ const PdfViewerTab: React.FC<PdfViewerTabProps> = ({ invoice }) => {
       setError(null);
 
       try {
-        const response = await fetch(`http://localhost:3000/invoices/${invoice.id}/pdf`, {
-          method: 'GET',
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Erreur lors de la récupération du PDF');
-        }
-        const arrayBuffer = await response.arrayBuffer();
+        const result = await getInvoicePdf(invoice.id);
+        if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération du PDF');
+        const blob = result.data;
+        const arrayBuffer = await blob.arrayBuffer();
         setPdfData(new Uint8Array(arrayBuffer));
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Impossible de charger le PDF');
@@ -115,8 +108,8 @@ const PdfViewerTab: React.FC<PdfViewerTabProps> = ({ invoice }) => {
       <Viewer
         fileUrl={pdfData}
         renderError={RenderError}
-        defaultScale={SpecialZoomLevel.PageFit} // Affiche la page entière en hauteur
-        plugins={[layoutPluginInstance]} // Barre d’outils pour zoom et navigation
+        defaultScale={SpecialZoomLevel.PageFit}
+        plugins={[layoutPluginInstance]}
         initialPage={0}
       />
     </div>

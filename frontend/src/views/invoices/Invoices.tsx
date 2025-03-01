@@ -9,13 +9,15 @@ import AddInvoice from 'components/common/modal/create/invoice/AddInvoice';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo, useState } from 'react';
+import type { WithExtends } from '@api/types/extends';
+import { getInvoices, deleteInvoices } from '@api/services/invoices';
 
 const { Text } = Typography;
 
 const Invoices: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
 
-  const columns: ColumnsType<Invoice> = useMemo(
+  const columns: ColumnsType<WithExtends<Invoice, 'contract'>> = useMemo(
     () => [
       {
         title: 'N° Facture',
@@ -25,13 +27,13 @@ const Invoices: React.FC = () => {
       },
       {
         title: 'Contrat',
-        dataIndex: ['contract', 'title'],
-        render: (title: string) => <Text>{title}</Text>,
-        sorter: (a, b) => a.contract?.title.localeCompare(b.contract?.title || '') || 0,
+        dataIndex: 'contract',
+        render: (contract) => <Text>{contract?.title || 'N/A'}</Text>,
+        sorter: (a, b) => (a.contract?.title || '').localeCompare(b.contract?.title || ''),
       },
       {
         title: 'PDF / Envoyée',
-        render: (_: unknown, record: Invoice) => (
+        render: (_: unknown, record: WithExtends<Invoice, 'contract'>) => (
           <Space>
             {record.fileId ? (
               <Button
@@ -65,11 +67,11 @@ const Invoices: React.FC = () => {
 
   return (
     <>
-      <TablePageLayout<Invoice>
+      <TablePageLayout<WithExtends<Invoice, 'contract'>, 'contract'>
         title="Factures"
-        listEndpoint="/invoices"
+        listService={getInvoices}
+        deleteService={deleteInvoices}
         detailsRoutePath={(id) => ROUTE_PATHS.private.invoices.detail(id)}
-        deleteEndpoint="/invoices"
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
         extendsOptions={['contract']}

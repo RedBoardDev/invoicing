@@ -34,7 +34,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   static handleGoHome = (): void => {
-    window.location.href = ROUTE_PATHS.public.home;
+    window.location.href = ROUTE_PATHS.private.dashboard;
   };
 
   override render(): ReactNode {

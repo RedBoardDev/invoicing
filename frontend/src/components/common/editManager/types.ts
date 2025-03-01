@@ -1,3 +1,4 @@
+import type { ApiResponse, Result } from '@api/types/fetch';
 import type { FormItemProps } from 'antd';
 import type { Store, StoreValue } from 'antd/es/form/interface';
 import type { FormInstance } from 'antd/lib';
@@ -14,9 +15,10 @@ export type EditManagerConfig<T> = {
 
 export type EditManagerProps<T> = {
   data: T | null;
+  id: string;
   disabled?: boolean;
   configs: EditManagerConfig<T>[];
-  editEndpoint: string;
+  updateService: (id: string, data: Partial<T>) => Promise<Result<ApiResponse<T>>>;
   onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
 };

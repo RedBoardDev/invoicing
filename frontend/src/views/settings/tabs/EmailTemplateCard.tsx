@@ -4,6 +4,7 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type EmailTemplate from '@interfaces/emailTemplate';
 import { useMessage } from '@hooks/useMessage';
 import { EMAIL_VARIABLES_METADATA, type EmailVariable } from '@enums/emailVariables';
+import { deleteEmailTemplates } from '@api/services/emailTemplates';
 import styles from './EmailTemplateCard.module.css';
 
 const { Text, Title } = Typography;
@@ -19,13 +20,8 @@ const EmailTemplateCard: React.FC<EmailTemplateCardProps> = ({ template, onEdit,
 
   const handleDelete = async () => {
     try {
-      const response = await fetch('http://localhost:3000/email-templates', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: [template.id] }),
-      });
-
-      if (!response.ok) throw new Error('Failed to delete template');
+      const result = await deleteEmailTemplates([template.id]);
+      if (!result.success) throw new Error(result.error || 'Failed to delete template');
       messageApi?.success('Template supprimé avec succès');
       onDelete();
     } catch (error) {
@@ -94,4 +90,5 @@ const EmailTemplateCard: React.FC<EmailTemplateCardProps> = ({ template, onEdit,
     </div>
   );
 };
+
 export default EmailTemplateCard;

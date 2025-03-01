@@ -2,7 +2,7 @@ import type { InputRef } from 'antd';
 import type React from 'react';
 
 export interface EmailTemplate {
-  id?: string;
+  id: string;
   name: string;
   subject: string;
   content: string;

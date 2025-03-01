@@ -1,11 +1,15 @@
 import type React from 'react';
 import { useState, useEffect, useCallback } from 'react';
-import { Modal, Form, Input, Button, message } from 'antd';
+import { Modal, Form, Input, Button } from 'antd';
 import type Invoice from '@interfaces/invoice';
+import { useMessage } from '@hooks/useMessage';
+import { sendInvoice } from '@api/services/invoices';
+import { simulateEmailTemplate } from '@api/services/emailTemplates';
+import type { WithExtends } from '@api/types/extends';
 
 interface SendInvoiceModalProps {
   visible: boolean;
-  invoice: Invoice | null;
+  invoice: WithExtends<Invoice, 'contract'> | null;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -13,25 +17,21 @@ interface SendInvoiceModalProps {
 const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, onClose, onSuccess }) => {
   const [form] = Form.useForm();
   const [isSending, setIsSending] = useState(false);
+  const messageApi = useMessage();
 
   const fetchEmailData = useCallback(
-    async (invoice: Invoice) => {
+    async (invoice: WithExtends<Invoice, 'contract'>) => {
+      if (!invoice.contract?.emailTemplateId) return;
       try {
-        const response = await fetch(
-          `http://localhost:3000/email-templates/${invoice.contract?.emailTemplateId}/simulate/${invoice.id}`,
-        );
-        if (!response.ok) throw new Error('Erreur lors de la récupération des données');
-        const { email, subject, content } = await response.json();
-        form.setFieldsValue({
-          recipientEmail: email || '',
-          subject: subject || '',
-          content: content || '',
-        });
+        const result = await simulateEmailTemplate(invoice.contract.emailTemplateId, invoice.id);
+        if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération des données');
+        const { email, subject, content } = result.data.data;
+        form.setFieldsValue({ recipientEmail: email || '', subject: subject || '', content: content || '' });
       } catch (error) {
-        message.error('Erreur lors de la récupération des données de l’email');
+        messageApi.error('Erreur lors de la récupération des données de l’email');
       }
     },
-    [form],
+    [form, messageApi],
   );
 
   useEffect(() => {
@@ -43,17 +43,16 @@ const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, o
     try {
       setIsSending(true);
       const values = await form.validateFields();
-      const response = await fetch(`http://localhost:3000/invoices/${invoice?.id}/send`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-      if (!response.ok) throw new Error('Erreur lors de l’envoi');
-      message.success('Facture envoyée avec succès');
+      if (!invoice?.id) throw new Error('Aucune facture sélectionnée');
+
+      const result = await sendInvoice(invoice.id, values);
+      if (!result.success) throw new Error(result.error || 'Erreur lors de l’envoi');
+
+      messageApi.success('Facture envoyée avec succès');
       onSuccess();
       onClose();
     } catch (error) {
-      message.error('Erreur lors de l’envoi de la facture');
+      messageApi.error('Erreur lors de l’envoi de la facture');
     } finally {
       setIsSending(false);
     }

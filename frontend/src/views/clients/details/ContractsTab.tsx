@@ -5,13 +5,14 @@ import type { ColumnsType } from 'antd/es/table';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo } from 'react';
+import { getClientContracts } from '@api/services/clients';
 
 interface ContractsTabProps {
   clientId: string | null;
 }
 
 const ContractsTab: React.FC<ContractsTabProps> = ({ clientId }) => {
-  if (!clientId) return;
+  if (!clientId) return null;
 
   const columns: ColumnsType<Contract> = useMemo(
     () => [
@@ -35,14 +36,14 @@ const ContractsTab: React.FC<ContractsTabProps> = ({ clientId }) => {
       {
         title: 'Montant HT',
         dataIndex: 'amountHT',
-        render: (value: string) => `€${Number.parseFloat(value).toFixed(2)}`,
-        sorter: (a, b) => Number.parseFloat(a.amountHT) - Number.parseFloat(b.amountHT),
+        render: (value: number) => `€${value.toFixed(2)}`,
+        sorter: (a, b) => a.amountHT - b.amountHT,
       },
       {
         title: 'Taux de taxe',
         dataIndex: 'taxRate',
-        render: (value: string) => `${Number.parseFloat(value).toFixed(2)}%`,
-        sorter: (a, b) => Number.parseFloat(a.taxRate) - Number.parseFloat(b.taxRate),
+        render: (value: number) => `${value.toFixed(2)}%`,
+        sorter: (a, b) => a.taxRate - b.taxRate,
       },
       {
         title: 'Délai paiement',
@@ -54,9 +55,14 @@ const ContractsTab: React.FC<ContractsTabProps> = ({ clientId }) => {
     [],
   );
 
+  const listService = (
+    extendsOptions?: 'client'[],
+    pagination?: { page?: number; pageSize?: number; totalCount?: boolean },
+  ) => getClientContracts(clientId, extendsOptions, pagination);
+
   return (
-    <TablePageLayout<Contract> // TODO: plutot séparer la logique call + tableau dans un autre composant comme ça on peut utiliser soit le tableau uniquement soit ce layout qui utilisera le composant tableau
-      listEndpoint={`/clients/${clientId}/contracts`}
+    <TablePageLayout<Contract>
+      listService={listService}
       columns={columns}
       detailsRoutePath={(id) => ROUTE_PATHS.private.contracts.detail(id)}
       showHeader={false}

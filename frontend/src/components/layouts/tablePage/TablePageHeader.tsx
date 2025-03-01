@@ -26,8 +26,6 @@ export const TablePageHeader = ({
   extraButtons = [],
   hasDelete,
 }: TablePageHeaderProps) => {
-  const hasActions = onAdd || hasDelete;
-
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>

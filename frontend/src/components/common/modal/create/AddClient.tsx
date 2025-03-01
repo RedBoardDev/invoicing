@@ -2,6 +2,7 @@ import { Form, Input } from 'antd';
 import { AddModal } from 'components/common/modal/create/component/AddModal';
 import type React from 'react';
 import type Client from '@interfaces/client';
+import { createClient } from '@api/services/clients';
 
 interface AddClientProps {
   visible: boolean;
@@ -14,8 +15,8 @@ const AddClient: React.FC<AddClientProps> = ({ visible, setVisible }) => {
       visible={visible}
       onCancel={() => setVisible(false)}
       onSuccess={() => setVisible(false)}
-      endpoint="/clients"
-      title="Nouveau client">
+      title="Nouveau client"
+      createService={createClient}>
       {() => (
         <>
           <Form.Item
@@ -31,7 +32,7 @@ const AddClient: React.FC<AddClientProps> = ({ visible, setVisible }) => {
               { required: true, message: 'Ce champ est obligatoire' },
               { type: 'email', message: 'Veuillez entrer un email valide' },
             ]}>
-            <Input placeholder="Email de l'entreprise" />
+            <Input placeholder="Email de l’entreprise" />
           </Form.Item>
         </>
       )}

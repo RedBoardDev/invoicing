@@ -7,6 +7,7 @@ import dayjs, { type Dayjs } from 'dayjs';
 import type React from 'react';
 import AmountInput from 'components/dataEntry/AmountInput';
 import EmailTemplateSelect from 'components/dataEntry/EmailTemplateSelect';
+import { createContract } from '@api/services/contracts';
 
 interface AddContractProps {
   clientId?: string | undefined;
@@ -26,8 +27,8 @@ const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible
       visible={visible}
       onCancel={() => setVisible(false)}
       onSuccess={handleAddSuccess}
-      endpoint="/contracts"
       title="Nouveau contrat"
+      createService={createContract}
       initialValues={clientId ? { clientId } : undefined}>
       {(form) => (
         <>

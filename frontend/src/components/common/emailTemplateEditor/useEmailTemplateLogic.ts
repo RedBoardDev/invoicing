@@ -4,6 +4,7 @@ import { useMessage } from '@hooks/useMessage';
 import type { EmailVariable } from '@enums/emailVariables';
 import type { EmailTemplate, CursorPositions, FormRefs } from './types';
 import type { FormInstance } from 'antd';
+import { createEmailTemplate, updateEmailTemplate } from '@api/services/emailTemplates';
 
 export const useEmailTemplateLogic = (
   form: FormInstance<EmailTemplate>,
@@ -88,15 +89,11 @@ export const useEmailTemplateLogic = (
     async (values: Partial<EmailTemplate>) => {
       setLoading(true);
       try {
-        const method = template ? 'PUT' : 'POST';
-        const url = template ? `/email-templates/${template.id}` : '/email-templates';
-        const response = await fetch(`http://localhost:3000${url}`, {
-          method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(values),
-        });
+        const result = template
+          ? await updateEmailTemplate(template.id, values)
+          : await createEmailTemplate(values as Omit<EmailTemplate, 'id' | 'createdAt' | 'updatedAt'>);
 
-        if (!response.ok) throw new Error('Failed to save template');
+        if (!result.success) throw new Error(result.error || 'Erreur lors de la sauvegarde');
         messageApi?.success(template ? 'Template mis à jour' : 'Template créé avec succès');
         form.resetFields();
         onSuccess();

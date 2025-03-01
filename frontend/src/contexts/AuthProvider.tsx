@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
       try {
-        const response = await fetch('/api/auth/verify', {
+        const response = await fetch('/api/auth/verify', { // TODO
           method: 'GET',
           headers: { Authorization: `Bearer ${token}` },
         });

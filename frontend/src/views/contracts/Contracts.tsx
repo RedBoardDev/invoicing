@@ -6,11 +6,13 @@ import AddContract from 'components/common/modal/create/AddContract';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo, useState } from 'react';
+import type { WithExtends } from '@api/types/extends';
+import { getContracts, deleteContracts } from '@api/services/contracts';
 
 const Contracts: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
 
-  const columns: ColumnsType<Contract> = useMemo(
+  const columns: ColumnsType<WithExtends<Contract, 'client'>> = useMemo(
     () => [
       {
         title: 'Titre',
@@ -19,20 +21,20 @@ const Contracts: React.FC = () => {
       },
       {
         title: 'Client',
-        dataIndex: ['client', 'name'],
-        render: (_, record) => record.client.name || 'N/A',
+        dataIndex: 'client',
+        render: (client) => client?.name || 'N/A',
         sorter: (a, b) => a.client.name.localeCompare(b.client.name),
       },
       {
         title: 'Montant HT',
         dataIndex: 'amountHT',
-        render: (value: string) => `€${Number.parseFloat(value).toFixed(2)}`,
+        render: (value: number) => `€${value.toFixed(2)}`,
         sorter: (a, b) => a.amountHT - b.amountHT,
       },
       {
         title: 'Taux TVA',
         dataIndex: 'taxRate',
-        render: (value: string) => `${Number.parseFloat(value).toFixed(2)}%`,
+        render: (value: number) => `${value.toFixed(2)}%`,
         sorter: (a, b) => a.taxRate - b.taxRate,
       },
       {
@@ -62,16 +64,15 @@ const Contracts: React.FC = () => {
 
   return (
     <>
-      <TablePageLayout<Contract>
+      <TablePageLayout<WithExtends<Contract, 'client'>, 'client'>
         title="Contrats"
-        listEndpoint="/contracts"
+        listService={getContracts}
+        deleteService={deleteContracts}
         detailsRoutePath={(id) => ROUTE_PATHS.private.contracts.detail(id)}
-        deleteEndpoint="/contracts"
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
         extendsOptions={['client']}
       />
-
       <AddContract visible={addModalVisible} setVisible={setAddModalVisible} />
     </>
   );

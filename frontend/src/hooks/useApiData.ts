@@ -1,26 +1,32 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { WithExtends } from '@api/types/extends';
+import type { Result } from '@api/types/fetch';
+import type { PaginatedApiResponse } from '@api/types/pagination';
 
-interface ApiDataState<T> {
-  data: T[];
+interface ApiDataState<T, E extends string> {
+  data: Array<WithExtends<T, E>>;
   loading: boolean;
   error: Error | null;
   total: number;
 }
 
-interface ApiDataConfig {
-  endpoint: string;
-  extendsOptions?: string[];
+interface ApiDataConfig<T, E extends string> {
+  listService: (
+    extendsOptions?: E[],
+    pagination?: { page?: number; pageSize?: number; totalCount?: boolean },
+  ) => Promise<Result<PaginatedApiResponse<WithExtends<T, E>[], true>>>;
+  extendsOptions?: E[];
   initialPage?: number;
   initialPageSize?: number;
 }
 
-export const useApiData = <T extends object>({
-  endpoint,
+export const useApiData = <T extends object, E extends string = never>({
+  listService,
   extendsOptions = [],
   initialPage = 1,
   initialPageSize = 30,
-}: ApiDataConfig) => {
-  const [state, setState] = useState<ApiDataState<T>>({
+}: ApiDataConfig<T, E>) => {
+  const [state, setState] = useState<ApiDataState<T, E>>({
     data: [],
     loading: false,
     error: null,
@@ -37,22 +43,15 @@ export const useApiData = <T extends object>({
   const fetchData = useCallback(async () => {
     setState((prev) => ({ ...prev, loading: true }));
     try {
-      const params = new URLSearchParams({
-        ...(pagination.page > 1 ? { page: pagination.page.toString() } : {}),
-        ...(pagination.pageSize !== initialPageSize ? { pageSize: pagination.pageSize.toString() } : {}),
-        totalCount: 'true',
-        ...(memoizedExtendsOptions.length > 0 ? { extends: memoizedExtendsOptions.join(',') } : {}),
+      const result = await listService(memoizedExtendsOptions, {
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        totalCount: true,
       });
 
-      const response = await fetch(`http://localhost:3000${endpoint}?${params}`);
+      if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération des données');
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-      const { data, meta } = responseData;
-
+      const { data, meta } = result.data;
       setState({
         data,
         total: meta?.totalCount ?? 0,
@@ -64,10 +63,10 @@ export const useApiData = <T extends object>({
         data: [],
         total: 0,
         loading: false,
-        error: error as Error,
+        error: error instanceof Error ? error : new Error('Erreur inconnue'),
       });
     }
-  }, [endpoint, pagination.page, pagination.pageSize, memoizedExtendsOptions, initialPageSize]);
+  }, [listService, pagination.page, pagination.pageSize, memoizedExtendsOptions]);
 
   useEffect(() => {
     fetchData();

@@ -7,6 +7,7 @@ import { ROUTE_PATHS } from '@config/routePaths';
 import { useEntityDetails } from '@hooks/useEntityDetails';
 import { Icon } from '@components/common';
 import PdfViewerTab from '@views/invoices/details/PdfViewerTab';
+import { deleteInvoices, getInvoiceById } from '@api/services/invoices';
 
 const items: TabsProps['items'] = [
   {
@@ -26,10 +27,12 @@ const InvoicesDetails: React.FC = () => {
     updateEntity,
     deleteEntity,
     refresh,
-  } = useEntityDetails<Invoice>({
-    endpoint: '/invoices',
+  } = useEntityDetails<Invoice, 'contract'>({
+    // endpoint: '/invoices',
     redirectPath: ROUTE_PATHS.private.invoices.root,
     fetchOnMount: true,
+    fetchService: getInvoiceById,
+    deleteService: deleteInvoices,
     extendsOptions: ['contract'],
   });
 

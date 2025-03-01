@@ -3,17 +3,12 @@ import type Contract from '@interfaces/contract';
 import type { FormInstance } from 'antd';
 import dayjs from 'dayjs';
 import type { useMessage } from '@hooks/useMessage';
-
-interface ContractsResponse {
-  data: Contract[];
-}
-
-interface InvoiceNumberResponse {
-  invoiceNumber: string;
-}
+import type { WithExtends } from '@api/types/extends';
+import { getContracts } from '@api/services/contracts';
+import { getNextInvoiceNumber } from '@api/services/invoices';
 
 interface InvoiceData {
-  contracts: Contract[];
+  contracts: Array<WithExtends<Contract, 'client'>>;
   invoiceNumber: string | null;
   contractsLoading: boolean;
   invoiceNumberLoading: boolean;
@@ -25,7 +20,7 @@ const useInvoiceData = (
   form: FormInstance,
   messageApi: ReturnType<typeof useMessage>,
 ): InvoiceData => {
-  const [contracts, setContracts] = useState<Contract[]>([]);
+  const [contracts, setContracts] = useState<Array<WithExtends<Contract, 'client'>>>([]);
   const [invoiceNumber, setInvoiceNumber] = useState<string | null>(null);
   const [contractsLoading, setContractsLoading] = useState(false);
   const [invoiceNumberLoading, setInvoiceNumberLoading] = useState(false);
@@ -35,22 +30,19 @@ const useInvoiceData = (
     setInvoiceNumberLoading(true);
 
     try {
-      const [contractsResponse, numberResponse] = await Promise.all([
-        fetch('http://localhost:3000/contracts?includeClient=true'),
-        fetch('http://localhost:3000/invoices/preview-number'),
+      const [contractsResult, numberResult] = await Promise.all([
+        getContracts<'client'>(['client']),
+        getNextInvoiceNumber(),
       ]);
 
-      if (!contractsResponse.ok) throw new Error('Failed to fetch contracts');
-      if (!numberResponse.ok) throw new Error('Failed to fetch invoice number');
+      if (!contractsResult.success) throw new Error(contractsResult.error || 'Failed to fetch contracts');
+      if (!numberResult.success) throw new Error(numberResult.error || 'Failed to fetch invoice number');
 
-      const contractsData = (await contractsResponse.json()) as ContractsResponse;
-      const numberData = (await numberResponse.json()) as InvoiceNumberResponse;
-
-      setContracts(contractsData.data);
-      setInvoiceNumber(numberData.invoiceNumber);
+      setContracts(contractsResult.data.data);
+      setInvoiceNumber(numberResult.data.data.invoiceNumber);
 
       if (contractId) {
-        const selectedContract = contractsData.data.find((c) => c.id === contractId);
+        const selectedContract = contractsResult.data.data.find((c) => c.id === contractId);
         if (selectedContract) {
           const dueDate = dayjs().add(selectedContract.paymentDelay, 'day').toDate();
           form.setFieldsValue({

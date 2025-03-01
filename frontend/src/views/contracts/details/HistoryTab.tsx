@@ -5,6 +5,7 @@ import { formatDate } from '@utils';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo } from 'react';
+import { getContractHistory } from '@api/services/contracts';
 
 const { Text } = Typography;
 
@@ -47,13 +48,13 @@ const HistoryTab: React.FC<HistoryTabProps> = ({ contractId }) => {
     [],
   );
 
+  const listService = (
+    _extendsOptions?: never[],
+    pagination?: { page?: number; pageSize?: number; totalCount?: boolean },
+  ) => getContractHistory(contractId, pagination);
+
   return (
-    <TablePageLayout<ContractHistory>
-      listEndpoint={`/contracts/${contractId}/history`}
-      columns={columns}
-      rowKey="id"
-      showHeader={false}
-    />
+    <TablePageLayout<ContractHistory> listService={listService} columns={columns} rowKey="id" showHeader={false} />
   );
 };
 

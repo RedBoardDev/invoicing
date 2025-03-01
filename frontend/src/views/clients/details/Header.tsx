@@ -1,4 +1,5 @@
 import { MailOutlined } from '@ant-design/icons';
+import { updateClient } from '@api/services/clients';
 import { ROUTE_PATHS } from '@config/routePaths';
 import type Client from '@interfaces/client';
 import { Flex, Typography, Input, Button } from 'antd';
@@ -8,17 +9,18 @@ import type { FieldConfig } from 'components/layouts/headerDetails/types';
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { WithExtends } from '@api/types/extends';
 
 interface HeaderProps {
-  client: Client | null;
-  onEditSuccess: (updatedClient: Client) => void;
+  client: WithExtends<Client, 'contracts'> | null;
+  onEditSuccess: (updatedClient: WithExtends<Client, 'contracts'>) => void;
   onDelete: () => void;
   refresh: () => void;
 }
 
 const { Text } = Typography;
 
-const fields: FieldConfig<Client>[] = [
+const fields: FieldConfig<WithExtends<Client, 'contracts'>>[] = [
   {
     key: 'name',
     label: 'Nom',
@@ -63,12 +65,13 @@ const Header: React.FC<HeaderProps> = ({ client, onEditSuccess, onDelete, refres
 
   return (
     <>
-      <HeaderDetailsLayout<Client>
+      <HeaderDetailsLayout<WithExtends<Client, 'contracts'>>
         title="Client"
         icon="contract"
         data={client}
-        editEndpoint={`/clients/${clientId}`}
+        id={clientId ?? ''}
         fields={fields}
+        updateService={updateClient}
         extraButtons={[
           <Button key="add-contract" onClick={() => setAddModalVisible(true)}>
             Ajouter un contrat

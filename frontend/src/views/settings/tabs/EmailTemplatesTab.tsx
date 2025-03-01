@@ -7,6 +7,7 @@ import { useApiData } from '@hooks/useApiData';
 import type EmailTemplate from '@interfaces/emailTemplate';
 import styles from './EmailTemplatesTab.module.css';
 import EmailTemplateModal from 'components/common/emailTemplateEditor/EmailTemplateModal';
+import { getEmailTemplates } from '@api/services/emailTemplates';
 
 const { Title } = Typography;
 
@@ -19,7 +20,7 @@ const EmailTemplatesTab: React.FC = () => {
     loading,
     refresh,
   } = useApiData<EmailTemplate>({
-    endpoint: '/email-templates',
+    listService: getEmailTemplates,
   });
 
   const handleCreate = () => {

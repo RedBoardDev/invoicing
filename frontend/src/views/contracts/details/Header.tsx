@@ -1,3 +1,4 @@
+import { updateContract } from '@api/services/contracts';
 import { ROUTE_PATHS } from '@config/routePaths';
 import type Contract from '@interfaces/contract';
 import { Typography, Button, DatePicker, InputNumber, Input } from 'antd';
@@ -149,8 +150,9 @@ const Header: React.FC<HeaderProps> = ({ contract, onEditSuccess, onDelete, refr
         title="Contrat"
         icon="contract"
         data={contract}
-        editEndpoint={`/contracts/${contractId}`}
         fields={fields}
+        id={contractId ?? ''}
+        updateService={updateContract}
         extraButtons={[
           <Button key="add-invoice" onClick={() => setAddModalVisible(true)}>
             Ajouter une facture

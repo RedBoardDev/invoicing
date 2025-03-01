@@ -1,129 +1,112 @@
-// File: frontend/src/hooks/useEntityDetails.ts
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMessage } from '@hooks/useMessage';
-import type { WithExtends } from '@interfaces/extends';
+import type { WithExtends } from '@api/types/extends';
+import type { Result, ApiResponse } from '@api/types/fetch';
 
-interface EntityDetailsOptions {
-  endpoint: string;
+interface EntityDetailsOptions<T, E extends string> {
   entityId?: string;
   redirectPath: string;
   fetchOnMount?: boolean;
-  extendsOptions?: string[];
+  fetchService: (id: string, extendsOptions?: E[]) => Promise<Result<ApiResponse<WithExtends<T, E>>>>;
+  deleteService: (
+    ids: string[],
+  ) => Promise<Result<ApiResponse<{ deletedIds: string[]; failedIds: { id: string; reason: string }[] }>>>;
+  extendsOptions?: E[];
   onFetchError?: (error: Error) => void;
   onDeleteError?: (error: Error) => void;
 }
 
-interface EntityDetailsResult<T> {
-  entity: WithExtends<T> | null;
+interface EntityDetailsResult<T, E extends string> {
+  entity: WithExtends<T, E> | null;
   isLoading: boolean;
   fetchEntity: () => Promise<void>;
   deleteEntity: () => Promise<void>;
   refresh: () => void;
-  updateEntity: (updatedEntity: WithExtends<T>) => void;
+  updateEntity: (updatedEntity: WithExtends<T, E>) => void;
   refreshCount: number;
 }
 
-export const useEntityDetails = <T>({
-  endpoint,
+export const useEntityDetails = <T extends object, E extends string = never>({
   entityId,
   redirectPath,
   fetchOnMount = true,
+  fetchService,
+  deleteService,
   extendsOptions = [],
   onFetchError,
   onDeleteError,
-}: EntityDetailsOptions): EntityDetailsResult<T> => {
+}: EntityDetailsOptions<T, E>): EntityDetailsResult<T, E> => {
   const params = useParams();
   const navigate = useNavigate();
   const messageApi = useMessage();
   const id = entityId || params.id;
 
-  const [entity, setEntity] = useState<WithExtends<T> | null>(null);
+  const [entity, setEntity] = useState<WithExtends<T, E> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshCount, setRefreshCount] = useState<number>(0);
   const shouldFetchRef = useRef(fetchOnMount);
-  const extendsOptionsRef = useRef(extendsOptions);
 
   useEffect(() => {
-    extendsOptionsRef.current = extendsOptions;
     shouldFetchRef.current = fetchOnMount;
-  }, [fetchOnMount, extendsOptions]);
-
-  const url = useMemo(() => {
-    if (!id) return null;
-
-    const baseUrl = new URL(`http://localhost:3000${endpoint}/${id}`);
-    const params = new URLSearchParams();
-
-    if (extendsOptionsRef.current.length > 0) {
-      params.append('extends', extendsOptionsRef.current.join(','));
-    }
-
-    baseUrl.search = params.toString();
-    return baseUrl.toString();
-  }, [id, endpoint]);
+  }, [fetchOnMount]);
 
   const handleFetchError = useCallback(
     (error: Error) => {
-      console.error(`Failed to fetch ${endpoint} data:`, error);
+      console.error('Failed to fetch entity data:', error);
       messageApi.error('Échec de la récupération des données');
       onFetchError?.(error);
     },
-    [endpoint, messageApi, onFetchError],
+    [messageApi, onFetchError],
   );
 
   const handleDeleteError = useCallback(
     (error: Error) => {
-      console.error(`Failed to delete ${endpoint}:`, error);
+      console.error('Failed to delete entity:', error);
       messageApi.error('Échec de la suppression');
       onDeleteError?.(error);
     },
-    [endpoint, messageApi, onDeleteError],
+    [messageApi, onDeleteError],
   );
 
   const fetchEntity = useCallback(async () => {
-    if (!url) return;
+    if (!id) return;
 
     setIsLoading(true);
     try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-      setEntity(data);
+      const result = await fetchService(id, extendsOptions);
+      if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération');
+      setEntity(result.data.data);
     } catch (error) {
-      handleFetchError(error as Error);
+      handleFetchError(error instanceof Error ? error : new Error('Erreur inconnue'));
     } finally {
       setIsLoading(false);
     }
-  }, [url, handleFetchError]);
+  }, [id, fetchService, extendsOptions, handleFetchError]);
 
   const deleteEntity = useCallback(async () => {
     if (!id) return;
 
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000${endpoint}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: [id] }),
-      });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-      if (data.failedIds?.length > 0) throw new Error('Failed to delete some entities');
+      const result = await deleteService([id]);
+      if (!result.success) throw new Error(result.error || 'Erreur lors de la suppression');
+      const { failedIds } = result.data.data;
+      if (failedIds?.length > 0) throw new Error('Échec de la suppression de certains éléments');
       navigate(redirectPath);
     } catch (error) {
-      handleDeleteError(error as Error);
+      handleDeleteError(error instanceof Error ? error : new Error('Erreur inconnue'));
     } finally {
       setIsLoading(false);
     }
-  }, [id, endpoint, navigate, redirectPath, handleDeleteError]);
+  }, [id, deleteService, navigate, redirectPath, handleDeleteError]);
 
   const refresh = useCallback(() => {
     setRefreshCount((prev) => prev + 1);
     fetchEntity();
   }, [fetchEntity]);
 
-  const updateEntity = useCallback((updatedEntity: WithExtends<T>) => {
+  const updateEntity = useCallback((updatedEntity: WithExtends<T, E>) => {
     setEntity(updatedEntity);
   }, []);
 

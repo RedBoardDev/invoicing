@@ -3,13 +3,14 @@ import type Client from '@interfaces/client';
 import { Select } from 'antd';
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getClients } from '@api/services/clients';
 
-interface ClientSelectSelectProps {
+interface ClientSelectProps {
   value?: string;
   onChange?: (value: string) => void;
 }
 
-const ClientSelectSelect: React.FC<ClientSelectSelectProps> = ({ value, onChange }) => {
+const ClientSelect: React.FC<ClientSelectProps> = ({ value, onChange }) => {
   const messageApi = useMessage();
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -17,10 +18,9 @@ const ClientSelectSelect: React.FC<ClientSelectSelectProps> = ({ value, onChange
   const fetchClients = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/clients');
-      if (!response.ok) throw new Error('Erreur lors de la récupération des clients');
-      const data = await response.json();
-      setClients(data.data);
+      const result = await getClients();
+      if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération des clients');
+      setClients(result.data.data);
     } catch (error) {
       console.error('Erreur lors de la récupération des clients:', error);
       messageApi.error('Erreur lors du chargement des clients');
@@ -52,9 +52,8 @@ const ClientSelectSelect: React.FC<ClientSelectSelectProps> = ({ value, onChange
       filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
       value={value}
       onChange={onChange}
-      
     />
   );
 };
 
-export default ClientSelectSelect;
+export default ClientSelect;

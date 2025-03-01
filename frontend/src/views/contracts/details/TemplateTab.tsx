@@ -1,9 +1,13 @@
 import type React from 'react';
 import { useCallback } from 'react';
-import { Space, Typography, message } from 'antd';
+import { Space, Typography } from 'antd';
 import type EmailTemplate from '@interfaces/emailTemplate';
 import EmailTemplateSelect from 'components/dataEntry/EmailTemplateSelect';
 import CardTemplateDisplay from 'components/common/cardTemplateDisplay/CardTemplateDisplay';
+import { useMessage } from '@hooks/useMessage';
+import { updateContract } from '@api/services/contracts';
+import type { WithExtends } from '@api/types/extends';
+import type Contract from '@interfaces/contract';
 import styles from './TemplateTab.module.css';
 
 const { Text } = Typography;
@@ -17,28 +21,25 @@ interface TemplateTabProps {
 }
 
 const TemplateTab: React.FC<TemplateTabProps> = ({ emailTemplate, contractId, isLoading, onUpdate, refresh }) => {
+  const messageApi = useMessage();
+
   const handleTemplateChange = useCallback(
     async (newTemplateId: string) => {
       if (!contractId || newTemplateId === emailTemplate?.id) return;
 
       try {
-        const response = await fetch(`http://localhost:3000/contracts/${contractId}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ emailTemplateId: newTemplateId }),
-        });
+        const result = await updateContract(contractId, { emailTemplateId: newTemplateId });
+        if (!result.success) throw new Error(result.error || 'Failed to update email template');
 
-        if (!response.ok) throw new Error('Failed to update email template');
-        const updatedContract = await response.json();
-        const updatedTemplate = updatedContract.emailTemplate;
-        message.success('Template mis à jour avec succès');
-        onUpdate?.(updatedTemplate, refresh);
+        const updatedContract = result.data.data as WithExtends<Contract, 'emailTemplate'>;
+        messageApi.success('Template mis à jour avec succès');
+        onUpdate?.(updatedContract.emailTemplate, refresh);
         refresh();
       } catch (error) {
-        message.error('Erreur lors de la mise à jour du template');
+        messageApi.error('Erreur lors de la mise à jour du template');
       }
     },
-    [contractId, emailTemplate?.id, onUpdate, refresh],
+    [contractId, emailTemplate?.id, onUpdate, refresh, messageApi],
   );
 
   return (

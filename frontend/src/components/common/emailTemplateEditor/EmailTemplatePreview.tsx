@@ -22,7 +22,6 @@ export const EmailTemplatePreview: React.FC<EmailTemplatePreviewProps> = ({ subj
       if (match === null) break;
       const variable = match[1] as keyof typeof EMAIL_VARIABLES_METADATA;
 
-      // Ajouter une vérification de type
       const metadata = EMAIL_VARIABLES_METADATA[variable];
 
       parts.push(text.slice(lastIndex, match.index));

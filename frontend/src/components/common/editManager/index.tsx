@@ -3,10 +3,19 @@ import useEdit from './useEdit';
 import type { EditManagerProps } from './types';
 import { EditOutlined } from '@ant-design/icons';
 
-const EditManager = <T extends object>({ data, disabled = false, configs, editEndpoint, onSuccess, onError }: EditManagerProps<T>) => {
+const EditManager = <T extends object>({
+  data,
+  id,
+  disabled = false,
+  configs,
+  updateService,
+  onSuccess,
+  onError,
+}: EditManagerProps<T>) => {
   const { form, isEditing, isSubmitting, handleOpen, handleClose, handleSubmit } = useEdit<T>({
     data,
-    editEndpoint,
+    updateService,
+    id,
     onSuccess,
     onError,
   });

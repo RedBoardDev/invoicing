@@ -1,4 +1,3 @@
-// src/views/invoices/details/Header.tsx
 import { FilePdfOutlined, EyeOutlined } from '@ant-design/icons';
 import { ROUTE_PATHS } from '@config/routePaths';
 import { STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
@@ -13,10 +12,13 @@ import { useNavigate } from 'react-router-dom';
 import { useInvoiceActions } from './useInvoiceActions';
 import SendInvoiceModal from 'components/common/modal/sendInvoice/SendInvoiceModal';
 import dayjs from 'dayjs';
+import { getInvoicePdf, updateInvoice } from '@api/services/invoices';
+import type { WithExtends } from '@api/types/extends';
+import type {} from '@api/types/fetch';
 
 const { Text } = Typography;
 
-const fields: FieldConfig<Invoice>[] = [
+const fields: FieldConfig<WithExtends<Invoice, 'contract'>>[] = [
   {
     key: 'invoiceNumber',
     label: 'N° Facture',
@@ -58,8 +60,8 @@ const fields: FieldConfig<Invoice>[] = [
 ];
 
 interface HeaderProps {
-  invoice: Invoice | null;
-  onEditSuccess: (updatedInvoice: Invoice) => void;
+  invoice: WithExtends<Invoice, 'contract'> | null;
+  onEditSuccess: (updatedInvoice: WithExtends<Invoice, 'contract'>) => void;
   onDelete: () => void;
   refresh: () => void;
 }
@@ -85,21 +87,16 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
     if (!invoice?.id) return;
     setIsViewingPdf(true);
     try {
-      const pdfRoute = `http://localhost:3000/invoices/${invoice.id}/pdf`;
-      const response = await fetch(pdfRoute, { method: 'GET' });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors de la récupération du PDF');
-      }
-      const arrayBuffer = await response.arrayBuffer();
-      const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+      const result = await getInvoicePdf(invoice.id);
+      if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération du PDF');
+      const blob = result.data;
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank');
     } catch (error) {
       console.error('Erreur lors de la visualisation du PDF:', error);
       Modal.error({
         title: 'Erreur',
-        content: error instanceof Error ? error.message : 'Impossible de charger le PDF',
+        content: 'Impossible de charger le PDF',
       });
     } finally {
       setIsViewingPdf(false);
@@ -130,6 +127,13 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
           disabled: false,
           primary: true,
         },
+        {
+          key: 'view-pdf',
+          label: 'Voir PDF',
+          action: handleViewPdf,
+          loading: isViewingPdf,
+          disabled: false,
+        },
       ],
       VALIDATED: [
         {
@@ -139,6 +143,13 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
           loading: false,
           disabled: false,
           primary: true,
+        },
+        {
+          key: 'view-pdf',
+          label: 'Voir PDF',
+          action: handleViewPdf,
+          loading: isViewingPdf,
+          disabled: false,
         },
       ],
       SENT: [
@@ -150,21 +161,39 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
           disabled: false,
           primary: true,
         },
+        {
+          key: 'view-pdf',
+          label: 'Voir PDF',
+          action: handleViewPdf,
+          loading: isViewingPdf,
+          disabled: false,
+        },
       ],
-      PAID: [],
+      PAID: [
+        {
+          key: 'view-pdf',
+          label: 'Voir PDF',
+          action: handleViewPdf,
+          loading: isViewingPdf,
+          disabled: false,
+        },
+      ],
       UNKNOWN: [],
     };
 
     return buttonConfigs[status] || [];
   };
 
+  const invoiceId = invoice?.id;
+
   return (
     <>
-      <HeaderDetailsLayout<Invoice>
+      <HeaderDetailsLayout<WithExtends<Invoice, 'contract'>>
         title="Facture"
         icon="contract"
         data={invoice}
-        editEndpoint={`/invoices/${invoice?.id}`}
+        id={invoiceId ?? ''}
+        updateService={updateInvoice}
         fields={fields}
         extraButtons={getActionButtons().map(({ key, label, action, loading, disabled, primary }) => (
           <Button

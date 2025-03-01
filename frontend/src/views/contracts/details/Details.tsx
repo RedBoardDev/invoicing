@@ -1,7 +1,7 @@
+import type React from 'react';
 import Header from './Header';
 import type { TabsProps } from 'antd';
 import FocusItem from 'components/layouts/focusItem/FocusItem';
-import type React from 'react';
 import { ROUTE_PATHS } from '@config/routePaths';
 import { useEntityDetails } from '@hooks/useEntityDetails';
 import { Icon } from '@components/common';
@@ -10,6 +10,7 @@ import InvoicesTab from '@views/contracts/details/InvoicesTab';
 import HistoryTab from '@views/contracts/details/HistoryTab';
 import type EmailTemplate from '@interfaces/emailTemplate';
 import TemplateTab from '@views/contracts/details/TemplateTab';
+import { getContractById, deleteContracts } from '@api/services/contracts';
 
 const items: TabsProps['items'] = [
   {
@@ -49,10 +50,11 @@ const ContractsDetails: React.FC = () => {
     deleteEntity,
     refresh,
     refreshCount,
-  } = useEntityDetails<Contract>({
-    endpoint: '/contracts',
+  } = useEntityDetails<Contract, 'emailTemplate'>({
     redirectPath: ROUTE_PATHS.private.contracts.root,
     fetchOnMount: true,
+    fetchService: getContractById,
+    deleteService: deleteContracts,
     extendsOptions: ['emailTemplate'],
   });
 
@@ -81,7 +83,7 @@ const ContractsDetails: React.FC = () => {
   return (
     <FocusItem
       childrenTop={
-        <Header contract={contract} onEditSuccess={updateEntity} onDelete={deleteEntity} refresh={refresh} />
+        <Header contract={contract} onEditSuccess={updateEntity as any} onDelete={deleteEntity} refresh={refresh} />
       }
       tabsItems={items}
       tabContent={tabContent}

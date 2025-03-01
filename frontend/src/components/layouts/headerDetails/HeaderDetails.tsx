@@ -13,8 +13,9 @@ const HeaderDetailsLayout = <T extends object>({
   title,
   icon: iconName,
   data,
+  id,
   fields,
-  editEndpoint,
+  updateService,
   extraButtons,
   onBack,
   onDelete,
@@ -38,9 +39,10 @@ const HeaderDetailsLayout = <T extends object>({
             <Button icon={<DeleteOutlined />} onClick={onDelete} disabled={isLoading} danger />
             <EditManager<T>
               data={data}
+              id={id}
               disabled={isLoading}
               configs={configs}
-              editEndpoint={editEndpoint}
+              updateService={updateService}
               onSuccess={onEdit}
             />
             <Button icon={<ArrowLeftOutlined />} onClick={onBack} />

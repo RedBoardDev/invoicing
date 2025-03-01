@@ -9,6 +9,7 @@ import dayjs, { type Dayjs } from 'dayjs';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useMessage } from '@hooks/useMessage';
 import useInvoiceData from 'components/common/modal/create/invoice/useInvoiceData';
+import { createInvoice } from '@api/services/invoices';
 
 interface AddInvoiceProps {
   contractId?: string;
@@ -16,6 +17,10 @@ interface AddInvoiceProps {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   onSuccess?: () => void;
 }
+
+type InvoiceCreateData = Omit<Invoice, 'id' | 'createdAt' | 'updatedAt' | 'sendDate' | 'fileId' | 'invoiceNumber'> & {
+  items?: { description: string; amount: number }[];
+};
 
 const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible, onSuccess }) => {
   const [form] = Form.useForm();
@@ -47,8 +52,8 @@ const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible
     [contracts, form],
   );
 
-  const initialValues = useMemo<Partial<Invoice>>(() => {
-    const baseValues: Partial<Invoice> = {
+  const initialValues = useMemo<Partial<InvoiceCreateData>>(() => {
+    const baseValues: Partial<InvoiceCreateData> = {
       status: 'DRAFT',
       items: [],
     };
@@ -60,8 +65,8 @@ const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible
       visible={visible}
       onCancel={() => setVisible(false)}
       onSuccess={handleAddSuccess}
-      endpoint="/invoices"
       title="Nouvelle facture"
+      createService={createInvoice}
       initialValues={initialValues}
       form={form}>
       {() => (

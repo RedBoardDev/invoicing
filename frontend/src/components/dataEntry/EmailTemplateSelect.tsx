@@ -3,6 +3,7 @@ import type EmailTemplate from '@interfaces/emailTemplate';
 import { Select } from 'antd';
 import type React from 'react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { getEmailTemplates } from '@api/services/emailTemplates';
 
 interface EmailTemplateSelectProps {
   value?: string;
@@ -17,10 +18,9 @@ const EmailTemplateSelect: React.FC<EmailTemplateSelectProps> = ({ value, onChan
   const fetchTemplates = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/email-templates');
-      if (!response.ok) throw new Error('Erreur lors de la récupération des templates');
-      const data = await response.json();
-      setTemplates(data.data);
+      const result = await getEmailTemplates();
+      if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération des templates');
+      setTemplates(result.data.data);
     } catch (error) {
       console.error('Erreur lors de la récupération des templates:', error);
       messageApi.error('Erreur lors du chargement des templates');

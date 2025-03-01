@@ -7,11 +7,13 @@ import type { ColumnsType } from 'antd/lib/table';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import AddClient from 'components/common/modal/create/AddClient';
 import { ROUTE_PATHS } from '@config/routePaths';
+import type { WithExtends } from '@api/types/extends';
+import { deleteClients, getClients } from '@api/services/clients';
 
 const Clients: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
 
-  const columns: ColumnsType<Client> = useMemo(
+  const columns: ColumnsType<WithExtends<Client, 'contracts'>> = useMemo(
     () => [
       {
         title: 'Nom',
@@ -40,15 +42,14 @@ const Clients: React.FC = () => {
     [],
   );
 
-  // TODO pourquoi il reload plus le tableau quand je fait entrée ?
   return (
     <>
-      <TablePageLayout<Client>
+      <TablePageLayout<Client, 'contracts'>
         title="Clients"
-        listEndpoint="/clients"
-        detailsRoutePath={(id) => ROUTE_PATHS.private.clients.detail(id)}
+        listService={getClients}
+        deleteService={deleteClients}
         extendsOptions={['contracts']}
-        deleteEndpoint="/clients"
+        detailsRoutePath={(id) => ROUTE_PATHS.private.clients.detail(id)}
         onAdd={() => setAddModalVisible(true)}
         columns={columns}
       />

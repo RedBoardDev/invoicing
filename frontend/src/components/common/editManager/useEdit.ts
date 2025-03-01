@@ -2,15 +2,17 @@ import { useState, useCallback } from 'react';
 import { Form } from 'antd';
 import { useMessage } from '@hooks/useMessage';
 import { shallowEqual } from '@utils';
+import type { Result, ApiResponse } from '@api/types/fetch';
 
 type UseEditProps<T> = {
   data?: T | null;
-  editEndpoint: string;
+  updateService: (id: string, data: Partial<T>) => Promise<Result<ApiResponse<T>>>;
+  id: string;
   onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
 };
 
-export default function useEdit<T extends object>({ data, editEndpoint, onSuccess, onError }: UseEditProps<T>) {
+export default function useEdit<T extends object>({ data, updateService, id, onSuccess, onError }: UseEditProps<T>) {
   const [form] = Form.useForm<Partial<T>>();
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,27 +58,22 @@ export default function useEdit<T extends object>({ data, editEndpoint, onSucces
           handleClose();
           return;
         }
-        const response = await fetch(`http://localhost:3000${editEndpoint}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(changedValues),
-        });
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await updateService(id, changedValues);
+        if (!result.success) throw new Error(result.error || 'Erreur lors de la mise à jour');
 
-        const result = await response.json();
-        onSuccess?.(result);
+        onSuccess?.(result.data.data);
         messageApi.success('Modifications enregistrées');
         handleClose();
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Erreur inconnue');
         onError?.(error);
-        messageApi.error('Échec de la mise à jour');
+        messageApi.error(error.message || 'Échec de la mise à jour');
       } finally {
         setIsSubmitting(false);
       }
     },
-    [editEndpoint, handleClose, onSuccess, onError, messageApi, data, getChangedFields],
+    [id, updateService, handleClose, onSuccess, onError, messageApi, data, getChangedFields],
   );
 
   return {
