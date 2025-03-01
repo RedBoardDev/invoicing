@@ -15,13 +15,10 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   if (computed.includes('permissions')) {
     const permissions = await computePermissions(template, emailTemplatePermissionConditions);
-    return res.status(HttpStatusCode.ok).send({
-      template,
-      ...permissions,
-    });
+    return res.success(HttpStatusCode.ok, { template }, { ...permissions });
   }
 
-  res.status(HttpStatusCode.ok).send(template);
+  res.success(HttpStatusCode.ok, template);
 };
 
 export default handler;

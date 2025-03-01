@@ -32,6 +32,6 @@ const handler = async (req: FastifyRequest<{ Body: CreateContractData }>, res: F
 
   const contract = await createContract(body);
 
-  res.status(HttpStatusCode.created).send(contract);
+  res.success(HttpStatusCode.created, contract);
 };
 export default handler;

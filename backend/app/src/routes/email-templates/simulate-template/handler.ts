@@ -41,7 +41,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
   const content = processEmailTemplate(template.content, variables);
   const subject = processEmailTemplate(template.subject, variables);
 
-  res.status(HttpStatusCode.ok).send({ email: invoice.contract.client.email, content, subject });
+  res.success(HttpStatusCode.ok, { email: invoice.contract.client.email, content, subject });
 };
 
 export default handler;

@@ -5,8 +5,8 @@ export const paginationQuerySchema = {
   properties: {
     page: { type: 'string', pattern: '^[0-9]+$', default: '1' },
     pageSize: { type: 'string', pattern: '^[0-9]+$', default: '1000' },
-    findId: { type: 'string', format: 'uuid' },
     totalCount: { type: 'string', default: false },
+    findId: { type: 'string', format: 'uuid' },
   },
   required: [],
   additionalProperties: false,

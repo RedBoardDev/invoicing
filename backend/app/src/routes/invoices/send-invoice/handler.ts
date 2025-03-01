@@ -31,7 +31,7 @@ const handler = async (req: FastifyRequest<{ Params: TParams; Body: TBody }>, re
     sendDate: new Date().toISOString(),
   });
 
-  res.status(HttpStatusCode.ok).send({
+  res.success(HttpStatusCode.ok, {
     message: `Facture ${invoice.invoiceNumber} envoyée avec succès`,
     invoice: updatedInvoice,
   });

@@ -11,7 +11,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   const template = await createEmailTemplate(body);
 
-  res.status(HttpStatusCode.created).send(template);
+  res.success(HttpStatusCode.created, template);
 };
 
 export default handler;

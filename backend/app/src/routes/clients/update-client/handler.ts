@@ -9,7 +9,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   const client = await updateClient(id, data);
 
-  res.status(HttpStatusCode.ok).send(client);
+  res.success(HttpStatusCode.ok, client);
 };
 
 export default handler;

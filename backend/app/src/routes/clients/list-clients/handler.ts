@@ -16,7 +16,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
     return res.success(HttpStatusCode.ok, clients, { totalCount, pagination });
   }
 
-  return res.success(HttpStatusCode.ok, clients, { pagination });
+  res.success(HttpStatusCode.ok, clients, { pagination });
 };
 
 export default handler;

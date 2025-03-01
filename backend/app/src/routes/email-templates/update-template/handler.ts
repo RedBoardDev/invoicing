@@ -12,7 +12,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   const template = await updateEmailTemplate(id, body);
 
-  res.status(HttpStatusCode.ok).send(template);
+  res.success(HttpStatusCode.ok, template);
 };
 
 export default handler;

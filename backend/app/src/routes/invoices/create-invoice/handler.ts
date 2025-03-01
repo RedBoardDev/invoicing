@@ -16,7 +16,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   const invoice = await createInvoice(invoiceData);
 
-  res.status(HttpStatusCode.created).send(invoice);
+  res.success(HttpStatusCode.created, invoice);
 };
 
 export default handler;

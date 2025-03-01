@@ -24,7 +24,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   const result = await deleteEmailTemplates(ids);
 
-  res.status(HttpStatusCode.ok).send({
+  res.success(HttpStatusCode.ok, {
     successCount: result.deletedIds.length,
     deletedIds: result.deletedIds,
     failedIds: result.failedIds,

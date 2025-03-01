@@ -28,7 +28,7 @@ const handler = async (req: FastifyRequest<{ Params: TParams }>, res: FastifyRep
     fileId,
   });
 
-  res.status(HttpStatusCode.ok).send(updatedInvoice);
+  res.success(HttpStatusCode.ok, updatedInvoice);
 };
 
 export default handler;

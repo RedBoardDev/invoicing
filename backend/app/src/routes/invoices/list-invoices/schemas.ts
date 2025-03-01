@@ -15,7 +15,7 @@ export type THeaders = FromSchema<typeof headers>;
 
 export const extendsMap = {
   items: { include: { items: true } },
-  contracts: { include: { contracts: true } },
+  contract: { include: { contract: true } },
   permissions: { computed: true },
 };
 

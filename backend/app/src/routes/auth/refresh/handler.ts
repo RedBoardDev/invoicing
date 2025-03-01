@@ -25,7 +25,7 @@ const refreshHandler = async (req: FastifyRequest, res: FastifyReply): Promise<v
   const newRefreshToken = jwtService.signRefreshToken(refreshPayload);
   const tokens: AuthTokenData = { accessToken: newAccessToken, refreshToken: newRefreshToken };
 
-  res.status(HttpStatusCode.ok).send(tokens);
+  res.success(HttpStatusCode.ok, tokens);
 };
 
 export default refreshHandler;

@@ -15,7 +15,7 @@ const registerHandler = async (req: FastifyRequest, res: FastifyReply): Promise<
 
   const user = await createUser({ email, password });
 
-  res.status(HttpStatusCode.created).send({
+  res.success(HttpStatusCode.created, {
     id: user.id,
     email: user.email,
     createdAt: user.createdAt,

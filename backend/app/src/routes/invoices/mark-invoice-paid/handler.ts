@@ -10,7 +10,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
     status: 'PAID',
   });
 
-  res.status(HttpStatusCode.ok).send(invoice);
+  res.success(HttpStatusCode.ok, invoice);
 };
 
 export default handler;

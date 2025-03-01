@@ -14,13 +14,10 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   if (computed.includes('permissions')) {
     const permissions = await computePermissions(invoice, invoicePermissionConditions);
-    return res.status(HttpStatusCode.ok).send({
-      invoice,
-      ...permissions,
-    });
+    return res.success(HttpStatusCode.ok, { invoice }, { ...permissions });
   }
 
-  res.status(HttpStatusCode.ok).send(invoice);
+  res.success(HttpStatusCode.ok, invoice);
 };
 
 export default handler;

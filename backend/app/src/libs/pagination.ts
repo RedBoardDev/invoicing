@@ -71,11 +71,15 @@ export const parsePaginationParams = (req: FastifyRequest): PaginationParams => 
   const page = Number.parseInt(query.page ?? '1', 10);
   const pageSize = Number.parseInt(query.pageSize ?? '100', 10);
   const findId = query.findId ?? undefined;
-  const includeTotalCount = query.totalCount === 'true';
+  const includeTotalCount = query.totalCount ?? false;
 
   if (page < 1 || pageSize < 1) {
     throw new ApiError('Invalid page or pageSize', 400, ErrorsEnum.invalidQueryParameter);
   }
 
   return { pagination: { page, pageSize, findId }, includeTotalCount };
+  // return {
+  //   pagination: findId || page > 1 ? { page, pageSize, findId } : undefined,
+  //   includeTotalCount,
+  // };
 };

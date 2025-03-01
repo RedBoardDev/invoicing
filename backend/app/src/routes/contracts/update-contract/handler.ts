@@ -49,7 +49,7 @@ const handler = async (
 
   const contract = await updateContract(id, body);
 
-  res.status(HttpStatusCode.ok).send(contract);
+  res.success(HttpStatusCode.ok, contract);
 };
 
 export default handler;

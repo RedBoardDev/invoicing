@@ -8,7 +8,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   const client = await createClient(body);
 
-  res.status(HttpStatusCode.created).send(client);
+  res.success(HttpStatusCode.created, client);
 };
 
 export default handler;
