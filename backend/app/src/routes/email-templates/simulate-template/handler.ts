@@ -1,5 +1,6 @@
 import { EmailVariable } from '@enums/email-enums';
 import { HttpStatusCode } from '@enums/http-status-enums';
+import { formatDateToFrench } from '@libs/utils';
 import type { Prisma } from '@prisma/client';
 import { getEmailTemplateById } from '@repositories/email-template-repository';
 import { getInvoiceById } from '@repositories/invoice-repository';
@@ -29,10 +30,10 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
 
   const variables: StrictEmailVariables = {
     [EmailVariable.INVOICE_NUMBER]: invoice.invoiceNumber,
-    [EmailVariable.INVOICE_DATE]: invoice.createdAt.toISOString(),
+    [EmailVariable.INVOICE_DATE]: formatDateToFrench(invoice.createdAt),
     [EmailVariable.TAX_RATE]: invoice.contract.taxRate.toString(),
-    [EmailVariable.DUE_DATE]: invoice.dueDate.toISOString(),
-    [EmailVariable.CLIENT_MAIL]: invoice.contract.client.email,
+    [EmailVariable.DUE_DATE]: invoice.dueDate ? formatDateToFrench(invoice.dueDate) : '',
+    [EmailVariable.PAYMENT_DELAY]: invoice.paymentDelay.toString(),
     [EmailVariable.CLIENT_NAME]: invoice.contract.client.name,
     [EmailVariable.CONTRACT_PAYMENT_DELAY]: invoice.contract.paymentDelay.toString(),
     [EmailVariable.CONTRACT_TITLE]: invoice.contract.title,

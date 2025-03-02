@@ -60,3 +60,17 @@ export const isFutureDate = (date: Date): boolean => date > new Date();
  * @returns Vrai si la date est dans le passé, faux sinon.
  */
 export const isPastDate = (date: Date): boolean => date < new Date();
+
+/**
+ * Compare deux listes pour vérifier si elles sont identiques.
+ * @param list1 - La première liste.
+ * @param list2 - La deuxième liste.
+ * @returns Vrai si les deux listes sont identiques, faux sinon.
+ */
+export function formatDateToFrench(date: Date): string {
+  return date.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}

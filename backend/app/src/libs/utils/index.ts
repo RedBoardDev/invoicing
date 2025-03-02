@@ -21,6 +21,7 @@ import {
   addMonthsToEpoch,
   addWeeksToEpoch,
   addYearsToEpoch,
+  formatDateToFrench,
   isFutureDate,
   isPastDate,
   isToday,
@@ -52,4 +53,5 @@ export {
   isPastDate,
   mergeDeep,
   mergeSchemas,
+  formatDateToFrench,
 };

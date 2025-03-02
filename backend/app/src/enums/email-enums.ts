@@ -1,3 +1,5 @@
+import { formatDateToFrench } from '@libs/utils';
+
 export enum EmailVariable {
   MONTH = 'MONTH',
   YEAR = 'YEAR',
@@ -6,7 +8,7 @@ export enum EmailVariable {
   TAX_RATE = 'TAX_RATE',
   INVOICE_DATE = 'INVOICE_DATE',
   DUE_DATE = 'DUE_DATE',
-  CLIENT_MAIL = 'CLIENT_MAIL',
+  PAYMENT_DELAY = 'PAYMENT_DELAY',
   CLIENT_NAME = 'CLIENT_NAME',
   CONTRACT_PAYMENT_DELAY = 'CONTRACT_PAYMENT_DELAY',
   CONTRACT_TITLE = 'CONTRACT_TITLE',
@@ -41,9 +43,9 @@ export const VARIABLES_METADATA = {
     description: "Date d'échéance de la facture",
     example: '2024-12-31',
   },
-  [EmailVariable.CLIENT_MAIL]: {
-    description: 'Email du client',
-    example: 'client@example.com',
+  [EmailVariable.PAYMENT_DELAY]: {
+    description: 'Délai de paiement de la facture',
+    example: '30',
   },
   [EmailVariable.CLIENT_NAME]: {
     description: 'Nom du client',
@@ -62,5 +64,5 @@ export const VARIABLES_METADATA = {
 export const VARIABLES_DEFAULT_VALUES = {
   [EmailVariable.MONTH]: () => (new Date().getMonth() + 1).toString(),
   [EmailVariable.YEAR]: () => new Date().getFullYear().toString(),
-  [EmailVariable.CURRENT_DATE]: () => new Date().toISOString(),
+  [EmailVariable.CURRENT_DATE]: () => formatDateToFrench(new Date()),
 } satisfies Partial<Record<EmailVariable, () => string>>;

@@ -7,7 +7,7 @@ const handler = async (req: FastifyRequest, res: FastifyReply): Promise<void> =>
   const { id } = req.params as TParams;
   const body = req.body as TBody;
 
-  const invoice = await updateInvoice(id, body);
+  const invoice = await updateInvoice(id, body); // TODO
 
   res.success(HttpStatusCode.ok, invoice);
 };

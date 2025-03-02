@@ -99,7 +99,8 @@ model Invoice {
   amountHT      Float
   taxRate       Float
   status        InvoiceStatus @default(DRAFT)
-  dueDate       DateTime
+  paymentDelay    Int
+  dueDate       DateTime?
   sendDate      DateTime?
   fileId        String?
 

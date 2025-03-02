@@ -8,7 +8,7 @@ export const CreateInvoiceSchema = {
     amountHT: { type: 'number', minimum: 0 },
     taxRate: { type: 'number', minimum: 0 },
     status: { type: 'string', enum: Object.values(InvoiceStatus) },
-    dueDate: { type: 'string', format: 'date-time' },
+    paymentDelay: { type: 'integer', minimum: 0 },
     items: {
       type: 'array',
       items: {
@@ -21,7 +21,7 @@ export const CreateInvoiceSchema = {
       },
     },
   },
-  required: ['contractId', 'amountHT', 'taxRate', 'status', 'dueDate'],
+  required: ['contractId', 'amountHT', 'taxRate', 'status', 'paymentDelay'],
   additionalProperties: false,
 } as const;
 
@@ -35,6 +35,7 @@ export const UpdateInvoiceSchema = {
     status: { type: 'string', enum: Object.values(InvoiceStatus) },
     sendDate: { type: 'string', format: 'date-time' },
     fileId: { type: 'string' },
+    dueDate: { type: 'string', format: 'date-time' },
   },
   additionalProperties: false,
 } as const;

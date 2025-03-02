@@ -26,6 +26,7 @@ const handler = async (req: FastifyRequest<{ Params: TParams }>, res: FastifyRep
   const updatedInvoice = await updateInvoice(id, {
     status: 'VALIDATED',
     fileId,
+    dueDate: new Date(new Date().getTime() + invoice.paymentDelay * 24 * 60 * 60 * 1000).toISOString(),
   });
 
   res.success(HttpStatusCode.ok, updatedInvoice);

@@ -32,7 +32,7 @@ const createInvoiceQuery = async (
       amountHT: data.amountHT,
       taxRate: data.taxRate,
       status: data.status || 'DRAFT',
-      dueDate: data.dueDate,
+      paymentDelay: data.paymentDelay,
       items: {
         create: data.items?.map((item) => ({
           description: item.description,
