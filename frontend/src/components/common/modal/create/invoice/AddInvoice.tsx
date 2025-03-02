@@ -55,8 +55,20 @@ const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible
       status: 'DRAFT',
       items: [],
     };
-    return contractId ? { ...baseValues, contractId } : baseValues;
-  }, [contractId]);
+    if (contractId) {
+      const selectedContract = contracts.find((c) => c.id === contractId);
+      return selectedContract
+        ? {
+            ...baseValues,
+            contractId,
+            amountHT: selectedContract.amountHT,
+            taxRate: selectedContract.taxRate,
+            paymentDelay: selectedContract.paymentDelay,
+          }
+        : { ...baseValues, contractId };
+    }
+    return baseValues;
+  }, [contractId, contracts]);
 
   return (
     <AddModal<Invoice>
@@ -107,9 +119,9 @@ const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible
             shouldUpdate>
             <InputNumber style={{ width: '30%' }} disabled addonAfter="jours" />
           </Form.Item>
-            <Typography.Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: -12 }}>
-              La date d'échéance sera calculée automatiquement après validation de la facture.
-            </Typography.Text>
+          <Typography.Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: -12 }}>
+            La date d'échéance sera calculée automatiquement après validation de la facture.
+          </Typography.Text>
           <Divider>
             <span style={{ backgroundColor: '#fff', padding: '0 16px', fontSize: 16, color: '#666' }}>Items</span>
           </Divider>

@@ -1,42 +1,48 @@
-/* frontend/src/components/layouts/focusItem/FocusItem.module.css */
 .focusItemPage {
   height: 100%;
   width: 100%;
-  display: flex;
-  flex-direction: column;
   min-width: 800px;
 }
 
 .headerNavigation {
   padding: 10px;
   height: 50px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 0.1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
 }
 
 .topPartContainer {
-  padding: 18px;
-  min-height: 140px;
-  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px;
+  height: 180px;
 }
 
 .tabsContainer {
-  flex-shrink: 0;
+  margin-bottom: 0;
+  height: 40px;
   margin-left: 20px;
 }
 
-.tabs {
-  height: 40px;
-}
-
-.bottomPartContainerBreadcrumb,
-.bottomPartContainer {
-  flex: 1;
+.bottomPartContainerBreadcrumb {
   padding: 20px;
   width: 100%;
+  height: calc(100% - 310px);
   display: flex;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottomPartContainer {
+  padding: 20px;
+  width: 100%;
+  height: calc(100% - 260px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bottomChildrenContainer {
@@ -44,6 +50,35 @@
   height: 100%;
   min-width: 750px;
   border-radius: 5px;
-  border: 1px solid var(--color-border);
+  border: 0.1px solid rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.bottomChildrenContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.topPartContainer {
+  padding: 18px;
+  min-height: 140px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ajuster les hauteurs calculées */
+.bottomPartContainerBreadcrumb {
+  height: calc(100% - 240px);
+}
+
+.bottomPartContainer {
+  height: calc(100% - 200px);
+}
+
+.tabContentContainer {
+  flex: 1;
   overflow: hidden;
+  padding: 20px;
+  width: 100%;
 }

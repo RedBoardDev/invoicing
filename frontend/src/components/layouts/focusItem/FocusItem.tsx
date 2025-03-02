@@ -1,4 +1,3 @@
-// frontend/src/components/layouts/focusItem/FocusItem.tsx
 import type React from 'react';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
@@ -16,11 +15,10 @@ interface FocusItemProps {
 
 interface TabsWithUrlProps {
   tabsItems: TabsProps['items'];
-  tabContent: Record<string, React.ReactNode>;
   defaultTabKey: string;
+  onTabChange: (key: string) => void;
 }
-
-const TabsWithUrl = memo(({ tabsItems, tabContent, defaultTabKey }: TabsWithUrlProps) => {
+const TabsWithUrl = memo(({ tabsItems, defaultTabKey, onTabChange }: TabsWithUrlProps) => {
   const [activeTabKey, setActiveTabKey] = useState(defaultTabKey);
 
   useEffect(() => {
@@ -28,15 +26,26 @@ const TabsWithUrl = memo(({ tabsItems, tabContent, defaultTabKey }: TabsWithUrlP
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     const isValidTab = tabParam && tabsItems.some((tab) => tab.key === tabParam);
-    setActiveTabKey(isValidTab ? tabParam : defaultTabKey);
-  }, [tabsItems, defaultTabKey]);
+    if (isValidTab) {
+      setActiveTabKey(tabParam);
+      onTabChange(tabParam);
+    } else {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', defaultTabKey);
+      window.history.replaceState({}, '', url);
+    }
+  }, [tabsItems, defaultTabKey, onTabChange]);
 
-  const onChange = useCallback((key: string) => {
-    setActiveTabKey(key);
-    const url = new URL(window.location.href);
-    url.searchParams.set('tab', key);
-    window.history.pushState({}, '', url);
-  }, []);
+  const onChange = useCallback(
+    (key: string) => {
+      setActiveTabKey(key);
+      onTabChange(key);
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', key);
+      window.history.pushState({}, '', url);
+    },
+    [onTabChange],
+  );
 
   return (
     <Tabs
@@ -58,6 +67,11 @@ const FocusItem: React.FC<FocusItemProps> = ({
   showBorder = true,
 }) => {
   const defaultTabKey = tabsItems?.[0]?.key?.toString() || 'default';
+  const [activeTabKey, setActiveTabKey] = useState(defaultTabKey);
+
+  const handleTabChange = useCallback((key: string) => {
+    setActiveTabKey(key);
+  }, []);
 
   return (
     <div className={styles.focusItemPage}>
@@ -68,11 +82,11 @@ const FocusItem: React.FC<FocusItemProps> = ({
       )}
       <div className={styles.topPartContainer}>{childrenTop}</div>
       <div className={styles.tabsContainer} ref={bottomRef}>
-        <TabsWithUrl tabsItems={tabsItems} tabContent={tabContent} defaultTabKey={defaultTabKey} />
+        <TabsWithUrl tabsItems={tabsItems} defaultTabKey={defaultTabKey} onTabChange={handleTabChange} />
       </div>
       <div className={breadCrumbData ? styles.bottomPartContainerBreadcrumb : styles.bottomPartContainer}>
         <div className={styles.bottomChildrenContainer} style={showBorder ? undefined : { border: 0 }}>
-          {tabContent[tabsItems?.find((item) => item.key === defaultTabKey)?.key || defaultTabKey]}
+          {tabContent[activeTabKey]}
         </div>
       </div>
     </div>
