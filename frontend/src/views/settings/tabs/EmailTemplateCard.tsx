@@ -6,11 +6,12 @@ import { useMessage } from '@hooks/useMessage';
 import { EMAIL_VARIABLES_METADATA, type EmailVariable } from '@enums/emailVariables';
 import { deleteEmailTemplates } from '@api/services/emailTemplates';
 import styles from './EmailTemplateCard.module.css';
+import type { Permissions } from '@api/types/extends';
 
 const { Text, Title } = Typography;
 
 interface EmailTemplateCardProps {
-  template: EmailTemplate;
+  template: EmailTemplate & { permissions: Permissions };
   onEdit: () => void;
   onDelete: () => void;
 }
@@ -73,6 +74,7 @@ const EmailTemplateCard: React.FC<EmailTemplateCardProps> = ({ template, onEdit,
             icon={<DeleteOutlined />}
             onClick={handleDelete}
             className={styles.actionButton}
+            disabled={!template.permissions.canBeDeleted}
             danger
           />
         </Space>

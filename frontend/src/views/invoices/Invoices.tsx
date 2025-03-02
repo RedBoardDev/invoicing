@@ -10,7 +10,7 @@ import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
 import type React from 'react';
 import { useMemo, useState } from 'react';
 import type { WithExtends } from '@api/types/extends';
-import { getInvoices, deleteInvoices } from '@api/services/invoices';
+import { getInvoices } from '@api/services/invoices';
 
 const { Text } = Typography;
 
@@ -63,7 +63,7 @@ const Invoices: React.FC = () => {
       {
         title: 'Échéance',
         dataIndex: 'dueDate',
-        render: (date: string) => date ? formatDate(date, 'DD/MM/YYYY') : 'N/A',
+        render: (date: string) => (date ? formatDate(date, 'DD/MM/YYYY') : 'N/A'),
       },
     ],
     [],

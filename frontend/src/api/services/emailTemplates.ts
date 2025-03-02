@@ -7,10 +7,14 @@ import type { PaginatedApiResponse, PaginationParams } from '@api/types/paginati
 export type EmailTemplateExtends = 'permissions';
 
 // Liste des templates avec pagination
-export async function getEmailTemplates<TotalCount extends boolean = false>(
+export async function getEmailTemplates<E extends EmailTemplateExtends = never, TotalCount extends boolean = false>(
   pagination?: PaginationParams<TotalCount>,
-): Promise<Result<PaginatedApiResponse<EmailTemplate[], TotalCount>>> {
-  return apiFetch('GET', '/email-templates', {}, {}, pagination ?? { page: 1, pageSize: 1000 });
+  extendsOptions?: E[],
+): Promise<Result<PaginatedApiResponse<WithExtends<EmailTemplate, E>[], TotalCount>>> {
+  const params: FetchParams = {
+    extends: extendsOptions?.length ? extendsOptions.join(',') : undefined,
+  };
+  return apiFetch('GET', '/email-templates', {}, params, pagination ?? { page: 1, pageSize: 1000 });
 }
 
 // Récupérer un template par ID (pas de pagination)

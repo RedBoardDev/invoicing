@@ -8,6 +8,7 @@ import type EmailTemplate from '@interfaces/emailTemplate';
 import styles from './EmailTemplatesTab.module.css';
 import EmailTemplateModal from 'components/common/emailTemplateEditor/EmailTemplateModal';
 import { getEmailTemplates } from '@api/services/emailTemplates';
+import type { WithExtends } from '@api/types/extends';
 
 const { Title } = Typography;
 
@@ -17,7 +18,7 @@ const EmailTemplatesTab: React.FC = () => {
 
   const listService = useCallback(
     (_extendsOptions?: never[], pagination?: { page?: number; pageSize?: number; totalCount?: boolean }) =>
-      getEmailTemplates(pagination),
+      getEmailTemplates(pagination, ['permissions']),
     [],
   );
 
@@ -25,7 +26,7 @@ const EmailTemplatesTab: React.FC = () => {
     data: templates,
     loading,
     refresh,
-  } = useApiData<EmailTemplate>({
+  } = useApiData<WithExtends<EmailTemplate, 'permissions'>>({
     listService,
   });
 

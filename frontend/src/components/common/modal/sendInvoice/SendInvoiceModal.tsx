@@ -1,11 +1,14 @@
 import type React from 'react';
 import { useState, useEffect, useCallback } from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import { Modal, Form, Input, Button, Typography } from 'antd';
 import type Invoice from '@interfaces/invoice';
 import { useMessage } from '@hooks/useMessage';
 import { sendInvoice } from '@api/services/invoices';
 import { simulateEmailTemplate } from '@api/services/emailTemplates';
 import type { WithExtends } from '@api/types/extends';
+import EmailRecipientsField from 'components/common/modal/sendInvoice/EmailRecipientsField';
+
+const { Text } = Typography;
 
 interface SendInvoiceModalProps {
   visible: boolean;
@@ -17,6 +20,7 @@ interface SendInvoiceModalProps {
 const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, onClose, onSuccess }) => {
   const [form] = Form.useForm();
   const [isSending, setIsSending] = useState(false);
+  const [availableEmails, setAvailableEmails] = useState<string[]>([]);
   const messageApi = useMessage();
 
   const fetchEmailData = useCallback(
@@ -26,7 +30,13 @@ const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, o
         const result = await simulateEmailTemplate(invoice.contract.emailTemplateId, invoice.id);
         if (!result.success) throw new Error(result.error || 'Erreur lors de la récupération des données');
         const { email, subject, content } = result.data.data;
-        form.setFieldsValue({ recipientEmail: email || '', subject: subject || '', content: content || '' });
+        const clientEmails = invoice.contract.client?.email || [];
+        setAvailableEmails(clientEmails);
+        form.setFieldsValue({
+          recipientEmail: email.length > 0 ? email : clientEmails.slice(0, 1), // Premier email par défaut
+          subject: subject || '',
+          content: content || '',
+        });
       } catch (error) {
         messageApi.error('Erreur lors de la récupération des données de l’email');
       }
@@ -35,9 +45,13 @@ const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, o
   );
 
   useEffect(() => {
-    if (!visible || !invoice) return;
+    if (!visible || !invoice) {
+      form.resetFields();
+      setAvailableEmails([]);
+      return;
+    }
     fetchEmailData(invoice);
-  }, [visible, invoice, fetchEmailData]);
+  }, [visible, invoice, fetchEmailData, form]);
 
   const handleSend = async () => {
     try {
@@ -64,20 +78,16 @@ const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, o
       open={visible}
       onCancel={onClose}
       footer={[
-        <Button key="cancel" onClick={onClose}>
+        <Button key="cancel" onClick={onClose} disabled={isSending}>
           Annuler
         </Button>,
         <Button key="send" type="primary" onClick={handleSend} loading={isSending}>
           Envoyer
         </Button>,
-      ]}>
+      ]}
+      width={600}>
       <Form form={form} layout="vertical">
-        <Form.Item
-          name="recipientEmail"
-          label="Email du destinataire"
-          rules={[{ required: true, type: 'email', message: 'Veuillez entrer un email valide' }]}>
-          <Input placeholder="Email du destinataire" />
-        </Form.Item>
+        <EmailRecipientsField availableEmails={availableEmails} />
         <Form.Item name="subject" label="Objet" rules={[{ required: true, message: 'L’objet est obligatoire' }]}>
           <Input placeholder="Objet de l’email" />
         </Form.Item>
