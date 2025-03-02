@@ -1,6 +1,6 @@
 import { EyeOutlined } from '@ant-design/icons';
 import { ROUTE_PATHS } from '@config/routePaths';
-import { STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
+import { InvoiceStatus, STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
 import { Typography, Tag, DatePicker, Button, Modal } from 'antd';
@@ -12,9 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import { useInvoiceActions } from './useInvoiceActions';
 import SendInvoiceModal from 'components/common/modal/sendInvoice/SendInvoiceModal';
 import dayjs from 'dayjs';
-import { getInvoicePdf, updateInvoice } from '@api/services/invoices';
+import { getInvoicePdf, updateInvoice, getNextInvoiceNumber } from '@api/services/invoices'; // Ajout de getNextInvoiceNumber
 import type { Permissions, WithExtends } from '@api/types/extends';
-import type {} from '@api/types/fetch';
+import ConfirmValidatedModal from 'components/common/modal/ConfirmValidatedModal';
 
 const { Text } = Typography;
 
@@ -22,7 +22,12 @@ const fields: FieldConfig<WithExtends<Invoice, 'contract'>>[] = [
   {
     key: 'invoiceNumber',
     label: 'N° Facture',
-    render: (data) => <Text strong>#{data.invoiceNumber}</Text>,
+    render: ({ invoiceNumber, status }) =>
+      invoiceNumber ? (
+        <Text strong>{`#${invoiceNumber}`}</Text>
+      ) : (
+        <Text>{status === InvoiceStatus.DRAFT ? 'Provisoire' : 'N/A'}</Text>
+      ),
   },
   {
     key: 'status',
@@ -71,6 +76,20 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
   const [confirmModalVisible, setConfirmModalVisible] = useState<'validate' | 'markAsPaid' | null>(null);
   const [sendModalVisible, setSendModalVisible] = useState(false);
   const [isViewingPdf, setIsViewingPdf] = useState(false);
+  const [nextInvoiceNumber, setNextInvoiceNumber] = useState<string | undefined>(undefined);
+
+  const loadNextInvoiceNumber = async () => {
+    try {
+      const response = await getNextInvoiceNumber();
+      console.log(response);
+      if (!response.success)
+        throw new Error(response.error || 'Erreur lors de la récupération du prochain numéro de facture');
+      setNextInvoiceNumber(response.data.data.invoiceNumber);
+    } catch (error) {
+      console.error('Erreur lors de la récupération du prochain numéro de facture:', error);
+      setNextInvoiceNumber(undefined);
+    }
+  };
 
   const handleViewPdf = async () => {
     if (!invoice?.id) return;
@@ -83,10 +102,7 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
       window.open(url, '_blank');
     } catch (error) {
       console.error('Erreur lors de la visualisation du PDF:', error);
-      Modal.error({
-        title: 'Erreur',
-        content: 'Impossible de charger le PDF',
-      });
+      Modal.error({ title: 'Erreur', content: 'Impossible de charger le PDF' });
     } finally {
       setIsViewingPdf(false);
     }
@@ -94,14 +110,23 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
 
   const closeSendModal = () => setSendModalVisible(false);
 
-  const showConfirmModal = (action: 'validate' | 'markAsPaid') => setConfirmModalVisible(action);
+  const showConfirmModal = async (action: 'validate' | 'markAsPaid') => {
+    if (action === 'validate') {
+      await loadNextInvoiceNumber();
+    }
+    setConfirmModalVisible(action);
+  };
 
-  const handleCancelConfirmation = () => setConfirmModalVisible(null);
+  const handleCancelConfirmation = () => {
+    setConfirmModalVisible(null);
+    setNextInvoiceNumber(undefined);
+  };
 
   const handleConfirmAction = async () => {
     if (confirmModalVisible === 'validate') await validateInvoice();
     else if (confirmModalVisible === 'markAsPaid') await markAsPaid();
     setConfirmModalVisible(null);
+    setNextInvoiceNumber(undefined);
   };
 
   const getActionButtons = (): ButtonConfig[] => {
@@ -201,21 +226,13 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
         onBack={() => navigate(ROUTE_PATHS.private.invoices.root)}
       />
       <SendInvoiceModal visible={sendModalVisible} invoice={invoice} onClose={closeSendModal} onSuccess={refresh} />
-      <Modal
-        title={confirmModalVisible === 'validate' ? 'Confirmation de validation' : 'Confirmation de paiement'}
-        open={!!confirmModalVisible}
-        onOk={handleConfirmAction}
+      <ConfirmValidatedModal
+        action={confirmModalVisible}
+        onConfirm={handleConfirmAction}
         onCancel={handleCancelConfirmation}
-        okText="Oui, confirmer"
-        cancelText="Non, annuler"
-        confirmLoading={isValidating || isMarkingAsPaid}
-        okButtonProps={{ danger: true }}>
-        <Text>
-          {confirmModalVisible === 'validate'
-            ? 'Êtes-vous sûr de vouloir valider cette facture ? Une fois validée, elle ne pourra plus être modifiée.'
-            : 'Êtes-vous sûr de vouloir marquer cette facture comme payée ?'}
-        </Text>
-      </Modal>
+        isLoading={isValidating || isMarkingAsPaid}
+        invoiceNumber={confirmModalVisible === 'validate' ? nextInvoiceNumber : undefined}
+      />
     </>
   );
 };

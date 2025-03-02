@@ -5,13 +5,10 @@ import dayjs from 'dayjs';
 import type { useMessage } from '@hooks/useMessage';
 import type { WithExtends } from '@api/types/extends';
 import { getContracts } from '@api/services/contracts';
-import { getNextInvoiceNumber } from '@api/services/invoices';
 
 interface InvoiceData {
   contracts: Array<WithExtends<Contract, 'client'>>;
-  invoiceNumber: string | null;
   contractsLoading: boolean;
-  invoiceNumberLoading: boolean;
 }
 
 const useInvoiceData = (
@@ -21,25 +18,17 @@ const useInvoiceData = (
   messageApi: ReturnType<typeof useMessage>,
 ): InvoiceData => {
   const [contracts, setContracts] = useState<Array<WithExtends<Contract, 'client'>>>([]);
-  const [invoiceNumber, setInvoiceNumber] = useState<string | null>(null);
   const [contractsLoading, setContractsLoading] = useState(false);
-  const [invoiceNumberLoading, setInvoiceNumberLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
     setContractsLoading(true);
-    setInvoiceNumberLoading(true);
 
     try {
-      const [contractsResult, numberResult] = await Promise.all([
-        getContracts<'client'>(['client']),
-        getNextInvoiceNumber(),
-      ]);
+      const contractsResult = await getContracts<'client'>(['client']);
 
       if (!contractsResult.success) throw new Error(contractsResult.error || 'Failed to fetch contracts');
-      if (!numberResult.success) throw new Error(numberResult.error || 'Failed to fetch invoice number');
 
       setContracts(contractsResult.data.data);
-      setInvoiceNumber(numberResult.data.data.invoiceNumber);
 
       if (contractId) {
         const selectedContract = contractsResult.data.data.find((c) => c.id === contractId);
@@ -59,7 +48,6 @@ const useInvoiceData = (
       messageApi?.error('Erreur lors du chargement');
     } finally {
       setContractsLoading(false);
-      setInvoiceNumberLoading(false);
     }
   }, [contractId, form, messageApi]);
 
@@ -68,12 +56,11 @@ const useInvoiceData = (
       fetchData();
     } else {
       setContracts([]);
-      setInvoiceNumber(null);
       form.resetFields();
     }
   }, [visible, fetchData, form]);
 
-  return { contracts, invoiceNumber, contractsLoading, invoiceNumberLoading };
+  return { contracts, contractsLoading };
 };
 
 export default useInvoiceData;

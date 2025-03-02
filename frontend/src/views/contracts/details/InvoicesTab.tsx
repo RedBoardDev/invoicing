@@ -1,5 +1,5 @@
 import { ROUTE_PATHS } from '@config/routePaths';
-import { STATUS_COLORS, STATUS_LABELS, type InvoiceStatus } from '@enums/invoiceStatus';
+import { InvoiceStatus, STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
 import { Space, Tag, Typography } from 'antd';
@@ -24,7 +24,12 @@ const InvoicesTab: React.FC<InvoicesTabProps> = ({ contractId }) => {
       {
         title: 'N° Facture',
         dataIndex: 'invoiceNumber',
-        render: (number: string) => <Text strong>#{number || 'N/A'}</Text>,
+        render: (number: string, record: WithExtends<Invoice, 'contract'>) =>
+          number ? (
+            <Text strong>{`#${number}`}</Text>
+          ) : (
+            <Text>{record.status === InvoiceStatus.DRAFT ? 'Provisoire' : 'N/A'}</Text>
+          ),
         sorter: (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber),
       },
       {

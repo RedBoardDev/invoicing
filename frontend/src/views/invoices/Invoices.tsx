@@ -1,4 +1,3 @@
-
 import { ROUTE_PATHS } from '@config/routePaths';
 import { type InvoiceStatus, STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
@@ -27,7 +26,9 @@ const Invoices: React.FC = () => {
       {
         title: 'N° Facture',
         dataIndex: 'invoiceNumber',
-        render: (number: string) => <Text strong>#{number || 'N/A'}</Text>,
+        render: (number: string, record: WithExtends<Invoice, 'contract'>) => (
+          number ? <Text strong>{`#${number}`}</Text> : <Text>{record.status === 'DRAFT' ? 'Provisoire' : 'N/A'}</Text>
+        ),
         sorter: (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber),
       },
       {
@@ -39,9 +40,7 @@ const Invoices: React.FC = () => {
       {
         title: 'PDF / Envoyée',
         render: (_: unknown, record: WithExtends<Invoice, 'contract'>) => (
-          <Space>
-            {record.sendDate ? formatDate(record.sendDate, 'DD/MM/YYYY') : 'N/A'}
-          </Space>
+          <Space>{record.sendDate ? formatDate(record.sendDate, 'DD/MM/YYYY') : 'N/A'}</Space>
         ),
       },
       {

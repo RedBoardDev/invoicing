@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
 import type Invoice from '@interfaces/invoice';
-import { Form, Input, InputNumber, Button, Divider, Spin, Typography } from 'antd';
+import { Form, Input, InputNumber, Button, Divider, Typography } from 'antd';
 import { AddModal } from 'components/common/modal/create/component/AddModal';
 import ContractSelect from 'components/dataEntry/ContractSelect';
 import AmountInput from 'components/dataEntry/AmountInput';
@@ -24,12 +24,7 @@ type InvoiceCreateData = Omit<Invoice, 'id' | 'createdAt' | 'updatedAt' | 'sendD
 const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible, onSuccess }) => {
   const [form] = Form.useForm();
   const messageApi = useMessage();
-  const { contracts, invoiceNumber, contractsLoading, invoiceNumberLoading } = useInvoiceData(
-    visible,
-    contractId,
-    form,
-    messageApi,
-  );
+  const { contracts, contractsLoading } = useInvoiceData(visible, contractId, form, messageApi);
 
   const handleAddSuccess = useCallback(() => {
     setVisible(false);
@@ -95,29 +90,22 @@ const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible
           )}
           <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
             <div style={{ flex: 1 }}>
-              <Form.Item label="Numéro de facture">
-                {invoiceNumberLoading ? (
-                  <Spin size="small" />
-                ) : (
-                  <Input value={invoiceNumber || 'Erreur de chargement'} readOnly />
-                )}
+              <Form.Item
+                name="paymentDelay"
+                label="Délai de paiement"
+                rules={[{ required: true, message: 'Le délai de paiement est requis' }]}
+                shouldUpdate>
+                <InputNumber style={{ width: '100%' }} disabled addonAfter="jours" />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
               <Form.Item name="status" label="Statut de la facture">
-                <Input readOnly />
+                <Input disabled />
               </Form.Item>
             </div>
           </div>
           <Form.Item label="Montant" shouldUpdate>
             <AmountInput disabled />
-          </Form.Item>
-          <Form.Item
-            name="paymentDelay"
-            label="Délai de paiement"
-            rules={[{ required: true, message: 'Le délai de paiement est requis' }]}
-            shouldUpdate>
-            <InputNumber style={{ width: '30%' }} disabled addonAfter="jours" />
           </Form.Item>
           <Typography.Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: -12 }}>
             La date d'échéance sera calculée automatiquement après validation de la facture.
