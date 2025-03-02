@@ -25,9 +25,7 @@ export const CreateInvoiceSchema = {
   additionalProperties: false,
 } as const;
 
-export type CreateInvoiceData = FromSchema<typeof CreateInvoiceSchema> & {
-  invoiceNumber: string;
-};
+export type CreateInvoiceData = FromSchema<typeof CreateInvoiceSchema>;
 
 export const UpdateInvoiceSchema = {
   type: 'object',
@@ -35,6 +33,7 @@ export const UpdateInvoiceSchema = {
     status: { type: 'string', enum: Object.values(InvoiceStatus) },
     sendDate: { type: 'string', format: 'date-time' },
     fileId: { type: 'string' },
+    invoiceNumber: { type: 'string' },
     dueDate: { type: 'string', format: 'date-time' },
   },
   additionalProperties: false,

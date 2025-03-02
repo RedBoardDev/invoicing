@@ -95,7 +95,7 @@ model Invoice {
   id            String        @id @default(uuid())
   contractId    String
   contract      Contract      @relation(fields: [contractId], references: [id], onDelete: Restrict)
-  invoiceNumber String        @unique
+  invoiceNumber String?        @unique
   amountHT      Float
   taxRate       Float
   status        InvoiceStatus @default(DRAFT)

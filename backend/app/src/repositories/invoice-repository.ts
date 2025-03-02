@@ -28,7 +28,6 @@ const createInvoiceQuery = async (
   return prismaInstance.invoice.create({
     data: {
       contractId: data.contractId,
-      invoiceNumber: data.invoiceNumber,
       amountHT: data.amountHT,
       taxRate: data.taxRate,
       status: data.status || 'DRAFT',

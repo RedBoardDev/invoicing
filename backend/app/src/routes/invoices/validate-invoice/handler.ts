@@ -1,5 +1,6 @@
 import { HttpStatusCode } from '@enums/http-status-enums';
 import ApiError from '@libs/error-management/api-error';
+import { generateNextInvoiceNumber } from '@libs/invoice-number';
 import type { Invoice } from '@prisma/client';
 import { getInvoiceById, updateInvoice } from '@repositories/invoice-repository';
 import { generateInvoicePdf } from '@services/pdf-service';
@@ -23,7 +24,10 @@ const handler = async (req: FastifyRequest<{ Params: TParams }>, res: FastifyRep
   const pdfBuffer = await generateInvoicePdf(invoice);
   const fileId = await uploadPdfToS3(pdfBuffer);
 
+  const invoiceNumber = await generateNextInvoiceNumber();
+
   const updatedInvoice = await updateInvoice(id, {
+    invoiceNumber,
     status: 'VALIDATED',
     fileId,
     dueDate: new Date(new Date().getTime() + invoice.paymentDelay * 24 * 60 * 60 * 1000).toISOString(),
