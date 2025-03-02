@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import type Contract from '@interfaces/contract';
-import { Col, DatePicker, Form, Input, Row } from 'antd';
+import { Col, DatePicker, Form, Input, InputNumber, Row } from 'antd';
 import { AddModal } from 'components/common/modal/create/component/AddModal';
 import ClientSelect from 'components/dataEntry/ClientSelect';
 import dayjs, { type Dayjs } from 'dayjs';
@@ -93,12 +93,10 @@ const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible
             label="Délai de paiement"
             rules={[{ required: true, message: 'Délai paiement requis' }]}
             initialValue={120}>
-            <Input type="number" addonAfter="jours" />
+            <InputNumber style={{ width: '40%' }} suffix="jours" />
           </Form.Item>
 
-          <Form.Item
-            name="description"
-            label="Description">
+          <Form.Item name="description" label="Description">
             <Input.TextArea rows={4} placeholder="Description du contrat" />
           </Form.Item>
         </>

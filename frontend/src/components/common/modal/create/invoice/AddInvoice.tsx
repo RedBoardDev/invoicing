@@ -1,11 +1,10 @@
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
 import type Invoice from '@interfaces/invoice';
-import { DatePicker, Form, Input, InputNumber, Button, Divider, Spin } from 'antd';
+import { Form, Input, InputNumber, Button, Divider, Spin, Typography } from 'antd';
 import { AddModal } from 'components/common/modal/create/component/AddModal';
 import ContractSelect from 'components/dataEntry/ContractSelect';
 import AmountInput from 'components/dataEntry/AmountInput';
-import dayjs, { type Dayjs } from 'dayjs';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useMessage } from '@hooks/useMessage';
 import useInvoiceData from 'components/common/modal/create/invoice/useInvoiceData';
@@ -41,11 +40,10 @@ const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible
     (contractIdValue: string) => {
       const selectedContract = contracts.find((c) => c.id === contractIdValue);
       if (selectedContract) {
-        const dueDate = dayjs().add(selectedContract.paymentDelay, 'day').toDate();
         form.setFieldsValue({
           amountHT: selectedContract.amountHT,
           taxRate: selectedContract.taxRate,
-          dueDate,
+          paymentDelay: selectedContract.paymentDelay,
         });
       }
     },
@@ -103,14 +101,15 @@ const AddInvoice: React.FC<AddInvoiceProps> = ({ contractId, visible, setVisible
             <AmountInput disabled />
           </Form.Item>
           <Form.Item
-            name="dueDate"
-            label="Date d'échéance"
-            rules={[{ required: true, message: "La date d'échéance est requise" }]}
-            getValueProps={(value: Date) => ({ value: value ? dayjs(value) : null })}
-            normalize={(value: Dayjs) => (value ? value.toISOString() : null)}
+            name="paymentDelay"
+            label="Délai de paiement"
+            rules={[{ required: true, message: 'Le délai de paiement est requis' }]}
             shouldUpdate>
-            <DatePicker style={{ width: '100%' }} disabled />
+            <InputNumber style={{ width: '30%' }} disabled addonAfter="jours" />
           </Form.Item>
+            <Typography.Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: -12 }}>
+              La date d'échéance sera calculée automatiquement après validation de la facture.
+            </Typography.Text>
           <Divider>
             <span style={{ backgroundColor: '#fff', padding: '0 16px', fontSize: 16, color: '#666' }}>Items</span>
           </Divider>

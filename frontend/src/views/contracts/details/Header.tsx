@@ -6,6 +6,7 @@ import { Typography, Button, DatePicker, InputNumber, Input } from 'antd';
 import type { FormInstance } from 'antd/lib';
 import TextArea from 'antd/lib/input/TextArea';
 import AddInvoice from 'components/common/modal/create/invoice/AddInvoice';
+import IncreaseAmountModal from 'components/common/modal/IncreaseAmountModal'; // Nouvelle importation
 import HeaderDetailsLayout from 'components/layouts/headerDetails/HeaderDetails';
 import type { FieldConfig } from 'components/layouts/headerDetails/types';
 import type { Dayjs } from 'dayjs';
@@ -16,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   contract: Contract | null;
-  onEditSuccess: (updatedClient: Contract) => void;
+  onEditSuccess: (updatedContract: Contract) => void;
   onDelete: () => void;
   refresh: () => void;
   permissions?: Permissions;
@@ -55,7 +56,7 @@ const fields: FieldConfig<Contract>[] = [
   {
     key: 'amountHT',
     label: 'Montant HT',
-    render: (data) => <Text>{data.amountHT.toLocaleString()} €</Text>,
+    render: (data) => <Text>{data.amountHT.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</Text>,
     editConfig: {
       rules: [
         { required: true, message: 'Le montant HT est obligatoire' },
@@ -78,7 +79,7 @@ const fields: FieldConfig<Contract>[] = [
       renderInput: (_form: FormInstance<Partial<Contract>>) => (
         <InputNumber placeholder="Taux de taxe" style={{ width: '100%' }} step={0.1} />
       ),
-      normalize: (value) => (value !== undefined && value !== null ? Number(value) : null), // Simple conversion en nombre
+      normalize: (value) => (value !== undefined && value !== null ? Number(value) : null),
     },
   },
   {
@@ -101,19 +102,17 @@ const fields: FieldConfig<Contract>[] = [
     render: (data) => <Text>{new Date(data.startDate).toLocaleDateString('fr-FR')}</Text>,
     editConfig: {
       rules: [{ required: true, message: 'La date de début est obligatoire' }],
-      renderInput: (form: FormInstance<Partial<Contract>>) => {
-        return (
-          <DatePicker
-            style={{ width: '100%' }}
-            format="DD/MM/YYYY"
-            placeholder="Date de début"
-            disabledDate={(current: Dayjs) => {
-              const endDate = form.getFieldValue('endDate') as Dayjs | undefined;
-              return endDate ? current.isAfter(endDate, 'day') : false;
-            }}
-          />
-        );
-      },
+      renderInput: (form: FormInstance<Partial<Contract>>) => (
+        <DatePicker
+          style={{ width: '100%' }}
+          format="DD/MM/YYYY"
+          placeholder="Date de début"
+          disabledDate={(current: Dayjs) => {
+            const endDate = form.getFieldValue('endDate') as Dayjs | undefined;
+            return endDate ? current.isAfter(endDate, 'day') : false;
+          }}
+        />
+      ),
       getValueProps: (value) => ({ value: value ? dayjs(value) : null }),
       normalize: (value) => (value ? dayjs(value).toISOString() : null),
     },
@@ -143,8 +142,17 @@ const fields: FieldConfig<Contract>[] = [
 
 const Header: React.FC<HeaderProps> = ({ contract, onEditSuccess, onDelete, refresh, permissions }) => {
   const [addModalVisible, setAddModalVisible] = useState<boolean>(false);
+  const [increaseModalVisible, setIncreaseModalVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const contractId = contract?.id;
+
+  const handleIncreaseSuccess = (newAmountHT: number) => {
+    if (contract) {
+      onEditSuccess({ ...contract, amountHT: newAmountHT });
+      setIncreaseModalVisible(false);
+      refresh();
+    }
+  };
 
   return (
     <>
@@ -156,6 +164,9 @@ const Header: React.FC<HeaderProps> = ({ contract, onEditSuccess, onDelete, refr
         id={contractId ?? ''}
         updateService={updateContract}
         extraButtons={[
+          <Button key="increase-amount" onClick={() => setIncreaseModalVisible(true)}>
+            Augmenter le montant
+          </Button>,
           <Button key="add-invoice" onClick={() => setAddModalVisible(true)}>
             Ajouter une facture
           </Button>,
@@ -174,6 +185,14 @@ const Header: React.FC<HeaderProps> = ({ contract, onEditSuccess, onDelete, refr
           refresh();
         }}
       />
+      {contract && (
+        <IncreaseAmountModal
+          visible={increaseModalVisible}
+          onCancel={() => setIncreaseModalVisible(false)}
+          contract={contract}
+          onSuccess={handleIncreaseSuccess}
+        />
+      )}
     </>
   );
 };

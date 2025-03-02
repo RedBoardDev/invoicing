@@ -7,6 +7,7 @@ interface Invoice {
   amountHT: number;
   taxRate: number;
   status: InvoiceStatus;
+  paymentDelay: number;
   dueDate: Date;
   sendDate?: Date;
   fileId?: string;

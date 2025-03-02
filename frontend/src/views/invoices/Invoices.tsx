@@ -27,7 +27,7 @@ const Invoices: React.FC = () => {
       {
         title: 'N° Facture',
         dataIndex: 'invoiceNumber',
-        render: (number: string) => <Text strong>#{number}</Text>,
+        render: (number: string) => <Text strong>#{number || 'N/A'}</Text>,
         sorter: (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber),
       },
       {
@@ -50,7 +50,7 @@ const Invoices: React.FC = () => {
             ) : (
               'N/A'
             )}
-            {record.sendDate ? formatDate(record.sendDate, 'DD/MM/YYYY') : ''}
+            {record.sendDate ? formatDate(record.sendDate, 'DD/MM/YYYY') : 'N/A'}
           </Space>
         ),
       },
@@ -63,8 +63,7 @@ const Invoices: React.FC = () => {
       {
         title: 'Échéance',
         dataIndex: 'dueDate',
-        render: (date: string) => formatDate(date, 'DD/MM/YYYY'),
-        sorter: (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+        render: (date: string) => date ? formatDate(date, 'DD/MM/YYYY') : 'N/A',
       },
     ],
     [],

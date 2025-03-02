@@ -7,7 +7,7 @@ interface AmountInputProps {
 
 const AmountInput: React.FC<AmountInputProps> = ({ disabled = false }) => (
   <Input.Group compact>
-    <Form.Item name="amountHT" noStyle rules={[{ required: true, message: 'Montant HT requis' }]}>
+    <Form.Item name="amountHT" noStyle rules={[{ required: true, message: '' }]}>
       <InputNumber disabled={disabled} step={0.01} min={0} style={{ width: '40%' }} placeholder="HT" />
     </Form.Item>
     <span style={{ padding: '0 8px', lineHeight: '32px' }}> + </span>
@@ -23,7 +23,7 @@ const AmountInput: React.FC<AmountInputProps> = ({ disabled = false }) => (
       />
     </Form.Item>
     <span style={{ padding: '0 8px', lineHeight: '32px' }}> = </span>
-    <Form.Item shouldUpdate noStyle>
+    <Form.Item shouldUpdate noStyle rules={[{ required: true, message: '' }]}>
       {({ getFieldValue }) => {
         const amountHT = getFieldValue('amountHT') || 0;
         const taxRate = getFieldValue('taxRate') || 0;

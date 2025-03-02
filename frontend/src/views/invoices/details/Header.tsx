@@ -32,7 +32,7 @@ const fields: FieldConfig<WithExtends<Invoice, 'contract'>>[] = [
   {
     key: 'dueDate',
     label: 'Échéance',
-    render: (data) => formatDate(data.dueDate, 'DD/MM/YYYY'),
+    render: (data) => (data.dueDate ? formatDate(data.dueDate, 'DD/MM/YYYY') : 'N/A'),
     editConfig: {
       rules: [{ required: true, message: "La date d'échéance est obligatoire" }],
       renderInput: () => <DatePicker format="DD/MM/YYYY" />,

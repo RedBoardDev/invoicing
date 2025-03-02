@@ -1,13 +1,14 @@
 export enum EmailVariable {
+  MONTH = 'MONTH',
   YEAR = 'YEAR',
   CURRENT_DATE = 'CURRENT_DATE',
   INVOICE_NUMBER = 'INVOICE_NUMBER',
   TAX_RATE = 'TAX_RATE',
   INVOICE_DATE = 'INVOICE_DATE',
   DUE_DATE = 'DUE_DATE',
-  CLIENT_EMAIL = 'CLIENT_MAIL',
+  PAYMENT_DELAY = 'PAYMENT_DELAY',
   CLIENT_NAME = 'CLIENT_NAME',
-  CONTRACT_DELAY = 'CONTRACT_PAYMENT_DELAY',
+  CONTRACT_PAYMENT_DELAY = 'CONTRACT_PAYMENT_DELAY',
   CONTRACT_TITLE = 'CONTRACT_TITLE',
 }
 
@@ -18,27 +19,59 @@ export interface VariableMetadata {
 }
 
 export const EMAIL_VARIABLES_METADATA: Record<EmailVariable, VariableMetadata> = {
-  [EmailVariable.YEAR]: { label: 'Année', description: 'Année courante', example: '2025' },
-  [EmailVariable.CURRENT_DATE]: { label: 'Date Actuelle', description: 'Date du jour', example: '31/12/2025' },
-  [EmailVariable.INVOICE_NUMBER]: { label: 'N° Facture', description: 'Numéro de facture', example: '2025-00042' },
-  [EmailVariable.TAX_RATE]: { label: 'Taux TVA', description: 'Taux de taxe', example: '20%' },
-  [EmailVariable.INVOICE_DATE]: { label: 'Date Facture', description: 'Date d’émission', example: '15/12/2025' },
-  [EmailVariable.DUE_DATE]: { label: 'Échéance', description: 'Date d’échéance', example: '14/01/2026' },
-  [EmailVariable.CLIENT_EMAIL]: {
-    label: 'Email Client',
-    description: 'Email du client',
-    example: 'john.doe@example.com',
+  [EmailVariable.MONTH]: {
+    label: 'Mois',
+    description: 'Mois courant',
+    example: '12',
   },
-  [EmailVariable.CLIENT_NAME]: { label: 'Nom Client', description: 'Nom du client', example: 'John Doe' },
-  [EmailVariable.CONTRACT_DELAY]: { label: 'Délai Contrat', description: 'Délai de paiement', example: '30 jours' },
+  [EmailVariable.YEAR]: {
+    label: 'Année',
+    description: 'Année courante',
+    example: '2024',
+  },
+  [EmailVariable.CURRENT_DATE]: {
+    label: 'Date Actuelle',
+    description: 'Date courante',
+    example: '2024-12-31T23:59:59.999Z',
+  },
+  [EmailVariable.INVOICE_NUMBER]: {
+    label: 'N° Facture',
+    description: 'Numéro de facture',
+    example: '123456',
+  },
+  [EmailVariable.TAX_RATE]: {
+    label: 'Taux TVA',
+    description: 'Taux de TVA',
+    example: '20',
+  },
+  [EmailVariable.INVOICE_DATE]: {
+    label: 'Date Facture',
+    description: "Date d'émission de la facture",
+    example: '2024-12-31',
+  },
+  [EmailVariable.DUE_DATE]: {
+    label: 'Échéance',
+    description: "Date d'échéance de la facture",
+    example: '2024-12-31',
+  },
+  [EmailVariable.PAYMENT_DELAY]: {
+    label: 'Délai Paiement',
+    description: 'Délai de paiement de la facture',
+    example: '30',
+  },
+  [EmailVariable.CLIENT_NAME]: {
+    label: 'Nom Client',
+    description: 'Nom du client',
+    example: 'John Doe',
+  },
+  [EmailVariable.CONTRACT_PAYMENT_DELAY]: {
+    label: 'Délai Paiement Contrat',
+    description: 'Délai de paiement du contrat',
+    example: '30',
+  },
   [EmailVariable.CONTRACT_TITLE]: {
     label: 'Titre Contrat',
     description: 'Titre du contrat',
-    example: 'Prestation Web',
+    example: 'Contrat de prestation de service',
   },
-};
-
-export const EMAIL_VARIABLES_DEFAULTS: Partial<Record<EmailVariable, () => string>> = {
-  [EmailVariable.YEAR]: () => new Date().getFullYear().toString(),
-  [EmailVariable.CURRENT_DATE]: () => new Date().toLocaleDateString('fr-FR'),
 };

@@ -1,8 +1,9 @@
-import { Form, Input } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { AddModal } from 'components/common/modal/create/component/AddModal';
 import type React from 'react';
 import type Client from '@interfaces/client';
 import { createClient } from '@api/services/clients';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 interface AddClientProps {
   visible: boolean;
@@ -20,7 +21,9 @@ const AddClient: React.FC<AddClientProps> = ({ visible, setVisible, onSuccess })
         onSuccess();
       }}
       title="Nouveau client"
-      createService={createClient}>
+      createService={(data) => createClient(data as { name: string; email: string[] })}
+      initialValues={{ email: [''] }}
+    >
       {() => (
         <>
           <Form.Item
@@ -29,15 +32,49 @@ const AddClient: React.FC<AddClientProps> = ({ visible, setVisible, onSuccess })
             rules={[{ required: true, message: 'Ce champ est obligatoire' }]}>
             <Input placeholder="Nom de l'entreprise" />
           </Form.Item>
-          <Form.Item
+
+          <Form.List
             name="email"
-            label="Email du client"
             rules={[
-              { required: true, message: 'Ce champ est obligatoire' },
-              { type: 'email', message: 'Veuillez entrer un email valide' },
+              {
+                validator: async (_, emails) => {
+                  if (!emails || emails.length === 0) {
+                    return Promise.reject(new Error('Au moins un email est requis'));
+                  }
+                },
+              },
             ]}>
-            <Input placeholder="Email de l’entreprise" />
-          </Form.Item>
+            {(fields, { add, remove }, { errors }) => (
+              <>
+                {fields.map((field, index) => (
+                  <Form.Item label={index === 0 ? 'Email(s) du client' : ''} required={false} key={field.key}>
+                    <Form.Item
+                      {...field}
+                      validateTrigger={['onChange', 'onBlur']}
+                      rules={[
+                        { required: true, message: '' },
+                        { type: 'email', message: 'Veuillez entrer un email valide' },
+                      ]}
+                      noStyle>
+                      <Input
+                        placeholder={index === 0 ? 'email par défaut' : 'email supplémentaire'}
+                        style={{ width: '90%' }}
+                      />
+                    </Form.Item>
+                    {fields.length > 1 ? (
+                      <MinusCircleOutlined style={{ marginLeft: 8 }} onClick={() => remove(field.name)} />
+                    ) : null}
+                  </Form.Item>
+                ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()} style={{ width: '90%' }} icon={<PlusOutlined />}>
+                    Ajouter un email
+                  </Button>
+                  <Form.ErrorList errors={errors} />
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
         </>
       )}
     </AddModal>

@@ -1,7 +1,7 @@
 interface Client {
   id: string;
   name: string;
-  email: string;
+  email: string[];
   createdAt: string;
   updatedAt: string;
 }

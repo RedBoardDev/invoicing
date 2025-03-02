@@ -14,14 +14,12 @@ export async function apiFetch<T, TotalCount extends boolean = false>(
 > {
   const queryParams = new URLSearchParams();
 
-  // Ajouter les paramètres supplémentaires
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined) {
       queryParams.append(key, String(value));
     }
   }
 
-  // Ajouter les paramètres de pagination si présents
   if (pagination) {
     queryParams.append('page', String(pagination.page ?? 1));
     queryParams.append('pageSize', String(pagination.pageSize ?? 1000));
@@ -30,14 +28,19 @@ export async function apiFetch<T, TotalCount extends boolean = false>(
 
   const url = `${BASE_URL}${endpoint}${queryParams.toString() ? `?${queryParams}` : ''}`;
 
+  const headers: Record<string, string> = {
+    ...((options.headers as Record<string, string>) || {}),
+  };
+
+  if (options.body) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   try {
     const response = await fetch(url, {
       method,
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers || {}),
-      },
+      headers,
     });
 
     if (!response.ok) {

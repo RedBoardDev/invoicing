@@ -11,35 +11,52 @@ interface EmailTemplatePreviewProps {
 }
 
 export const EmailTemplatePreview: React.FC<EmailTemplatePreviewProps> = ({ subject, content }) => {
-  const renderPreview = (text: string): React.ReactNode[] => {
-    const regex = /\{\{(\w+)\}\}/g;
-    const parts: React.ReactNode[] = [];
-    let lastIndex = 0;
-    let match: RegExpExecArray | null = null;
+  const renderPreview = (text: string): React.ReactNode => {
+    const lines = text.split('\n');
+    const result: React.ReactNode[] = [];
 
-    while (true) {
-      match = regex.exec(text);
-      if (match === null) break;
-      const variable = match[1] as keyof typeof EMAIL_VARIABLES_METADATA;
+    lines.forEach((line, lineIndex) => {
+      const regex = /\{\{(\w+)\}\}/g;
+      const parts: React.ReactNode[] = [];
+      let lastIndex = 0;
+      let match: RegExpExecArray | null = null;
 
-      const metadata = EMAIL_VARIABLES_METADATA[variable];
+      while (true) {
+        match = regex.exec(line);
+        if (match === null) break;
+        const variable = match[1] as keyof typeof EMAIL_VARIABLES_METADATA;
+        const metadata = EMAIL_VARIABLES_METADATA[variable];
 
-      parts.push(text.slice(lastIndex, match.index));
-      parts.push(
-        metadata ? (
-          <span key={match.index} className={styles.previewVariable}>
-            {metadata.example}
-          </span>
-        ) : (
-          <span key={match.index} className={styles.previewUnknown}>
-            {`{{${variable}}}`}
-          </span>
-        ),
+        if (match.index > lastIndex) {
+          parts.push(line.slice(lastIndex, match.index));
+        }
+
+        parts.push(
+          metadata ? (
+            <span key={`${lineIndex}-${match.index}`} className={styles.previewVariable}>
+              {metadata.example}
+            </span>
+          ) : (
+            <span key={`${lineIndex}-${match.index}`} className={styles.previewUnknown}>
+              {`{{${variable}}}`}
+            </span>
+          ),
+        );
+        lastIndex = regex.lastIndex;
+      }
+
+      if (lastIndex < line.length) {
+        parts.push(line.slice(lastIndex));
+      }
+
+      result.push(
+        <div key={`${lineIndex}-${line}`} className={styles.previewLine}>
+          {parts.length > 0 ? parts : line}
+        </div>,
       );
-      lastIndex = regex.lastIndex;
-    }
-    parts.push(text.slice(lastIndex));
-    return parts;
+    });
+
+    return result;
   };
 
   return (

@@ -32,7 +32,7 @@ export async function getClientById<E extends ClientExtends = never>(
 }
 
 // Créer un client (pas de pagination)
-export async function createClient(data: { name: string; email: string }): Promise<Result<ApiResponse<Client>>> {
+export async function createClient(data: { name: string; email: string[] }): Promise<Result<ApiResponse<Client>>> {
   return apiFetch('POST', '/clients', { body: JSON.stringify(data) });
 }
 
