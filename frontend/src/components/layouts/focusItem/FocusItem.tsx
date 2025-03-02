@@ -1,7 +1,8 @@
+// frontend/src/components/layouts/focusItem/FocusItem.tsx
 import type React from 'react';
-import { useState, useEffect, memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { Breadcrumb, Tabs } from 'antd';
-import type { TabsProps, BreadcrumbProps } from 'antd';
+import type { BreadcrumbProps, TabsProps } from 'antd';
 import styles from './FocusItem.module.css';
 
 interface FocusItemProps {
@@ -20,20 +21,14 @@ interface TabsWithUrlProps {
 }
 
 const TabsWithUrl = memo(({ tabsItems, tabContent, defaultTabKey }: TabsWithUrlProps) => {
-  const [activeTabKey, setActiveTabKey] = useState<string>(defaultTabKey);
+  const [activeTabKey, setActiveTabKey] = useState(defaultTabKey);
 
   useEffect(() => {
     if (!tabsItems) return;
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     const isValidTab = tabParam && tabsItems.some((tab) => tab.key === tabParam);
-    if (isValidTab) {
-      setActiveTabKey(tabParam);
-    } else {
-      const url = new URL(window.location.href);
-      url.searchParams.set('tab', defaultTabKey);
-      window.history.replaceState({}, '', url);
-    }
+    setActiveTabKey(isValidTab ? tabParam : defaultTabKey);
   }, [tabsItems, defaultTabKey]);
 
   const onChange = useCallback((key: string) => {
@@ -44,21 +39,24 @@ const TabsWithUrl = memo(({ tabsItems, tabContent, defaultTabKey }: TabsWithUrlP
   }, []);
 
   return (
-    <>
-      <Tabs activeKey={activeTabKey} onChange={onChange} items={tabsItems} />
-      <div className={styles.tabContentContainer}>{tabContent[activeTabKey]}</div>
-    </>
+    <Tabs
+      activeKey={activeTabKey}
+      onChange={onChange}
+      items={tabsItems}
+      className={styles.tabs}
+      tabBarStyle={{ marginBottom: 0 }}
+    />
   );
 });
 
-const FocusItem = ({
+const FocusItem: React.FC<FocusItemProps> = ({
   breadCrumbData,
   childrenTop,
   tabsItems,
   tabContent,
   bottomRef,
   showBorder = true,
-}: FocusItemProps) => {
+}) => {
   const defaultTabKey = tabsItems?.[0]?.key?.toString() || 'default';
 
   return (
@@ -73,7 +71,9 @@ const FocusItem = ({
         <TabsWithUrl tabsItems={tabsItems} tabContent={tabContent} defaultTabKey={defaultTabKey} />
       </div>
       <div className={breadCrumbData ? styles.bottomPartContainerBreadcrumb : styles.bottomPartContainer}>
-        <div className={styles.bottomChildrenContainer} style={showBorder ? undefined : { border: 0 }} />
+        <div className={styles.bottomChildrenContainer} style={showBorder ? undefined : { border: 0 }}>
+          {tabContent[tabsItems?.find((item) => item.key === defaultTabKey)?.key || defaultTabKey]}
+        </div>
       </div>
     </div>
   );

@@ -1,14 +1,16 @@
+// frontend/src/views/contracts/details/TemplateTab.tsx
 import type React from 'react';
 import { useCallback } from 'react';
 import { Space, Typography } from 'antd';
 import type EmailTemplate from '@interfaces/emailTemplate';
-import EmailTemplateSelect from 'components/dataEntry/EmailTemplateSelect';
 import CardTemplateDisplay from 'components/common/cardTemplateDisplay/CardTemplateDisplay';
 import { useMessage } from '@hooks/useMessage';
 import { updateContract } from '@api/services/contracts';
 import type { WithExtends } from '@api/types/extends';
 import type Contract from '@interfaces/contract';
 import styles from './TemplateTab.module.css';
+import { useEmailTemplates } from 'components/dataEntry/emailTemplateSelect/useEmailTemplates';
+import EmailTemplateSelect from 'components/dataEntry/emailTemplateSelect/EmailTemplateSelect';
 
 const { Text } = Typography;
 
@@ -22,6 +24,7 @@ interface TemplateTabProps {
 
 const TemplateTab: React.FC<TemplateTabProps> = ({ emailTemplate, contractId, isLoading, onUpdate, refresh }) => {
   const messageApi = useMessage();
+  const { templates, isLoading: templatesLoading } = useEmailTemplates({ fetchOnMount: true });
 
   const handleTemplateChange = useCallback(
     async (newTemplateId: string) => {
@@ -47,10 +50,15 @@ const TemplateTab: React.FC<TemplateTabProps> = ({ emailTemplate, contractId, is
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         <Space align="center" size="middle">
           <Text strong>Template actuel :</Text>
-          {isLoading ? (
+          {isLoading || templatesLoading ? (
             <Text type="secondary">Chargement...</Text>
           ) : (
-            <EmailTemplateSelect value={emailTemplate?.id} onChange={handleTemplateChange} />
+            <EmailTemplateSelect
+              templates={templates}
+              isLoading={templatesLoading}
+              value={emailTemplate?.id}
+              onChange={handleTemplateChange}
+            />
           )}
         </Space>
         {isLoading ? (

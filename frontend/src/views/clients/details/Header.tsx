@@ -1,3 +1,4 @@
+// frontend/src/views/clients/details/Header.tsx
 import { MailOutlined } from '@ant-design/icons';
 import { updateClient } from '@api/services/clients';
 import { ROUTE_PATHS } from '@config/routePaths';

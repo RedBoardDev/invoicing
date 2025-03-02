@@ -1,11 +1,12 @@
+// frontend/src/views/clients/details/Details.tsx
 import type React from 'react';
-import Header from './Header';
 import type { TabsProps } from 'antd';
 import FocusItem from 'components/layouts/focusItem/FocusItem';
 import { ROUTE_PATHS } from '@config/routePaths';
 import { useEntityDetails } from '@hooks/useEntityDetails';
 import { Icon } from '@components/common';
-import ContractsTab from '@views/clients/details/ContractsTab';
+import ContractsTab from './ContractsTab';
+import Header from './Header';
 import type Client from '@interfaces/client';
 import { getClientById, deleteClients } from '@api/services/clients';
 
@@ -40,6 +41,7 @@ const ClientsDetails: React.FC = () => {
   const tabContent = {
     contracts: <ContractsTab key={refreshCount} clientId={client?.id || null} />,
   };
+
   return (
     <FocusItem
       childrenTop={

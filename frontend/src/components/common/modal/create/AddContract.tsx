@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import type Contract from '@interfaces/contract';
 import { Col, DatePicker, Form, Input, InputNumber, Row } from 'antd';
 import { AddModal } from 'components/common/modal/create/component/AddModal';
@@ -6,8 +6,9 @@ import ClientSelect from 'components/dataEntry/ClientSelect';
 import dayjs, { type Dayjs } from 'dayjs';
 import type React from 'react';
 import AmountInput from 'components/dataEntry/AmountInput';
-import EmailTemplateSelect from 'components/dataEntry/EmailTemplateSelect';
 import { createContract } from '@api/services/contracts';
+import { useEmailTemplates } from 'components/dataEntry/emailTemplateSelect/useEmailTemplates';
+import EmailTemplateSelect from 'components/dataEntry/emailTemplateSelect/EmailTemplateSelect';
 
 interface AddContractProps {
   clientId?: string | undefined;
@@ -17,6 +18,14 @@ interface AddContractProps {
 }
 
 const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible, onSuccess }) => {
+  const { templates, isLoading, fetchTemplates } = useEmailTemplates();
+
+  useEffect(() => {
+    if (visible && templates.length === 0) {
+      fetchTemplates();
+    }
+  }, [visible, fetchTemplates, templates.length]);
+
   const handleAddSuccess = useCallback(() => {
     setVisible(false);
     onSuccess?.();
@@ -46,7 +55,7 @@ const AddContract: React.FC<AddContractProps> = ({ clientId, visible, setVisible
             name="emailTemplateId"
             label="Template de l'email"
             rules={[{ required: true, message: 'Sélectionnez un template' }]}>
-            <EmailTemplateSelect />
+            <EmailTemplateSelect templates={templates} isLoading={isLoading} />
           </Form.Item>
 
           <Form.Item name="title" label="Titre" rules={[{ required: true, message: 'Titre requis' }]}>

@@ -1,48 +1,42 @@
+/* frontend/src/components/layouts/focusItem/FocusItem.module.css */
 .focusItemPage {
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
   min-width: 800px;
 }
 
 .headerNavigation {
   padding: 10px;
   height: 50px;
-  border-bottom: 0.1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
 }
 
 .topPartContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 10px;
-  height: 180px;
+  padding: 18px;
+  min-height: 140px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tabsContainer {
-  margin-bottom: 0;
-  height: 40px;
+  flex-shrink: 0;
   margin-left: 20px;
 }
 
-.bottomPartContainerBreadcrumb {
-  padding: 20px;
-  width: 100%;
-  height: calc(100% - 310px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.tabs {
+  height: 40px;
 }
 
+.bottomPartContainerBreadcrumb,
 .bottomPartContainer {
+  flex: 1;
   padding: 20px;
   width: 100%;
-  height: calc(100% - 260px);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
 }
 
 .bottomChildrenContainer {
@@ -50,28 +44,6 @@
   height: 100%;
   min-width: 750px;
   border-radius: 5px;
-  border: 0.1px solid rgba(0, 0, 0, 0.1);
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.bottomChildrenContainer::-webkit-scrollbar {
-  display: none;
-}
-
-.topPartContainer {
-  padding: 18px;
-  min-height: 140px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Ajuster les hauteurs calculées */
-.bottomPartContainerBreadcrumb {
-  height: calc(100% - 240px);
-}
-
-.bottomPartContainer {
-  height: calc(100% - 200px);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
 }
