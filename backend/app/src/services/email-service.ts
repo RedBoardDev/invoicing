@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import S3ClientLib from '@libs/s3-client';
+import { formatDateToFrench } from '@libs/utils';
 import type { Invoice } from '@prisma/client';
 import Handlebars from 'handlebars';
 import { EmailBuilder } from './email/email-builder';
@@ -12,7 +13,7 @@ const compiledInvoiceTemplate = Handlebars.compile(invoiceTemplate);
 
 export const sendInvoiceEmail = async (
   invoice: Invoice,
-  emailData: { recipientEmail: string; subject: string; content: string },
+  emailData: { recipientEmail: string[]; subject: string; content: string },
   fileId: string,
 ): Promise<void> => {
   const s3Lib = S3ClientLib.getInstance();
@@ -37,7 +38,7 @@ export const sendInvoiceEmail = async (
     invoiceNumber: invoice.invoiceNumber,
     amountHT: invoice.amountHT,
     taxRate: invoice.taxRate,
-    dueDate: new Date(invoice.dueDate).toLocaleDateString(),
+    dueDate: invoice.dueDate ? formatDateToFrench(new Date(invoice.dueDate)) : '',
     subject: emailData.subject,
     content: formattedContent,
   };
@@ -45,7 +46,7 @@ export const sendInvoiceEmail = async (
   const htmlContent = compiledInvoiceTemplate(templateData);
 
   await new EmailBuilder()
-    .setRecipients([emailData.recipientEmail])
+    .setRecipients(emailData.recipientEmail)
     .setSubject(emailData.subject)
     .setContent(htmlContent)
     .addAttachment({

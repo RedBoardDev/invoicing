@@ -3,7 +3,14 @@ import type { FromSchema } from 'json-schema-to-ts';
 export const body = {
   type: 'object',
   properties: {
-    recipientEmail: { type: 'string' },
+    recipientEmail: {
+      type: 'array',
+      items: {
+        type: 'string',
+        format: 'email',
+      },
+      minItems: 1,
+    },
     subject: { type: 'string' },
     content: { type: 'string' },
   },

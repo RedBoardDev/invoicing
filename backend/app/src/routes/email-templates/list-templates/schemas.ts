@@ -15,6 +15,7 @@ export type THeaders = FromSchema<typeof headers>;
 
 export const extendsMap = {
   contracts: { include: { contracts: true } },
+  permissions: { computed: true },
 };
 
 export const allowedExtensions = Object.keys(extendsMap);
