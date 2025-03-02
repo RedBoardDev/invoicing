@@ -12,6 +12,10 @@
   z-index: 1;
 }
 
+.no-margin-bottom {
+  margin-bottom: 0 !important;
+}
+
 .title {
   height: 72px;
   padding: 0 var(--spacing-base);
@@ -45,7 +49,6 @@
     font-size: 1.1rem;
   }
 }
-
 
 .menu {
   border-right: none;

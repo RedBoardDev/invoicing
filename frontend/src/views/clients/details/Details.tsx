@@ -37,7 +37,6 @@ const ClientsDetails: React.FC = () => {
     extendsOptions: ['contracts', 'permissions'],
   });
 
-  console.log(client)
   const tabContent = {
     contracts: <ContractsTab key={refreshCount} clientId={client?.id || null} />,
   };

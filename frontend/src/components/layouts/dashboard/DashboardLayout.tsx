@@ -24,7 +24,7 @@ const DashboardLayout: React.FC = () => {
   return (
     <Layout className={styles.layout}>
       <Sider width={250} className={styles.sider}>
-        <Title level={4} className={styles.title}>
+        <Title level={4} className={styles.title} style={{ marginBottom: 0 }}>
           <img src="/favicon.png" alt="Logo" className={styles.logo} />
           <span className={styles.titleText}>Facturation</span>
         </Title>
