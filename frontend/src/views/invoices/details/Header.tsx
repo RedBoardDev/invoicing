@@ -1,4 +1,4 @@
-import { FilePdfOutlined, EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined } from '@ant-design/icons';
 import { ROUTE_PATHS } from '@config/routePaths';
 import { STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
@@ -43,19 +43,7 @@ const fields: FieldConfig<WithExtends<Invoice, 'contract'>>[] = [
   {
     key: 'sendDate',
     label: 'Envoyée le',
-    render: (data) => (data.sendDate ? formatDate(data.sendDate, 'DD/MM/YYYY') : <Text type="secondary">-</Text>),
-  },
-  {
-    key: 'fileId',
-    label: 'Lien PDF',
-    render: (data) =>
-      data.fileId ? (
-        <a href={data.fileId} target="_blank" rel="noreferrer">
-          <FilePdfOutlined />
-        </a>
-      ) : (
-        <Text type="secondary">-</Text>
-      ),
+    render: (data) => (data.sendDate ? formatDate(data.sendDate, 'DD/MM/YYYY') : <Text type="secondary">N/A</Text>),
   },
 ];
 
@@ -191,7 +179,7 @@ const Header: React.FC<HeaderProps> = ({ invoice, onEditSuccess, onDelete, refre
     <>
       <HeaderDetailsLayout<WithExtends<Invoice, 'contract'>>
         title="Facture"
-        icon="contract"
+        icon="invoice"
         data={invoice}
         id={invoiceId ?? ''}
         updateService={updateInvoice}

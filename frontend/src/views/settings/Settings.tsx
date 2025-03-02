@@ -9,7 +9,7 @@ const items: TabsProps['items'] = [
     key: 'emailTemplates',
     label: (
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Icon name="contract" size={15} color="var(--color-primary)" />
+        <Icon name="emailTemplate" size={15} color="var(--color-primary)" />
         Modèles d'Email
       </div>
     ),

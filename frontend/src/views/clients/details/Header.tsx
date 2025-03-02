@@ -111,7 +111,7 @@ const Header: React.FC<HeaderProps> = ({ client, onEditSuccess, onDelete, refres
     <>
       <HeaderDetailsLayout<WithExtends<Client, 'contracts' | 'permissions'>>
         title="Client"
-        icon="contract"
+        icon="clients"
         data={client}
         id={clientId ?? ''}
         fields={fields}

@@ -14,8 +14,8 @@ const items: TabsProps['items'] = [
     key: 'pdf',
     label: (
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <Icon name="contract" size="15" color="black" />
-        PDF
+        <Icon name="invoice" size="15" color="black" />
+        Facture
       </div>
     ),
   },

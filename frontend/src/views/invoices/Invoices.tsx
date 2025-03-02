@@ -1,9 +1,9 @@
-import { FilePdfOutlined } from '@ant-design/icons';
+
 import { ROUTE_PATHS } from '@config/routePaths';
 import { type InvoiceStatus, STATUS_COLORS, STATUS_LABELS } from '@enums/invoiceStatus';
 import type Invoice from '@interfaces/invoice';
 import { formatDate } from '@utils';
-import { Tag, Typography, Button, Space } from 'antd';
+import { Tag, Typography, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import AddInvoice from 'components/common/modal/create/invoice/AddInvoice';
 import TablePageLayout from 'components/layouts/tablePage/TablePageLayout';
@@ -40,16 +40,6 @@ const Invoices: React.FC = () => {
         title: 'PDF / Envoyée',
         render: (_: unknown, record: WithExtends<Invoice, 'contract'>) => (
           <Space>
-            {record.fileId ? (
-              <Button
-                type="link"
-                icon={<FilePdfOutlined />}
-                onClick={() => window.open(record.fileId, '_blank', 'noopener,noreferrer')}>
-                PDF
-              </Button>
-            ) : (
-              'N/A'
-            )}
             {record.sendDate ? formatDate(record.sendDate, 'DD/MM/YYYY') : 'N/A'}
           </Space>
         ),

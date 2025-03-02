@@ -17,7 +17,7 @@ const items: TabsProps['items'] = [
     key: 'invoices',
     label: (
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <Icon name="contract" size="15" color="black" />
+        <Icon name="invoice" size="15" color="black" />
         Factures
       </div>
     ),
@@ -26,7 +26,7 @@ const items: TabsProps['items'] = [
     key: 'history',
     label: (
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <Icon name="contract" size="15" color="black" />
+        <Icon name="history" size="15" color="black" />
         Historique
       </div>
     ),
@@ -35,7 +35,7 @@ const items: TabsProps['items'] = [
     key: 'template',
     label: (
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <Icon name="mail" size="15" color="black" />
+        <Icon name="template" size="15" color="black" />
         Template
       </div>
     ),
