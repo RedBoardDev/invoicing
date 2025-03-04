@@ -1,4 +1,3 @@
-// TablePageLayout.tsx
 import React from 'react';
 import styles from './TablePageLayout.module.css';
 import { TablePageHeader } from './TablePageHeader';
@@ -20,7 +19,7 @@ interface TablePageLayoutProps<T extends object, E extends string = never> {
   rowKey?: keyof T | ((record: WithExtends<T, E>) => string);
   extraButtons?: React.ReactNode[];
   showHeader?: boolean;
-  columns: any; // Ajoutez les colonnes comme prop pour les passer à DataTable
+  columns: any;
 }
 
 export const TablePageLayout = <T extends object, E extends string = never>({

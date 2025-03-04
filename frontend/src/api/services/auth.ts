@@ -18,12 +18,14 @@ interface RefreshTokenResponse {
 export async function login(email: string, password: string): Promise<Result<ApiResponse<LoginResponse>>> {
   return apiFetch('POST', '/auth/login', {
     body: JSON.stringify({ email, password }),
+    skipAuthRefresh: true,
   });
 }
 
 export async function refreshToken(refreshToken: string): Promise<Result<ApiResponse<RefreshTokenResponse>>> {
   return apiFetch('POST', '/auth/refresh', {
     body: JSON.stringify({ refreshToken }),
+    skipAuthRefresh: true,
   });
 }
 

@@ -1,4 +1,3 @@
-// frontend/src/views/contracts/details/TemplateTab.tsx
 import type React from 'react';
 import { useCallback } from 'react';
 import { Space, Typography } from 'antd';

@@ -1,4 +1,3 @@
-// frontend/src/components/common/DataTable/DataTable.tsx
 import type React from 'react';
 import { memo, useCallback, useMemo } from 'react';
 import { Spin, Table, type TableProps } from 'antd';
@@ -9,7 +8,7 @@ export interface DataTableProps<T extends object> extends Omit<TableProps<T>, 'd
   dataSource: T[];
   loading?: boolean;
   total?: number;
-  error?: Error | string | null; // Ajusté pour accepter Error | string | null
+  error?: Error | string | null;
   pagination?: {
     current: number;
     pageSize: number;

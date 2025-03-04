@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useInvoiceActions } from './useInvoiceActions';
 import SendInvoiceModal from 'components/common/modal/sendInvoice/SendInvoiceModal';
 import dayjs from 'dayjs';
-import { getInvoicePdf, updateInvoice, getNextInvoiceNumber } from '@api/services/invoices'; // Ajout de getNextInvoiceNumber
+import { getInvoicePdf, updateInvoice, getNextInvoiceNumber } from '@api/services/invoices';
 import type { Permissions, WithExtends } from '@api/types/extends';
 import ConfirmValidatedModal from 'components/common/modal/ConfirmValidatedModal';
 

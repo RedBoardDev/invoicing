@@ -1,4 +1,3 @@
-// frontend/src/views/clients/details/Details.tsx
 import type React from 'react';
 import type { TabsProps } from 'antd';
 import FocusItem from 'components/layouts/focusItem/FocusItem';

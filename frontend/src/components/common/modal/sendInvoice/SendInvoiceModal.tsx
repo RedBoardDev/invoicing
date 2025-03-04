@@ -33,7 +33,7 @@ const SendInvoiceModal: React.FC<SendInvoiceModalProps> = ({ visible, invoice, o
         const clientEmails = invoice.contract.client?.email || [];
         setAvailableEmails(clientEmails);
         form.setFieldsValue({
-          recipientEmail: email.length > 0 ? email : clientEmails.slice(0, 1), // Premier email par défaut
+          recipientEmail: email.length > 0 ? email : clientEmails.slice(0, 1),
           subject: subject || '',
           content: content || '',
         });

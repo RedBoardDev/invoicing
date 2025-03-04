@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
 import { login } from '@api/services/auth';
 import styles from './Login.module.css';
+import { useMessage } from '@hooks/useMessage';
 
 const { Title } = Typography;
 
 const Login: React.FC = () => {
   const { setAuthData } = useAuth();
   const navigate = useNavigate();
+  const message = useMessage();
 
   const onFinish = async (values: { email: string; password: string; remember?: boolean }) => {
     try {
@@ -22,6 +24,7 @@ const Login: React.FC = () => {
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
+      message.error('Erreur lors de la connexion');
     }
   };
 

@@ -1,40 +1,37 @@
 import type { HttpMethod, Result, FetchParams, ApiResponse } from './types/fetch';
 import { refreshToken } from './services/auth';
 
-// Configuration de base
 const BASE_URL = 'http://localhost:3000';
 
-// Types pour typer correctement les options
 type FetchOptions = Omit<RequestInit, 'method'> & {
   headers?: Record<string, string>;
+  skipAuthRefresh?: boolean; // Nouvelle option pour désactiver le refresh
 };
 
-// Gestion des tokens dans sessionStorage
 const getTokens = () => ({
   accessToken: sessionStorage.getItem('accessToken') ?? null,
   refreshToken: sessionStorage.getItem('refreshToken') ?? null,
 });
 
 const setTokens = (accessToken: string, refreshToken: string) => {
-  console.log('rah 2 ??', accessToken, refreshToken);
+  console.log('Saving tokens:', accessToken, refreshToken);
   sessionStorage.setItem('accessToken', accessToken);
   sessionStorage.setItem('refreshToken', refreshToken);
 };
 
 const clearTokens = () => {
-  console.log('clear 1 ?');
+  console.log('Clearing tokens');
   sessionStorage.removeItem('accessToken');
   sessionStorage.removeItem('refreshToken');
 };
 
-// Fonction pour tenter un refresh token
 async function attemptRefreshToken(): Promise<boolean> {
   const { refreshToken: currentRefreshToken } = getTokens();
   if (!currentRefreshToken) return false;
 
   try {
     const refreshResult = await refreshToken(currentRefreshToken);
-    console.log(refreshResult);
+    console.log('Refresh result:', refreshResult);
     if (!refreshResult.success) {
       clearTokens();
       return false;
@@ -49,14 +46,12 @@ async function attemptRefreshToken(): Promise<boolean> {
   }
 }
 
-// Fonction principale fetchApi
 export async function apiFetch<T>(
   method: HttpMethod,
   endpoint: string,
   options: FetchOptions = {},
   params: FetchParams = {},
 ): Promise<Result<ApiResponse<T>>> {
-  // Construire les paramètres de requête
   const queryParams = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null) {
@@ -67,10 +62,9 @@ export async function apiFetch<T>(
   const url = `${BASE_URL}${endpoint}${queryParams.toString() ? `?${queryParams}` : ''}`;
   const { accessToken } = getTokens();
 
-  // Préparer les headers
   const headers: Record<string, string> = {
     ...(options.headers || {}),
-    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    ...(accessToken && !options.skipAuthRefresh ? { Authorization: `Bearer ${accessToken}` } : {}),
   };
 
   if (options.body && !headers['Content-Type']) {
@@ -88,19 +82,18 @@ export async function apiFetch<T>(
   async function performFetch(): Promise<Response> {
     const response = await fetch(url, fetchOptions);
 
-    if (response.status === 401) {
+    if (response.status === 401 && !options.skipAuthRefresh) {
       const refreshed = await attemptRefreshToken();
       if (!refreshed) {
-        window.location.href = '/login'; // Redirection si refresh échoue
+        window.location.href = '/login';
         throw new Error('Unauthorized - Redirecting to login');
       }
 
-      // Mettre à jour le token dans les headers pour la nouvelle tentative
       const newAccessToken = getTokens().accessToken;
       if (!newAccessToken) throw new Error('No new access token after refresh');
       headers.Authorization = `Bearer ${newAccessToken}`;
 
-      console.log(`Retrying ${url} with new token`, { ...fetchOptions, headers }); // Log pour debug
+      console.log(`Retrying ${url} with new token`, { ...fetchOptions, headers });
       return fetch(url, { ...fetchOptions, headers });
     }
 
@@ -115,9 +108,7 @@ export async function apiFetch<T>(
       try {
         const errorData = await response.json();
         errorMessage = errorData.message || errorMessage;
-      } catch {
-        // Si le parsing JSON échoue, garder le message par défaut
-      }
+      } catch {}
       return { success: false, error: errorMessage };
     }
 
@@ -129,8 +120,11 @@ export async function apiFetch<T>(
   }
 }
 
-// Version spécifique pour récupérer des Blobs
-export async function fetchBlob(endpoint: string, params: FetchParams = {}): Promise<Result<Blob>> {
+export async function fetchBlob(
+  endpoint: string,
+  params: FetchParams = {},
+  options: FetchOptions = {},
+): Promise<Result<Blob>> {
   const queryParams = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null) {
@@ -142,15 +136,16 @@ export async function fetchBlob(endpoint: string, params: FetchParams = {}): Pro
   const { accessToken } = getTokens();
 
   const headers: Record<string, string> = {
-    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    ...(options.headers || {}),
+    ...(accessToken && !options.skipAuthRefresh ? { Authorization: `Bearer ${accessToken}` } : {}),
   };
 
-  console.log(`Fetching blob ${url}`, { method: 'GET', headers }); // Log pour debug
+  console.log(`Fetching blob ${url}`, { method: 'GET', headers });
 
   async function performBlobFetch(): Promise<Response> {
     const response = await fetch(url, { method: 'GET', headers });
 
-    if (response.status === 401) {
+    if (response.status === 401 && !options.skipAuthRefresh) {
       const refreshed = await attemptRefreshToken();
       if (!refreshed) {
         window.location.href = '/login';
@@ -161,7 +156,7 @@ export async function fetchBlob(endpoint: string, params: FetchParams = {}): Pro
       if (!newAccessToken) throw new Error('No new access token after refresh');
       headers.Authorization = `Bearer ${newAccessToken}`;
 
-      console.log(`Retrying blob ${url} with new token`, { method: 'GET', headers }); // Log pour debug
+      console.log(`Retrying blob ${url} with new token`, { method: 'GET', headers });
       return fetch(url, { method: 'GET', headers });
     }
 
@@ -176,9 +171,7 @@ export async function fetchBlob(endpoint: string, params: FetchParams = {}): Pro
       try {
         const errorData = await response.json();
         errorMessage = errorData.message || errorMessage;
-      } catch {
-        // Si le parsing JSON échoue, garder le message par défaut
-      }
+      } catch {}
       return { success: false, error: errorMessage };
     }
 

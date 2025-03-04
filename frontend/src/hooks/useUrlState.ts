@@ -39,7 +39,6 @@ const useUrlState = <T extends UrlState>(
     (newParams: Record<string, unknown>) => {
       const searchParams = new URLSearchParams(location.search);
 
-      // Update URLSearchParams
       for (const [key, value] of Object.entries(newParams)) {
         if (value === undefined || value === null) {
           searchParams.delete(key);
@@ -48,11 +47,9 @@ const useUrlState = <T extends UrlState>(
         }
       }
 
-      // Build new path
       const newSearch = searchParams.toString();
       const newPath = `${location.pathname}${newSearch ? `?${newSearch}` : ''}${location.hash}`;
 
-      // Navigate with new URL
       navigate(newPath, {
         replace: navigateMode === 'replace',
         state: location.state,
@@ -72,7 +69,6 @@ const useUrlState = <T extends UrlState>(
     [updateUrl],
   );
 
-  // Sync state with URL changes (back/forward navigation)
   useEffect(() => {
     const parsedQuery = parseQuery();
     setState((prev) => ({ ...prev, ...parsedQuery }));

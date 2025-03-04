@@ -9,7 +9,7 @@ interface EmailRecipientsFieldProps {
 }
 
 const EmailRecipientsField: React.FC<EmailRecipientsFieldProps> = ({ availableEmails }) => {
-  const [form] = Form.useForm(); // Form local pour synchronisation avec le parent
+  const [form] = Form.useForm();
 
   const handleAddEmail = (email: string, add: (value?: string) => void) => {
     const currentEmails = form.getFieldValue('recipientEmail') || [];

@@ -1,4 +1,3 @@
-// frontend/src/views/clients/details/ContractsTab.tsx
 import React, { useMemo, useCallback } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { formatDate } from '@utils';
