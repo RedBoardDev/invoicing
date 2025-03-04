@@ -1,17 +1,28 @@
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Button, Card, Checkbox, Form, Input, Typography } from 'antd';
 import type React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@hooks/useAuth';
+import { login } from '@api/services/auth';
 import styles from './Login.module.css';
 
 const { Title } = Typography;
 
 const Login: React.FC = () => {
-  const onFinish = (values: {
-    email: string;
-    password: string;
-    remember?: boolean;
-  }) => {
-    console.log('Received values:', values);
+  const { setAuthData } = useAuth();
+  const navigate = useNavigate();
+
+  const onFinish = async (values: { email: string; password: string; remember?: boolean }) => {
+    try {
+      const result = await login(values.email, values.password);
+      if (!result.success) throw new Error(result.error || 'Login failed');
+      console.log(result);
+      const { accessToken, refreshToken } = result.data;
+      setAuthData(accessToken, refreshToken, true);
+      navigate('/');
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
 
   return (
@@ -22,7 +33,7 @@ const Login: React.FC = () => {
         </Title>
         <Form
           name="login"
-          initialValues={{ remember: true }}
+          initialValues={{ remember: true, email: 'test@mail.com', password: 'test@mail.com' }}
           onFinish={onFinish}
           layout="vertical"
           className={styles.form}>
@@ -45,7 +56,6 @@ const Login: React.FC = () => {
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Se souvenir de moi</Checkbox>
             </Form.Item>
-            {/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
             <a href="#" className={styles.forgotPassword}>
               Mot de passe oublié ?
             </a>
