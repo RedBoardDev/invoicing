@@ -1,13 +1,13 @@
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import { message } from "antd";
-import { useCallback, useState } from "react";
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { message } from 'antd';
+import { useCallback, useState } from 'react';
 
 type CopyToClipboardOptions = {
-	successDuration?: number;
-	errorDuration?: number;
-	successMessage?: string;
-	errorMessage?: string;
-	unsupportedMessage?: string;
+  successDuration?: number;
+  errorDuration?: number;
+  successMessage?: string;
+  errorMessage?: string;
+  unsupportedMessage?: string;
 };
 
 /**
@@ -46,65 +46,59 @@ type CopyToClipboardOptions = {
  * ```
  */
 export const useCopyToClipboard = (options?: CopyToClipboardOptions) => {
-	const [isCopied, setIsCopied] = useState(false);
-	const [error, setError] = useState<Error | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-	const {
-		successDuration = 3,
-		errorDuration = 5,
-		successMessage = "Copied to clipboard",
-		errorMessage = "Failed to copy",
-		unsupportedMessage = "Clipboard API not supported",
-	} = options || {};
+  const {
+    successDuration = 3,
+    errorDuration = 5,
+    successMessage = 'Copied to clipboard',
+    errorMessage = 'Failed to copy',
+    unsupportedMessage = 'Clipboard API not supported',
+  } = options || {};
 
-	const copy = useCallback(
-		async (text: string) => {
-			try {
-				if (!navigator?.clipboard) {
-					throw new Error(unsupportedMessage);
-				}
+  const copy = useCallback(
+    async (text: string) => {
+      try {
+        if (!navigator?.clipboard) {
+          throw new Error(unsupportedMessage);
+        }
 
-				await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(text);
 
-				message.success({
-					content: successMessage,
-					icon: <CheckCircleOutlined style={{ color: "#52c41a" }} />,
-					duration: successDuration,
-				});
+        message.success({
+          content: successMessage,
+          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
+          duration: successDuration,
+        });
 
-				setIsCopied(true);
-				setError(null);
+        setIsCopied(true);
+        setError(null);
 
-				setTimeout(() => setIsCopied(false), successDuration * 1000);
+        setTimeout(() => setIsCopied(false), successDuration * 1000);
 
-				return true;
-			} catch (err) {
-				const error = err instanceof Error ? err : new Error("Unknown error");
+        return true;
+      } catch (err) {
+        const error = err instanceof Error ? err : new Error('Unknown error');
 
-				message.error({
-					content: errorMessage,
-					icon: <CloseCircleOutlined style={{ color: "#ff4d4f" }} />,
-					duration: errorDuration,
-				});
+        message.error({
+          content: errorMessage,
+          icon: <CloseCircleOutlined style={{ color: '#ff4d4f' }} />,
+          duration: errorDuration,
+        });
 
-				setError(error);
-				setIsCopied(false);
+        setError(error);
+        setIsCopied(false);
 
-				return false;
-			}
-		},
-		[
-			successDuration,
-			errorDuration,
-			successMessage,
-			errorMessage,
-			unsupportedMessage,
-		],
-	);
+        return false;
+      }
+    },
+    [successDuration, errorDuration, successMessage, errorMessage, unsupportedMessage],
+  );
 
-	return {
-		isCopied,
-		error,
-		copy,
-	};
+  return {
+    isCopied,
+    error,
+    copy,
+  };
 };

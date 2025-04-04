@@ -2,15 +2,21 @@ import type { JSX } from "react";
 
 export const ROUTE_PATHS = {
 	public: {
-		home: "/",
 		login: "/login",
-		register: "/register",
 	},
 	private: {
-		dashboard: "/dashboard",
-		user: {
-			root: "/user",
-			detail: (id: string) => `/user/${id}`,
+		dashboard: "/",
+		clients: {
+			root: "/clients",
+			detail: (id: string) => `/clients/${id}`,
+		},
+		contracts: {
+			root: "/contracts",
+			detail: (id: string) => `/contracts/${id}`,
+		},
+		invoices: {
+			root: "/invoices",
+			detail: (id: string) => `/invoices/${id}`,
 		},
 		settings: "/settings",
 	},
@@ -25,4 +31,5 @@ export type RoutePaths = typeof ROUTE_PATHS;
 export interface RouteConfig {
 	path: string;
 	element: JSX.Element;
+	children?: RouteConfig[];
 }

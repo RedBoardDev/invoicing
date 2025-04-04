@@ -1,9 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 export interface UseToggleReturn {
-	value: boolean;
-	toggle: () => void;
-	setToggle: (value: boolean) => void;
+  value: boolean;
+  toggle: () => void;
+  setToggle: (value: boolean) => void;
 }
 
 /**
@@ -21,9 +21,9 @@ export interface UseToggleReturn {
  * <button onClick={toggle}>{value ? 'On' : 'Off'}</button>
  */
 export function useToggle(initial = false): UseToggleReturn {
-	const [value, setToggle] = useState(initial);
+  const [value, setToggle] = useState(initial);
 
-	const toggle = useCallback(() => setToggle((v) => !v), []);
+  const toggle = useCallback(() => setToggle((v) => !v), []);
 
-	return { value, toggle, setToggle };
+  return { value, toggle, setToggle };
 }
